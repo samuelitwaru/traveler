@@ -5,7 +5,7 @@ from flask_restful import Api
 
 app = Flask(__name__)
 
-app.config.from_object(configuration.ProductionConfig)
+app.config.from_object(configuration.DevelopmentConfig)
 
 db = SQLAlchemy(app)
 api = Api(app)

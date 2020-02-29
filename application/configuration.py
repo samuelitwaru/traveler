@@ -8,7 +8,7 @@ class ProductionConfig(BaseConfig):
     """Production specific config"""
     DEBUG = False
     TESTING = False
-    SQLALCHEMY_DATABASE_URI = 'mysql://samuelitwaru:password@localhost/db'  # TODO => MYSQL
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://samuelitwaru:password@localhost/traveler'  # TODO => MYSQL
 
 
 class DevelopmentConfig(BaseConfig):

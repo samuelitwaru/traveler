@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource, fields, marshal_with
-from application.database.models import Stop, db
+from application.database.models import Stop, Journey, db
 
 pricing_fields = {
     "id": fields.Integer,
@@ -32,7 +32,9 @@ class StopListAPI(Resource):
     @marshal_with(stop_fields)
     def post(self):
         name = request.json["name"]
-        stop = Stop(name)
+        journey_id = request.json["journey_id"]
+        journey_ = Journey.query.get(id=journey_id)
+        stop = Stop(name, journey_)
         db.session.add(stop)
         db.session.commit()
         stops = Stop.query.all()

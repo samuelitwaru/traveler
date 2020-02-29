@@ -1,18 +1,23 @@
 from flask import request
 from flask_restful import Resource, fields, marshal_with
-from application.database.models import Pricing, Journey, db
+from application.database.models import Pricing, Stop, Status, db
 
-journey_fields = {
+status_fields = {
     "id": fields.Integer,
-    "_from": fields.String,
-    "to": fields.String
+    "name": fields.String,
+}
+
+stop_fields = {
+    "id": fields.Integer,
+    "name": fields.String,
 }
 
 pricing_fields = {
     "id": fields.Integer,
-    "category_name": fields.String,
-    "price": fields.Integer,
-    "journey": fields.Nested(journey_fields)
+    "price": fields.String,
+    "status": fields.Integer,
+    "journey": fields.Nested(status_fields),
+    "stop": fields.Nested(stop_fields)
 }
 
 
@@ -25,11 +30,12 @@ class PricingListAPI(Resource):
 
     @marshal_with(pricing_fields)
     def post(self):
-        category_name = request.json["category_name"]
         price = request.json["price"]
-        journey_id = request.json["journey_id"]
-        journey_ = Journey.query.get(journey_id)
-        pricing = Pricing(category_name, price, journey_)
+        stop_id = request.json["stop_id"]
+        status_id = request.json["status_id"]
+        status_ = Status.query.get(status_id)
+        stop_ = Stop.query.get(stop_id)
+        pricing = Pricing(price, stop_, status_)
         db.session.add(pricing)
         db.session.commit()
         pricing = Pricing.query.all()

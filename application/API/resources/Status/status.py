@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource, fields, marshal_with
-from application.database.models import Status, db
+from application.database.models import Status, Company, db
 
 pricing_fields = {
     "id": fields.Integer,
@@ -25,7 +25,9 @@ class StatusListAPI(Resource):
     @marshal_with(status_fields)
     def post(self):
         name = request.json["name"]
-        status = Status(name)
+        company_id = request.json["company_id"]
+        company_ = Company.query.get(id=company_id)
+        status = Status(name, company_)
         db.session.add(status)
         db.session.commit()
         statuses = Status.query.all()

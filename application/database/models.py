@@ -9,12 +9,13 @@ from random import choice
 # admin - CRUD
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    logo = db.Column(db.String)  # todo => storing image in flask_sqlalchemy
+    name = db.Column(db.String(64))
+    logo = db.Column(db.String(64))  # todo => storing image in flask_sqlalchemy
 
     branches = db.relationship("Branch", backref="company")
     payments = db.relationship("Payment", backref="company")
-    buses = db.relationship("Buses", backref="company")
+    buses = db.relationship("Bus", backref="company")
+    statuses = db.relationship("Status", backref="company")
 
     def __init__(self, name, logo):
         self.name = name
@@ -23,8 +24,8 @@ class Company(db.Model):
 
 class Branch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    location = db.Column(db.String)
+    name = db.Column(db.String(64))
+    location = db.Column(db.String(64))
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
 
     staff = db.relationship("Staff", backref="branch")
@@ -39,8 +40,8 @@ class Branch(db.Model):
 
 class Journey(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    _from = db.Column(db.String)
-    to = db.Column(db.String)
+    _from = db.Column(db.String(64))
+    to = db.Column(db.String(64))
     branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
 
     buses = db.relationship("Bus", backref="journey")
@@ -55,37 +56,43 @@ class Journey(db.Model):
 
 class Stop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String(64))
     journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))
 
     pricing = db.relationship("Pricing", backref="stop")
 
-    def __init__(self, name):
+    def __init__(self, name, journey_):
         self.name = name
+        journey_.stops.append(self)
 
 
 class Pricing(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    status_id = db.Column(db.Integer, db.ForeignKey("status.id"))
     price = db.Column(db.Integer)
+    stop_id = db.Column(db.Integer, db.ForeignKey("stop.id"))
+    status_id = db.Column(db.Integer, db.ForeignKey("status.id"))
 
-    def __init__(self, price, status_):
+    def __init__(self, price, stop_, status_):
         self.price = price
+        stop_.pricing.append(self)
         status_.pricing.append(self)
 
 
 class Status(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String(64))
+    company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
+
     pricing = db.relationship("Pricing", backref="status")
 
-    def __init__(self, name):
+    def __init__(self, name, company_):
         self.name = name
+        company_.statuses.append(self)
 
 
 class Pickup(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String(64))
     journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))
 
     def __init__(self, name, journey_):
@@ -95,7 +102,7 @@ class Pickup(db.Model):
 
 class Bus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    number = db.Column(db.String)
+    number = db.Column(db.String(16))
     columns = db.Column(db.Integer)
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
     departure_time = db.Column(db.DateTime)  # nullable
@@ -112,7 +119,7 @@ class Bus(db.Model):
 
 class Seat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    number = db.Column(db.String)
+    number = db.Column(db.String(3))
     grid_x = db.Column(db.Integer)
     grid_y = db.Column(db.Integer)
     bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"))
@@ -128,16 +135,16 @@ class Seat(db.Model):
 
 class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    reference = db.Column(db.String)
+    reference = db.Column(db.String(64))
     amount = db.Column(db.Integer)
-    method = db.Column(db.String)
+    method = db.Column(db.String(64))
     time = db.Column(db.DateTime, default=datetime.utcnow)  # TODO: Find out about time zones
-    app = db.Column(db.String)
-    company_name = db.Column(db.String)
-    branch_name = db.Column(db.String)
-    bus_number = db.Column(db.String)
-    seat_number = db.Column(db.String)
-    passenger_name = db.Column(db.String)
+    app = db.Column(db.String(64))
+    company_name = db.Column(db.String(64))
+    branch_name = db.Column(db.String(64))
+    bus_number = db.Column(db.String(16))
+    seat_number = db.Column(db.String(3))
+    passenger_name = db.Column(db.String(64))
 
     seat_id = db.Column(db.Integer, db.ForeignKey("seat.id"))
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
@@ -163,11 +170,11 @@ class Payment(db.Model):
 
 class Passenger(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String)
-    last_name = db.Column(db.String)
-    email = db.Column(db.String)
-    telephone = db.Column(db.String)
-    password = db.Column(db.String)
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
+    email = db.Column(db.String(64))
+    telephone = db.Column(db.String(12))
+    password = db.Column(db.String(128))
 
     payments = db.relationship("Payment", backref="passenger")
 
@@ -181,8 +188,8 @@ class Passenger(db.Model):
 
 class Staff(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String)
-    last_name = db.Column(db.String)
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
     branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
 
     user = db.relationship("User", backref="staff", uselist=True)
@@ -194,8 +201,8 @@ class Staff(db.Model):
 
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String)
-    last_name = db.Column(db.String)
+    first_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
 
     user = db.relationship("User", backref="admin", uselist=False)
 
@@ -207,9 +214,9 @@ class Admin(db.Model):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String, unique=True)
-    username = db.Column(db.String, unique=True)
-    password = db.Column(db.String)
+    email = db.Column(db.String(64), unique=True)
+    username = db.Column(db.String(64), unique=True)
+    password = db.Column(db.String(128))
     staff_id = db.Column(db.Integer, db.ForeignKey("staff.id"))
     admin_id = db.Column(db.Integer, db.ForeignKey("admin.id"))
 
