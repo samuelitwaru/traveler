@@ -4,7 +4,6 @@ from application.database.models import Stop, Journey, db
 
 pricing_fields = {
     "id": fields.Integer,
-    "category_name": fields.String,
     "price": fields.Integer,
 }
 

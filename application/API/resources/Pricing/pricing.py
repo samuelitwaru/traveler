@@ -14,9 +14,8 @@ stop_fields = {
 
 pricing_fields = {
     "id": fields.Integer,
-    "price": fields.String,
-    "status": fields.Integer,
-    "journey": fields.Nested(status_fields),
+    "price": fields.Integer,
+    "status": fields.Nested(status_fields),
     "stop": fields.Nested(stop_fields)
 }
 

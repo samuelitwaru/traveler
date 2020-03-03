@@ -21,6 +21,10 @@ class Company(db.Model):
         self.name = name
         self.logo = logo
 
+    def update(self, name, logo):
+        if name: self.name = name
+        if logo: self.logo = logo
+
 
 class Branch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +40,11 @@ class Branch(db.Model):
         self.name = name
         self.location = location
         company_.branches.append(self)
+
+    def update(self, name, location, company_id):
+        if name: self.name = name
+        if location: self.location = location
+        if company_id: self.company_id = company_id
 
 
 class Journey(db.Model):
@@ -53,6 +62,11 @@ class Journey(db.Model):
         self.to = to
         branch_.journeys.append(self)
 
+    def update(self, _from, to, branch_id):
+        if _from: self._from = _from
+        if to: self.to = to
+        if branch_id: self.branch_id = branch_id
+
 
 class Stop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -64,6 +78,10 @@ class Stop(db.Model):
     def __init__(self, name, journey_):
         self.name = name
         journey_.stops.append(self)
+
+    def update(self, name, journey_id):
+        if name: self.name = name
+        if journey_id: self.journey_id = journey_id
 
 
 class Pricing(db.Model):
@@ -192,11 +210,12 @@ class Staff(db.Model):
     last_name = db.Column(db.String(64))
     branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
 
-    user = db.relationship("User", backref="staff", uselist=True)
+    user = db.relationship("User", backref="staff", uselist=False)
 
     def __init__(self, first_name, last_name, _user):
         self.first_name = first_name
         self.last_name = last_name
+        self.user = _user
 
 
 class Admin(db.Model):
