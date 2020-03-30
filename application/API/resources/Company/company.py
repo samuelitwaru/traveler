@@ -48,7 +48,7 @@ class CompanyListAPI(Resource):
     @marshal_with(company_fields)
     def post(self):
         name = request.json["name"]
-        logo = request.json["logo"]  # TODO: GET FILE
+        logo = request.json["logo"]  # TODO: Should be a file
         company = Company(name, logo)
         db.session.add(company)
         db.session.commit()
@@ -74,7 +74,7 @@ class CompanyAPI(Resource):
     @marshal_with(company_fields)
     def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
         name = request.json.get("name")
-        logo = request.json.get("logo")
+        logo = request.json.get("logo")  # TODO: Should be a file
         company = Company.query.get(id)
         company.update(name, logo)
         db.session.commit()

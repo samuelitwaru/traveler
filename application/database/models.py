@@ -95,6 +95,9 @@ class Pricing(db.Model):
         stop_.pricing.append(self)
         status_.pricing.append(self)
 
+    def update(self, price):
+        if price: self.price = price
+
 
 class Status(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -107,6 +110,9 @@ class Status(db.Model):
         self.name = name
         company_.statuses.append(self)
 
+    def update(self, name):
+        if name: self.name = name
+
 
 class Pickup(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -116,6 +122,9 @@ class Pickup(db.Model):
     def __init__(self, name, journey_):
         self.name = name
         journey_.pickups.append(self)
+
+    def update(self, name):
+        if name: self.name = name
 
 
 class Bus(db.Model):
@@ -134,6 +143,9 @@ class Bus(db.Model):
         self.columns = columns
         company_.buses.append(self)
 
+    def update(self, number):
+        if number: self.number = number
+
 
 class Seat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -149,6 +161,9 @@ class Seat(db.Model):
         self.grid_x = grid_x
         self.grid_y = grid_y
         bus_.seats.append(self)
+
+    def update(self, number):
+        if number: self.number = number
 
 
 class Payment(db.Model):
@@ -185,6 +200,11 @@ class Payment(db.Model):
         self.seat_number = seat_.number
         self.reference = "-".join([self.company_name, self.branch_name, self.bus_number, self.seat_number, str(choice(range(100, 999)))]).replace(" ", "").upper()
 
+    def update(self, amount, method, app, passenger_name):
+        if amount: self.amount = amount
+        if method: self.method = method
+        if app: self.app = app
+        if passenger_name: self.passenger_name = passenger_name
 
 class Passenger(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -203,6 +223,12 @@ class Passenger(db.Model):
         self.telephone = telephone
         self.password = generate_password_hash(password)
 
+    def update(self, first_name, last_name, email, telephone):
+        if first_name: self.first_name = first_name
+        if last_name: self.last_name = last_name
+        if email: self.email = email
+        if telephone: self.telephone = telephone
+
 
 class Staff(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -217,6 +243,10 @@ class Staff(db.Model):
         self.last_name = last_name
         self.user = _user
 
+    def update(self, first_name, last_name):
+        if first_name: self.first_name = first_name
+        if last_name: self.last_name = last_name
+
 
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -229,6 +259,10 @@ class Admin(db.Model):
         self.first_name = first_name
         self.last_name = last_name
         self.user = _user
+
+    def update(self, first_name, last_name):
+        if first_name: self.first_name = first_name
+        if last_name: self.last_name = last_name
 
 
 class User(db.Model, UserMixin):
@@ -247,6 +281,10 @@ class User(db.Model, UserMixin):
             self.staff = profiles.get("staff_")
         elif profiles.get("admin_"):
             self.admin = profiles.get("admin_")
+
+    def update(self, email, username):
+        if email: self.email = email
+        if username: self.email = username
 
 
 # DESKTOP USER

@@ -3,11 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ebe56a17-427e-466d-ad0f-bc15fc630c7b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/API/resources/Branch/branch.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Branch/branch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Admin/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Admin/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/API/resources/Company/company.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Company/company.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/API/resources/Pricing/pricing.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Pricing/pricing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/API/resources/Stop/stop.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Stop/stop.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/database/database.db" beforeDir="false" afterPath="$PROJECT_DIR$/application/database/database.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Journey/journey.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Journey/journey.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/database/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/database/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -133,31 +131,23 @@
     <state width="1307" height="112" key="GridCell.Tab.0.bottom" timestamp="1582866582483">
       <screen x="0" y="0" width="1330" height="768" />
     </state>
-    <state width="1296" height="148" key="GridCell.Tab.0.bottom/0.0.1319.768@0.0.1319.768" timestamp="1576166381162" />
     <state width="1307" height="112" key="GridCell.Tab.0.bottom/0.0.1330.768@0.0.1330.768" timestamp="1582866582482" />
     <state width="1307" height="112" key="GridCell.Tab.0.center" timestamp="1582866582481">
       <screen x="0" y="0" width="1330" height="768" />
     </state>
-    <state width="1296" height="148" key="GridCell.Tab.0.center/0.0.1319.768@0.0.1319.768" timestamp="1576166381159" />
     <state width="1307" height="112" key="GridCell.Tab.0.center/0.0.1330.768@0.0.1330.768" timestamp="1582866582481" />
     <state width="1307" height="112" key="GridCell.Tab.0.left" timestamp="1582866582479">
       <screen x="0" y="0" width="1330" height="768" />
     </state>
-    <state width="1296" height="148" key="GridCell.Tab.0.left/0.0.1319.768@0.0.1319.768" timestamp="1576166381158" />
     <state width="1307" height="112" key="GridCell.Tab.0.left/0.0.1330.768@0.0.1330.768" timestamp="1582866582479" />
     <state width="1307" height="112" key="GridCell.Tab.0.right" timestamp="1582866582482">
       <screen x="0" y="0" width="1330" height="768" />
     </state>
-    <state width="1296" height="148" key="GridCell.Tab.0.right/0.0.1319.768@0.0.1319.768" timestamp="1576166381160" />
     <state width="1307" height="112" key="GridCell.Tab.0.right/0.0.1330.768@0.0.1330.768" timestamp="1582866582482" />
-    <state x="163" y="18" key="SettingsEditor" timestamp="1576002026759">
-      <screen x="0" y="0" width="1319" height="768" />
-    </state>
-    <state x="163" y="18" key="SettingsEditor/0.0.1319.768@0.0.1319.768" timestamp="1576002026759" />
-    <state x="375" y="122" key="com.intellij.ide.util.TipDialog" timestamp="1583174110026">
+    <state x="375" y="122" key="com.intellij.ide.util.TipDialog" timestamp="1585404398225">
       <screen x="0" y="0" width="1330" height="768" />
     </state>
     <state x="120" y="96" key="com.intellij.ide.util.TipDialog/0.0.1319.768@0.0.1319.768" timestamp="1577233006028" />
-    <state x="375" y="122" key="com.intellij.ide.util.TipDialog/0.0.1330.768@0.0.1330.768" timestamp="1583174110026" />
+    <state x="375" y="122" key="com.intellij.ide.util.TipDialog/0.0.1330.768@0.0.1330.768" timestamp="1585404398225" />
   </component>
 </project>
