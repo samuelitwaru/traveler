@@ -206,10 +206,11 @@ class Payment(db.Model):
         if app: self.app = app
         if passenger_name: self.passenger_name = passenger_name
 
+
 class Passenger(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64))
-    last_name = db.Column(db.String(64))
+    first_name = db.Column(db.String(32))
+    last_name = db.Column(db.String(32))
     email = db.Column(db.String(64))
     telephone = db.Column(db.String(12))
     password = db.Column(db.String(128))
@@ -232,8 +233,8 @@ class Passenger(db.Model):
 
 class Staff(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64))
-    last_name = db.Column(db.String(64))
+    first_name = db.Column(db.String(32))
+    last_name = db.Column(db.String(32))
     branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
 
     user = db.relationship("User", backref="staff", uselist=False)
@@ -250,8 +251,8 @@ class Staff(db.Model):
 
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(64))
-    last_name = db.Column(db.String(64))
+    first_name = db.Column(db.String(32))
+    last_name = db.Column(db.String(32))
 
     user = db.relationship("User", backref="admin", uselist=False)
 
@@ -285,6 +286,20 @@ class User(db.Model, UserMixin):
     def update(self, email, username):
         if email: self.email = email
         if username: self.email = username
+
+
+class Connection(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sid = db.Column(db.String(64), primary_key=True, nullable=False)
+    connect_time = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+    disconnect_time = db.Column(db.DateTime)
+    client_type = db.Column(db.String(32))
+    client_name = db.Column(db.String(128))
+
+    def __init__(self, sid, client_type, client_name):
+        self.sid = sid
+        self.client_type = client_type
+        self.client_name = client_name
 
 
 # DESKTOP USER
