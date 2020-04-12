@@ -70,10 +70,11 @@ class JourneyAPI(Resource):
         return journeys
 
     @marshal_with(journey_fields)
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
+    def put(self, id):
         _from = request.json["from"]
         to = request.json["to"]
         branch_id = request.json["branch_id"]
         journey = Journey.query.get(id)
         journey.update(_from, to, branch_id)
         db.session.commit()
+        return journey

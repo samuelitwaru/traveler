@@ -41,17 +41,22 @@ class StaffAPI(Resource):
 
     @marshal_with(staff_fields)
     def get(self, id):
-        admin = Staff.query.get(id)
-        return admin
+        staff = Staff.query.get(id)
+        return staff
 
     @marshal_with(staff_fields)
     def delete(self, id):
         admin = Staff.query.get(id)
         db.session.delete(admin)
         db.session.commit()
-        admins = Staff.query.all()
-        return admins
+        staff = Staff.query.all()
+        return staff
 
     @marshal_with(staff_fields)
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
-        pass
+    def put(self, id):
+        first_name = request.json["first_name"]
+        last_name = request.json["last_name"]
+        staff = Staff.query.get(id)
+        staff.update(first_name, last_name)
+        db.session.commit()
+        return staff

@@ -2,6 +2,9 @@
 <html>
 <head>
 	<title>Admin</title>
+	
+	<meta name="viewport" content="width=device-width,initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
 
 	<link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="static/css/font-awesome.min.css">
@@ -20,7 +23,7 @@
 <body>
 	<!-- register company -->
 	<div class="container">
-			<form id="registerCompanyForm" onsubmit="submit()">
+			<form id="registerCompanyForm">
 				<h1>New Company</h1>
 				<div class="row">
 					<div class="col-md-6">
@@ -32,7 +35,7 @@
 							<div class="custom-file form-group">
 								<input id="hidden-img-input" type="hidden" name="logo" >
 								<input id="file-input" type="file" class="custom-file-input" onchange="renderImage(this)" accept="image/*" title="Choose Logo" id="customFile" required>
-								<label id="file-input-label" class="custom-file-label shadow-sm" for="customFile">Company Logo</label>
+								<label id="file-input-label" class="custom-file-label shadow-sm text-nowrap" for="customFile">Company Logo</label>
 							</div>
 						</div>
 
@@ -48,7 +51,7 @@
 						</div>
 
 						<div class="form-row p-2">
-							<button class="btn btn-block btn-success">Submit</button>
+							<button class="btn btn-block btn-success" onclick="submitCompany()">Submit</button>
 						</div>
 					</div>
 
@@ -77,6 +80,11 @@
 	</div>
 
 	<script type="text/javascript">
+		// form data
+		let company;
+		let logo;
+		var busTypes = ["ORDINARY"];
+
 		var imageId = 'image';
 		var cropper;
 		
@@ -86,8 +94,6 @@
 		var w = document.getElementById('w');
 		var x = document.getElementById('x');
 		var y = document.getElementById('y');
-
-		var busTypes = ["ORDINARY"]
 
 		function populateCropValues(H,W,h,w,x,y){
 			var image = document.getElementById(imageId);
@@ -170,8 +176,14 @@
 		}
 			
 		loadBusTypes()	
-		// crop()
+		
+		function submitCompany(){
+			// get values: company, logo, busTypes
+			
+			// validate values
 
+			// submit values
+		}
 	</script>
 
 

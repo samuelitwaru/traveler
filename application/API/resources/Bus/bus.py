@@ -1,6 +1,6 @@
 from flask import request
 from flask_restful import Resource, fields, marshal_with
-from application.database.models import Bus, Branch, Seat, db
+from application.database.models import Bus, Branch, Grid, db
 
 journey_fields = {
     "id": fields.Integer,
@@ -27,7 +27,7 @@ payment_fields = {
     "passenger_name": fields.String
 }
 
-seat_fields = {
+grid_fields = {
     "id": fields.Integer,
     "number": fields.String,
     "grid_x": fields.Integer,
@@ -43,7 +43,7 @@ bus_fields = {
     "departure_time": fields.DateTime,
     "journey": fields.Nested(journey_fields),
     "branch": fields.Nested(branch_fields),
-    "seats": fields.Nested(seat_fields)
+    "grids": fields.Nested(grid_fields)
 }
 
 
@@ -56,15 +56,20 @@ class BusListAPI(Resource):
 
     @marshal_with(bus_fields)
     def post(self):
-        number = request.json["number"]
-        columns = request.json["columns"]
-        company_id = request.json["company_id"]
+        number = request.json.get("number")
+        columns = request.json.get("columns")
+        rows = request.json.get("rows")
+        company_id = request.json.get("company_id")
         company_ = Branch.query.get(company_id)
-        bus = Bus(number, columns, company_,)
+        bus = Bus(number, columns, rows, company_)
 
-        seats = request.json["seats"]
-        for seat in seats:
-            Seat(seat["number"], seat["grid_x"], seat["grid_y"], bus)
+        grids = request.json.get("grids")
+        for grid in grids:
+            index = grid.get("index")
+            number = grid.get("number")
+            label = grid.get("label")
+            bus_grid = Grid(index, bus, number, label)
+            db.session.add(bus_grid)
 
         db.session.add(bus)
         db.session.commit()
@@ -88,5 +93,9 @@ class BusAPI(Resource):
         return buses
 
     @marshal_with(bus_fields)
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
-        pass
+    def put(self, id):
+        number = request.json.get("number")
+        bus = Bus.query.get(id)
+        bus.update(number)
+        db.session.commit()
+        return bus

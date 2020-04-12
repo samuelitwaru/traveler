@@ -79,9 +79,8 @@ class Stop(db.Model):
         self.name = name
         journey_.stops.append(self)
 
-    def update(self, name, journey_id):
+    def update(self, name):
         if name: self.name = name
-        if journey_id: self.journey_id = journey_id
 
 
 class Pricing(db.Model):
@@ -131,39 +130,45 @@ class Bus(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     number = db.Column(db.String(16))
     columns = db.Column(db.Integer)
+    rows = db.Column(db.Integer)
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
     departure_time = db.Column(db.DateTime)  # nullable
     journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))  # nullable
 
-    seats = db.relationship("Seat", backref="bus")
+    grids = db.relationship("Grid", backref="bus")
     payments = db.relationship("Payment", backref="payments")
 
-    def __init__(self, number, columns, company_):
+    def __init__(self, number, columns, rows, company_):
         self.number = number
         self.columns = columns
+        self.rows = rows
         company_.buses.append(self)
 
     def update(self, number):
         if number: self.number = number
 
 
-class Seat(db.Model):
+class Grid(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    number = db.Column(db.String(3))
-    grid_x = db.Column(db.Integer)
-    grid_y = db.Column(db.Integer)
-    bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"))
-    booked = db.Column(db.Boolean, default=False)
+    index = db.Column(db.Integer)
+    grid_type = db.Column(db.Integer)
+    number = db.Column(db.String(3))  # nullable
+    label = db.Column(db.String(32))
+    booked = db.Column(db.Boolean, default=False) # nullable
     payment_id = db.Column(db.Integer, db.ForeignKey("payment.id"))  # nullable
+    bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"))
 
-    def __init__(self, number, grid_x, grid_y, bus_):
+    def __init__(self, index, grid_type, bus_, number, label):
+        self.index = index
+        self.grid_type = grid_type
         self.number = number
-        self.grid_x = grid_x
-        self.grid_y = grid_y
-        bus_.seats.append(self)
+        self.label = label
+        bus_.grids.append(self)
 
-    def update(self, number):
+    def update(self, grid_type, number, label):
+        if grid_type: self.grid_type = grid_type
         if number: self.number = number
+        if label: self.label = label
 
 
 class Payment(db.Model):
@@ -176,29 +181,29 @@ class Payment(db.Model):
     company_name = db.Column(db.String(64))
     branch_name = db.Column(db.String(64))
     bus_number = db.Column(db.String(16))
-    seat_number = db.Column(db.String(3))
+    grid_number = db.Column(db.String(3))
     passenger_name = db.Column(db.String(64))
 
-    seat_id = db.Column(db.Integer, db.ForeignKey("seat.id"))
+    grid_id = db.Column(db.Integer, db.ForeignKey("grid.id"))
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
     branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
     bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"))
     passenger_id = db.Column(db.Integer, db.ForeignKey("passenger.id"))  # nullable
 
-    def __init__(self, amount, method, app, passenger_name, seat_, company_, branch_, bus_):
+    def __init__(self, amount, method, app, passenger_name, grid_, company_, branch_, bus_):
         self.amount = amount
         self.method = method
         self.app = app
         self.passenger_name = passenger_name
-        seat_.payments.append(self)
+        grid_.payments.append(self)
         company_.payments.append(self)
         branch_.payments.append(self)
         bus_.payments.append(self)
         self.company_name = company_.name
         self.branch_name = branch_.name
         self.bus_number = bus_.number
-        self.seat_number = seat_.number
-        self.reference = "-".join([self.company_name, self.branch_name, self.bus_number, self.seat_number, str(choice(range(100, 999)))]).replace(" ", "").upper()
+        self.grid_number = grid_.number
+        self.reference = "-".join([self.company_name, self.branch_name, self.bus_number, self.grid_number, str(choice(range(100, 999)))]).replace(" ", "").upper()
 
     def update(self, amount, method, app, passenger_name):
         if amount: self.amount = amount

@@ -3,12 +3,26 @@
   <component name="ChangeListManager">
     <list default="true" id="ebe56a17-427e-466d-ad0f-bc15fc630c7b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/API/web_socket/events.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Admin/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Admin/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Branch/branch.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Branch/branch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Bus/bus.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Bus/bus.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Company/company.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Company/company.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Journey/journey.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Journey/journey.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Passenger/passenger.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Passenger/passenger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Payment/payment.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Payment/payment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Pickup/pickup.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Pickup/pickup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Pricing/pricing.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Pricing/pricing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Seat/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Seat/seat.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Staff/staff.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Staff/staff.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Status/status.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Status/status.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/Stop/stop.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/Stop/stop.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/API/resources/User/user.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/API/resources/User/user.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/database/database.db" beforeDir="false" afterPath="$PROJECT_DIR$/application/database/database.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/database/doc/bus application model.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/database/dummy_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/database/dummy_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/database/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/database/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,10 +140,6 @@
       <screen x="0" y="0" width="1330" height="768" />
     </state>
     <state x="381" y="8" width="558" height="747" key="#main/0.0.1330.768@0.0.1330.768" timestamp="1582334670255" />
-    <state x="442" y="141" width="424" height="482" key="FileChooserDialogImpl" timestamp="1577233064183">
-      <screen x="0" y="0" width="1319" height="768" />
-    </state>
-    <state x="442" y="141" width="424" height="482" key="FileChooserDialogImpl/0.0.1319.768@0.0.1319.768" timestamp="1577233064183" />
     <state width="1307" height="112" key="GridCell.Tab.0.bottom" timestamp="1585656591016">
       <screen x="0" y="0" width="1330" height="768" />
     </state>
@@ -146,10 +156,9 @@
       <screen x="0" y="0" width="1330" height="768" />
     </state>
     <state width="1307" height="112" key="GridCell.Tab.0.right/0.0.1330.768@0.0.1330.768" timestamp="1585656591015" />
-    <state x="375" y="122" key="com.intellij.ide.util.TipDialog" timestamp="1585557234540">
+    <state x="375" y="122" key="com.intellij.ide.util.TipDialog" timestamp="1586683907033">
       <screen x="0" y="0" width="1330" height="768" />
     </state>
-    <state x="120" y="96" key="com.intellij.ide.util.TipDialog/0.0.1319.768@0.0.1319.768" timestamp="1577233006028" />
-    <state x="375" y="122" key="com.intellij.ide.util.TipDialog/0.0.1330.768@0.0.1330.768" timestamp="1585557234540" />
+    <state x="375" y="122" key="com.intellij.ide.util.TipDialog/0.0.1330.768@0.0.1330.768" timestamp="1586683907033" />
   </component>
 </project>

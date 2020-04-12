@@ -50,5 +50,9 @@ class PickupAPI(Resource):
         return pickup
 
     @marshal_with(pickup_fields)
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
-        pass
+    def put(self, id):
+        name = request.json["name"]
+        pickup = Pickup.query.get(id)
+        pickup.update(name)
+        db.session.commit()
+        return pickup

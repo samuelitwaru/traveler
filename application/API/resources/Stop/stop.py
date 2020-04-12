@@ -55,5 +55,10 @@ class StopAPI(Resource):
         stops = stop_fields.query.all()
         return stops
 
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
-        pass
+    @marshal_with(stop_fields)
+    def put(self, id):
+        name = request.json["name"]
+        stop = Stop.query.get(id)
+        stop.update(name)
+        db.session.commit()
+        return stop

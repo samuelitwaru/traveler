@@ -14,14 +14,14 @@ status1 = Status("Ordinary", company1)
 status2 = Status("Luxury", company1)
 
 # bus
-bus1 = Bus("UBB777B", 6, company1)
+bus1 = Bus("UBB777B", 3, 2,  company1)
 
-# seats
-seat1 = Seat("01", 0, 0, bus1)
-seat2 = Seat("02", 0, 1, bus1)
-seat3 = Seat("03", 0, 3, bus1)
-seat4 = Seat("04", 0, 4, bus1)
-seat5 = Seat("05", 0, 5, bus1)
+# grids
+grid1 = Grid(0, 1, bus1, "01", None)
+grid2 = Grid(1, 1, bus1, "02", None)
+grid3 = Grid(2, 1, bus1, "03", None)
+grid4 = Grid(3, 1, bus1, "04", None)
+grid5 = Grid(4, 1, bus1, "05", None)
 
 # stops
 stop1 = Stop("Nebbi", journey1)
@@ -50,7 +50,7 @@ branches = [branch1]
 journeys = [journey1]
 statuses = [status1, status2]
 buses = [bus1]
-seats = [seat1, seat2, seat3, seat4, seat5]
+grids = [grid1, grid2, grid3, grid4, grid5]
 stops = [stop1, stop2, stop3]
 pricing = [pricing1, pricing2, pricing3, pricing4, pricing5, pricing6]
 users = [user1, user2]
@@ -62,7 +62,7 @@ db.session.add_all(branches)
 db.session.add_all(journeys)
 db.session.add_all(statuses)
 db.session.add_all(buses)
-db.session.add_all(seats)
+db.session.add_all(grids)
 db.session.add_all(stops)
 db.session.add_all(pricing)
 db.session.add_all(users)

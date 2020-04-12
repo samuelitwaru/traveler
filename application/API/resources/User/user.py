@@ -58,12 +58,17 @@ class UserAPI(Resource):
 
     @marshal_with(user_fields)
     def delete(self, id):
-        seat = User.query.get(id)
-        db.session.delete(seat)
+        user = User.query.get(id)
+        db.session.delete(user)
         db.session.commit()
-        seats = User.query.all()
-        return seats
+        users = User.query.all()
+        return users
 
     @marshal_with(user_fields)
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
-        pass
+    def put(self, id):
+        username = request.json["username"]
+        email = request.json["email"]
+        user = User.query.get(id)
+        user.update(email, username)
+        db.session.commit()
+        return user

@@ -80,7 +80,7 @@ class BranchAPI(Resource):
         return branch
 
     @marshal_with(branch_fields)
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
+    def put(self, id):
         name = request.json.get("name")
         location = request.json.get("location")
         company_id = request.json.get("company_id")

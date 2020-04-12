@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bus Structure</title>
+
+	<meta name="viewport" content="width=device-width,initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+
+	<link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="static/css/font-awesome.min.css">
+
+    <script src="static/js/jquery-3.3.1.min.js"></script>
+    <script src="static/js/muuri.min.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h2 class="text-center">Custom Bus Structure</h2>
+		<hr>
+		<div class="row">
+			<div class="col-md-6 card py-2 bg-light" align="center">
+				<h4>Layout</h4>
+				<div id="grid" class="grid border" style="width: 364">
+				</div>
+			</div>
+
+			<div class="col-md-6 py-2">
+				<div class="row">
+					<div class="form-group col-6">
+						<label>Columns</label>
+
+						<select id="col-selector" class="form-control" onchange="setCols(event)">
+						</select>
+					</div>
+
+					<div class="form-group col-6">
+						<label>Rows</label>
+						<select id="row-selector" class="form-control" onchange="setRows(event)">
+						</select>
+					</div>
+				</div>
+
+				<hr>
+
+				<div class="form-group">
+					<label>Actions</label>
+					<div class="row px-3">
+						<div id="selected-grids" class="col-md-12"></div>
+						<button class="rounded-0 btn btn-success col-6 shadow"><span class="fa fa-user"></span> Passenger</button>
+						<button class="rounded-0 btn btn-info col-6 shadow"><span class="fa fa-user-times"></span> Reserved</button>
+						<button class="rounded-0 btn btn-light col-6 shadow"><span class="fa fa-minus-square-o"></span> Empty</button>
+						<button class="rounded-0 btn btn-dark col-6 shadow"><span class="fa fa-undo"></span> Reset</button>
+					</div>
+				</div>
+
+				<hr>
+
+				<div class="form-group">
+					<label>Seat Numbering</label>
+					<div class="form-group">
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="autoSeatNumbering">
+							<label class="custom-control-label" for="autoSeatNumbering">Auto Seat Numbering</label>
+						</div>
+
+						<div class="custom-control custom-checkbox">
+							<input type="checkbox" class="custom-control-input" id="numberReservedSeats">
+							<label class="custom-control-label" for="numberReservedSeats">Number Reserved Seats</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<style type="text/css">
+		.grid {
+		  position: relative;
+		}
+		.item {
+		  display: block;
+		  position: absolute;
+		  width: 40px;
+		  height: 40px;
+		  padding: 4px;
+		  margin: 1px;
+		  z-index: 1;
+		  background: #000;
+		  color: #fff;
+		}
+		.item:hover{
+			cursor: pointer;
+		}
+		.item.selected{
+			cursor: pointer;
+			background-color: #34ed56;	
+		}
+		.item.muuri-item-dragging {
+		  z-index: 3;
+		}
+		.item.muuri-item-releasing {
+		  z-index: 2;
+		}
+		.item.muuri-item-hidden {
+		  z-index: 0;
+		}
+		.item-content {
+		  position: relative;
+		  width: 100%;
+		  height: 100%;
+		}
+	</style>
+
+	<script>
+		let grid;
+		let data = {
+			cols: 3,
+			rows: 5,
+			colList: [3,4,5,6,7],
+			rowList:[5,6,7,8,9,10,11,12,13,14,15],
+			autoSeatNumbering: true,
+			numberReservedSeats: true,
+			grids: [],
+			selected: []
+		}
+
+
+		// data: Initialize Muuri grid
+		initGrid = function(){
+			grid = new Muuri('.grid', {
+				dragEnabled: false,
+				layoutOnResize: false
+			});
+		}
+
+
+		// interface: put options in the column selector
+		fillColSelector = function(){
+			$('#col-selector').html('');
+
+			for (var i=0; i < data.colList.length; i++) {
+				colNumber = data.colList[i];
+				$('#col-selector').append(`<option>${colNumber}</option>`)	
+			}
+		}
+
+
+		// interface: put options in the row selector
+		fillRowSelector = function(){
+			$('#row-selector').html('');
+
+			for (var i=0; i < data.rowList.length; i++) {
+				rowNumber = data.rowList[i]
+				$('#row-selector').append(`<option>${rowNumber}</option>`)	
+			}
+		}
+
+
+		// interface: arrange grid items in the grid box
+		fillGrid = function(){
+			// remove all child elements from the grid box
+			$('#grid').html('');
+
+			// calculate and set the width of the grid box
+			gridWidth = (data.cols*40) + (data.cols*2)
+			$('#grid').width(gridWidth)
+
+			// append grid items into grid box
+			for (var i=0; i < data.grids.length; i++) {
+				grid = data.grids[i]
+				$('#grid').append(
+					`<div class="item"><div data-index="${grid.index}" id="${grid.index}" onclick="selectGrid(event)" class="item-content">${grid.index}</div></div>`
+				)	
+			}
+
+			// initialize Muuri grid
+			initGrid();
+		}
+
+
+		// data: change number of columns
+		setCols = function(event){
+			// change number of columns
+			data.cols = parseInt(event.target.value)
+
+			// reset grids
+			setGrids();
+			fillGrid();
+		}
+
+
+		// data: change number of columns
+		setRows = function(event){
+			// change number of rows
+			data.rows = parseInt(event.target.value)
+
+			// reset grids
+			setGrids();
+			fillGrid();
+		}
+
+
+		// data: set grids array
+		setGrids = function(){
+			// empty the grids array
+			data.grids = [];
+
+			// calculate the number of grid items needed
+			var n = data.cols * data.rows
+			
+			// append the empty grid items to the grids array
+			for (var i=0; i<n; i++){
+				data.grids.push({index:i})
+			}
+		}
+
+
+		// data and interface: select or unselect a grid item
+		selectGrid = function(event){
+			// data: push to selected array if it's not there 
+			if (data.selected.includes(parseInt(event.target.dataset.index))){
+				data.selected = data.selected.filter((i)=>{
+					return i !== parseInt(event.target.dataset.index)
+				})
+			}
+			else {
+				data.selected.push(parseInt(event.target.dataset.index))
+			}
+
+			// interface: sytle selected grid
+			$(event.target).parent().toggleClass("selected");
+		}
+
+
+		// data: change selected grid items to the specified type
+		changeGridItems = function(type){
+			// change to space
+			if (type===0){
+				// spaceObj = [index,type]
+			}
+			// change to passenger
+			else if (type===1){
+				// passengerObj = [index,type,number]
+			}
+			// change to reserved
+			else if (type===2) {
+				// reservedObj = [index,type,number,for]
+			}
+		}
+
+		fillColSelector();
+		fillRowSelector();
+		setGrids()
+		fillGrid();
+	</script>
+</body>
+
+</html>

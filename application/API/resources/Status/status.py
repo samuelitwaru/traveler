@@ -49,5 +49,10 @@ class StatusAPI(Resource):
         statuses = Status.query.all()
         return statuses
 
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
-        pass
+    @marshal_with(status_fields)
+    def put(self, id):
+        name = request.json["name"]
+        status = Status.query.get(id)
+        status.update(name)
+        db.session.commit()
+        return status

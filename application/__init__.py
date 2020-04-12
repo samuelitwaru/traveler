@@ -18,7 +18,7 @@ from application.API.resources.Company.company import CompanyAPI, CompanyListAPI
 from application.API.resources.Branch.branch import BranchAPI, BranchListAPI
 
 from application.API.resources.Bus.bus import BusAPI, BusListAPI
-from application.API.resources.Seat.seat import SeatAPI, SeatListAPI
+from application.API.resources.Grid.grid import GridAPI, GridListAPI
 
 from application.API.resources.Passenger.passenger import PassengerAPI, PassengerListAPI
 from application.API.resources.Payment.payment import PaymentAPI, PaymentListAPI
@@ -42,8 +42,8 @@ api.add_resource(BranchAPI, '/bus/api/v1.0/branches/<int:id>', endpoint="branch"
 api.add_resource(BusListAPI, '/bus/api/v1.0/buses', endpoint="buses")
 api.add_resource(BusAPI, '/bus/api/v1.0/buses/<int:id>', endpoint="bus")
 
-api.add_resource(SeatListAPI, '/bus/api/v1.0/seats', endpoint="seats")
-api.add_resource(SeatAPI, '/bus/api/v1.0/seats/<int:id>', endpoint="seat")
+api.add_resource(GridListAPI, '/bus/api/v1.0/grids', endpoint="grids")
+api.add_resource(GridAPI, '/bus/api/v1.0/grids/<int:id>', endpoint="grid")
 
 api.add_resource(PassengerListAPI, '/bus/api/v1.0/passengers', endpoint="passengers")
 api.add_resource(PassengerAPI, '/bus/api/v1.0/passengers/<int:id>', endpoint="passenger")

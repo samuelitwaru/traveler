@@ -57,5 +57,9 @@ class PricingAPI(Resource):
         return pricing
 
     @marshal_with(pricing_fields)
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
-        pass
+    def put(self, id):
+        price = request.json["price"]
+        pricing = Pricing.query.get(id)
+        pricing.update(price)
+        db.session.commit()
+        return pricing

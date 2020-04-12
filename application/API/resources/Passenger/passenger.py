@@ -33,11 +33,11 @@ class PassengerListAPI(Resource):
 
     @marshal_with(passenger_fields)
     def post(self):
-        first_name = request.json["first_name"]
-        last_name = request.json["last_name"]
-        email = request.json["email"]
-        telephone = request.json["telephone"]
-        password = request.json["password"]
+        first_name = request.json.get("first_name")
+        last_name = request.json.get("last_name")
+        email = request.json.get("email")
+        telephone = request.get("telephone")
+        password = request.json.get("password")
         passenger = Passenger(first_name, last_name, email, telephone, password)
         db.session.add(passenger)
         db.session.commit()
@@ -61,5 +61,12 @@ class PassengerAPI(Resource):
         return passengers
 
     @marshal_with(passenger_fields)
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
-        pass
+    def put(self, id):
+        first_name = request.json.get("first_name")
+        last_name = request.json.get("last_name")
+        email = request.json.get("email")
+        telephone = request.get("telephone")
+        passenger = Passenger.query.get(id)
+        passenger.update(first_name, last_name, email, telephone)
+        db.session.commit()
+        return passenger

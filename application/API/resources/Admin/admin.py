@@ -53,7 +53,7 @@ class AdminAPI(Resource):
         return admins
 
     @marshal_with(admin_fields)
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
+    def put(self, id):
         first_name = request.json.get("first_name")
         last_name = request.json.get("last_name")
         admin = Admin.query.get(id)

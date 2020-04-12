@@ -72,7 +72,7 @@ class CompanyAPI(Resource):
         return companies
 
     @marshal_with(company_fields)
-    def put(self, id):  # TODO: See how put requests are done ie, dealing with update of specific columns
+    def put(self, id):
         name = request.json.get("name")
         logo = request.json.get("logo")  # TODO: Should be a file
         company = Company.query.get(id)
