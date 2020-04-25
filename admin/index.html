@@ -26,9 +26,9 @@
 			<form id="registerCompanyForm">
 				<h1>New Company</h1>
 				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-7">
 						<div class="form-row p-2 d-block">
-							<input id="company" placeholder="Company" class="shadow-sm form-control" type="text" name="company" />
+							<input id="company" placeholder="Company" class="shadow-sm form-control" type="text" name="company" value="Gagga" required/>
 						</div>
 
 						<div class="form-row p-2">
@@ -40,22 +40,11 @@
 						</div>
 
 						<div class="form-row p-2">
-							<div class="card btn-block">
-								<div class="card-header p-2 text-center">
-									Bus Types
-									<input id="bus-status-input" type="text" class="form-control text-center shadow-sm btn-text-center">
-								</div>
-								<ul id="status-list" class="list-group list-group-flush">
-								</ul>
-							</div>
-						</div>
-
-						<div class="form-row p-2">
-							<button class="btn btn-block btn-success" onclick="submitCompany()">Submit</button>
+							<button class="btn btn-block btn-success">Submit</button>
 						</div>
 					</div>
 
-					<div class="col-md-6 border">
+					<div class="col-md-5 border">
 						<div class="form-group" align="center">
 							<div id="image-loader" class="spinner-border text-primary collapse" role="status">
 								<span class="sr-only">Loading...</span>
@@ -66,12 +55,12 @@
 						</div>
 
 						<div class="collapse">
-							<input id="H" type="hidden" /><br>
-							<input id="W" type="hidden" /><br>
-							<input id="h" type="hidden" /><br>
-							<input id="w" type="hidden" /><br>
-							<input id="x" type="hidden" /><br>
-							<input id="y" type="hidden" /><br>
+							<input id="H" name="H" type="hidden" /><br>
+							<input id="W" name="W" type="hidden" /><br>
+							<input id="h" name="h" type="hidden" /><br>
+							<input id="w" name="w" type="hidden" /><br>
+							<input id="x" name="x" type="hidden" /><br>
+							<input id="y" name="y" type="hidden" /><br>
 						</div>
 					</div>
 				</div>
@@ -83,7 +72,7 @@
 		// form data
 		let company;
 		let logo;
-		var busTypes = ["ORDINARY"];
+		// var busTypes = ["ORDINARY"];
 
 		var imageId = 'image';
 		var cropper;
@@ -143,46 +132,6 @@
     			$('#image-loader').addClass('collapse')
     			crop()
 			}
-		}
-
-		$('#bus-status-input').on('keypress', (event)=>{
-			if (event.keyCode === 13) {
-				event.preventDefault();
-				type = event.target.value.toUpperCase()
-				if (!(busTypes.includes(type))){
-					busTypes.push(type)
-					event.target.value = ''
-					loadBusTypes()
-				}else{
-
-				}
-			}
-		})
-
-		function loadBusTypes(){
-			$('#status-list').html('')
-			for (var i=0; i < busTypes.length; i++) {
-				$('#status-list').append(
-					`<li class="list-group-item text-center">${busTypes[i]}<button class="btn btn-danger float-right badge badge-danger" onclick="removeBusType('${busTypes[i]}')">&times;</button></li>`
-		    	)
-			}
-		}
-
-		function removeBusType(type){
-			busTypes = busTypes.filter((each)=>{
-				return each !== type
-			});
-			loadBusTypes()
-		}
-			
-		loadBusTypes()	
-		
-		function submitCompany(){
-			// get values: company, logo, busTypes
-			
-			// validate values
-
-			// submit values
 		}
 	</script>
 

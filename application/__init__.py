@@ -74,3 +74,9 @@ api.add_resource(StaffAPI, '/bus/api/v1.0/staff/<int:id>', endpoint="staff")
 
 api.add_resource(AdminListAPI, '/bus/api/v1.0/admins', endpoint="admins")
 api.add_resource(AdminAPI, '/bus/api/v1.0/admins/<int:id>', endpoint="admin")
+
+
+from application.web_app.views import company_bp
+
+app.register_blueprint(company_bp)
+

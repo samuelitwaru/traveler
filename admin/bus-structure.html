@@ -11,6 +11,54 @@
 
     <script src="static/js/jquery-3.3.1.min.js"></script>
     <script src="static/js/muuri.min.js"></script>
+
+    <style type="text/css">
+		.grid {
+		  position: relative;
+		}
+		.item {
+		  display: block;
+		  position: absolute;
+		  width: 40px;
+		  height: 40px;
+		  padding: 4px;
+		  margin: 1px;
+		  z-index: 1;
+		  background: #000;
+		  color: #fff;
+		}
+		.item:hover{
+			cursor: pointer;
+		}
+		.item.space{
+			cursor: pointer;
+			background-color: #fff;	
+		}
+		.item.passenger{
+			background-color: blue;	
+		}
+		.item.reserved{
+			background-color: grey;	
+		}
+		.item.selected{
+			cursor: pointer;
+			background-color: #34ed56;	
+		}
+		.item.muuri-item-dragging {
+		  z-index: 3;
+		}
+		.item.muuri-item-releasing {
+		  z-index: 2;
+		}
+		.item.muuri-item-hidden {
+		  z-index: 0;
+		}
+		.item-content {
+		  position: relative;
+		  width: 100%;
+		  height: 100%;
+		}
+	</style>
 </head>
 <body>
 	<div class="container">
@@ -19,7 +67,15 @@
 		<div class="row">
 			<div class="col-md-6 card py-2 bg-light" align="center">
 				<h4>Layout</h4>
-				<div id="grid" class="grid border" style="width: 364">
+				<hr>
+				<div class="row">
+					<div class="col"><small>Selections: </small><small id="selection-count">3</small></div>
+					<div class="col"><small>Pasenger: </small><small id="passenger-count">3</small></div>
+					<div class="col"><small>Reserved: </small><small id="reserved-count">3</small></div>
+					<div class="col"><small>Empty: </small><small id="empty-count">3</small></div>
+				</div>
+				<hr>
+				<div id="grid" class="grid border">
 				</div>
 			</div>
 
@@ -45,11 +101,17 @@
 					<label>Actions</label>
 					<div class="row px-3">
 						<div id="selected-grids" class="col-md-12"></div>
-						<button class="rounded-0 btn btn-success col-6 shadow"><span class="fa fa-user"></span> Passenger</button>
-						<button class="rounded-0 btn btn-info col-6 shadow"><span class="fa fa-user-times"></span> Reserved</button>
-						<button class="rounded-0 btn btn-light col-6 shadow"><span class="fa fa-minus-square-o"></span> Empty</button>
-						<button class="rounded-0 btn btn-dark col-6 shadow"><span class="fa fa-undo"></span> Reset</button>
+						<button class="rounded-0 btn btn-primary col-6" onclick="changeGridItems(1)"><span class="fa fa-user"></span> Passenger</button>
+						<button class="rounded-0 btn btn-secondary col-6" onclick="changeGridItems(2)"><span class="fa fa-user-times"></span> Reserved</button>
+						<button class="rounded-0 btn btn-light col-6"  onclick="changeGridItems(0)"><span class="fa fa-minus-square-o"></span> Empty</button>
+						<button class="rounded-0 btn btn-dark col-6"><span class="fa fa-undo"></span> Reset</button>
 					</div>
+					<!-- <div class="row">
+						<div class="col"><small>Selections: </small><small id="selection-count">3</small></div>
+						<div class="col"><small>Pasenger: </small><small id="passenger-count">3</small></div>
+						<div class="col"><small>Reserved: </small><small id="reserved-count">3</small></div>
+						<div class="col"><small>Empty: </small><small id="empty-count">3</small></div>
+					</div> -->
 				</div>
 
 				<hr>
@@ -58,60 +120,29 @@
 					<label>Seat Numbering</label>
 					<div class="form-group">
 						<div class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input" id="autoSeatNumbering">
+							<input type="checkbox" class="custom-control-input" id="autoSeatNumbering" onchange="setAutoSeatNumbering(event)" checked>
 							<label class="custom-control-label" for="autoSeatNumbering">Auto Seat Numbering</label>
 						</div>
 
 						<div class="custom-control custom-checkbox">
-							<input type="checkbox" class="custom-control-input" id="numberReservedSeats">
+							<input type="checkbox" class="custom-control-input" id="numberReservedSeats" onchange="setNumberReservedSeats(event)" checked>
 							<label class="custom-control-label" for="numberReservedSeats">Number Reserved Seats</label>
 						</div>
 					</div>
+				</div>
+
+				<hr>
+
+				<div class="form-group">
+					<button class="btn btn-success float-right"><span class="fa fa-check"></span> Okay</button>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<style type="text/css">
-		.grid {
-		  position: relative;
-		}
-		.item {
-		  display: block;
-		  position: absolute;
-		  width: 40px;
-		  height: 40px;
-		  padding: 4px;
-		  margin: 1px;
-		  z-index: 1;
-		  background: #000;
-		  color: #fff;
-		}
-		.item:hover{
-			cursor: pointer;
-		}
-		.item.selected{
-			cursor: pointer;
-			background-color: #34ed56;	
-		}
-		.item.muuri-item-dragging {
-		  z-index: 3;
-		}
-		.item.muuri-item-releasing {
-		  z-index: 2;
-		}
-		.item.muuri-item-hidden {
-		  z-index: 0;
-		}
-		.item-content {
-		  position: relative;
-		  width: 100%;
-		  height: 100%;
-		}
-	</style>
-
 	<script>
 		let grid;
+		let gridItemClasses = ['space', 'passenger', 'reserved'];
 		let data = {
 			cols: 3,
 			rows: 5,
@@ -157,6 +188,9 @@
 
 		// interface: arrange grid items in the grid box
 		fillGrid = function(){
+			// empty selected list
+			data.selected = []
+
 			// remove all child elements from the grid box
 			$('#grid').html('');
 
@@ -166,14 +200,18 @@
 
 			// append grid items into grid box
 			for (var i=0; i < data.grids.length; i++) {
-				grid = data.grids[i]
+				grid = data.grids[i];
+
 				$('#grid').append(
-					`<div class="item"><div data-index="${grid.index}" id="${grid.index}" onclick="selectGrid(event)" class="item-content">${grid.index}</div></div>`
+					`<div class="item ${gridItemClasses[grid.grid_type]}"><div data-index="${grid.index}" id="${grid.index}" onclick="selectGrid(event)" class="item-content">${Boolean(grid.number) ? grid.number : ''}</div></div>`
 				)	
 			}
 
 			// initialize Muuri grid
 			initGrid();
+
+			// update counts
+			setCounts();
 		}
 
 
@@ -202,14 +240,25 @@
 		// data: set grids array
 		setGrids = function(){
 			// empty the grids array
-			data.grids = [];
+			// data.grids = [];
 
-			// calculate the number of grid items needed
+			// get the previous number of grid items
+			var p = data.grids.length;
+			// calculate the new number of grid items needed
 			var n = data.cols * data.rows
-			
-			// append the empty grid items to the grids array
-			for (var i=0; i<n; i++){
-				data.grids.push({index:i})
+
+			// if less grid items are needed
+			if (p>n) {
+				// reduce the grids list
+				data.grids = data.grids.slice(0, n)
+			}
+			// if more grid items are needed
+			else if(p<n){
+				var extra = n-p
+				// append extra empty grids to the end of the grids list
+				for (var i=p; i<p+extra; i++){
+					data.grids.push({index:i, grid_type:0})
+				}
 			}
 		}
 
@@ -228,28 +277,87 @@
 
 			// interface: sytle selected grid
 			$(event.target).parent().toggleClass("selected");
+
+			// interface: update counts
+			setCounts();
 		}
 
 
-		// data: change selected grid items to the specified type
+		// data and interface: change selected grid items to the specified type
 		changeGridItems = function(type){
-			// change to space
-			if (type===0){
-				// spaceObj = [index,type]
+			if(data.selected.length){
+				for (var i=0; i<data.selected.length; i++) {
+					data.grids[data.selected[i]].grid_type = type
+				}
 			}
-			// change to passenger
-			else if (type===1){
-				// passengerObj = [index,type,number]
+			else{
+				alert("Select at least 1 grid")
 			}
-			// change to reserved
-			else if (type===2) {
-				// reservedObj = [index,type,number,for]
+		
+			// set seat numbers and refill the grid box
+			setSeatNumbers();
+		}
+
+
+		// data and inteface: set seat numbers and rearrange itms in the grid
+		setSeatNumbers = function(){
+			// init count as 1
+			n = 1
+
+			// update the number attributes of all passenger and reserved grids
+			for (var i=0; i<data.grids.length; i++){
+				if ((data.grids[i].grid_type===1 && data.autoSeatNumbering) || (data.grids[i].grid_type==2 && data.numberReservedSeats)) {
+					data.grids[i].number = n
+					n++
+				}
+				else{
+					data.grids[i].number = null
+				}
 			}
+
+			// rearrange the grid
+			fillGrid();
+		}
+
+
+		// data and interface: set autoSeatNumbering to true/false
+		setAutoSeatNumbering = function(event){
+			// sets autoSeatNumbering to true/false
+			data.autoSeatNumbering = event.target.checked
+			
+			// update seat numbers
+			setSeatNumbers()
+		}
+
+
+		// data and interface: sets numberReservedSeats to true/false
+		setNumberReservedSeats = function(event){
+			// set numberReservedSeats to true/false
+			data.numberReservedSeats = event.target.checked
+
+			// update seat numbers
+			setSeatNumbers()
+		}
+
+
+		// interface: set selection, passenger, reserved, and empty grid counts
+		setCounts = function(){
+			// set selection count
+			$('#selection-count').html(data.selected.length)
+			
+			// set passenger count
+			$('#passenger-count').html(data.grids.filter((grid)=>{return grid.grid_type===1}).length)
+			
+			// set reserved count
+			$('#reserved-count').html(data.grids.filter((grid)=>{return grid.grid_type===2}).length)
+			
+			// set empty count
+			$('#empty-count').html(data.grids.filter((grid)=>{return grid.grid_type===0}).length)
 		}
 
 		fillColSelector();
 		fillRowSelector();
-		setGrids()
+		setGrids();
 		fillGrid();
 	</script>
 </body>
