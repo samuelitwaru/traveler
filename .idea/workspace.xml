@@ -3,9 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="ebe56a17-427e-466d-ad0f-bc15fc630c7b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/bus-structure.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/bus-structure.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/admin/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/application/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/configuration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/database/database.db" beforeDir="false" afterPath="$PROJECT_DIR$/application/database/database.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/templates/transport-companies.html" beforeDir="false" afterPath="$PROJECT_DIR$/application/templates/transport-companies.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/application/web_app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/application/web_app/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,9 +145,9 @@
       <screen x="0" y="0" width="1330" height="768" />
     </state>
     <state width="1307" height="112" key="GridCell.Tab.0.right/0.0.1330.768@0.0.1330.768" timestamp="1585656591015" />
-    <state x="375" y="122" key="com.intellij.ide.util.TipDialog" timestamp="1587828562263">
+    <state x="375" y="122" key="com.intellij.ide.util.TipDialog" timestamp="1587883447027">
       <screen x="0" y="0" width="1330" height="768" />
     </state>
-    <state x="375" y="122" key="com.intellij.ide.util.TipDialog/0.0.1330.768@0.0.1330.768" timestamp="1587828562263" />
+    <state x="375" y="122" key="com.intellij.ide.util.TipDialog/0.0.1330.768@0.0.1330.768" timestamp="1587883447027" />
   </component>
 </project>

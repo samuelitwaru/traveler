@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
-from application.database.models import Company
-company_bp = Blueprint('company', __name__, url_prefix="/companies")
+from application.database.models import Company, db
+from application.utilities import crop_image
+
+company_bp = Blueprint('company_bp', __name__, url_prefix="/companies")
 
 
 # COMPANY
@@ -10,17 +12,32 @@ def get_companies():
     return render_template("transport-companies.html", companies=companies)
 
 
-@company_bp.route("/add", methods=["POST"])
+@company_bp.route("/add", methods=["GET", "POST"])
 def add_company():
     if request.method == "GET":
-        pass
+        return render_template("add-transport-company.html")
     elif request.method == "POST":
-        pass
+        # get values
+        name = request.form.get("company")
+        logo = request.files.get("logo")
+        h = request.form.get("h")
+        w = request.form.get("w")
+        x = request.form.get("x")
+        y = request.form.get("y")
+        # add company
+        company = Company(name, "1.png")
+        db.session.add(company)
+        db.session.commit()
+
+        #  save image
+        logo.save("application/database/media/1.png")
+        crop_image("application/database/media/1.png", "application/database/media/cropped/1.png", round(float(x)), round(float(y)), round(float(w)), round(float(h)))
+        return redirect(url_for('company_bp.get_companies'))
     
 
 @company_bp.route("/<company_id>", methods=["GET", "POST"])
 def get_company(company_id):
-    company = Company.get(id)
+    company = Company.query.get(id)
     return render_template("transport-company.html", company=company)
 
 
