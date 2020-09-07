@@ -1,0 +1,10 @@
+<div class="border">
+	<h5 class="pt-2 px-2">Pricing</h5>
+	{% if statuses|length %}
+		{% with active_status=statuses|first %}
+		{% include 'status/status-patch.html' %}
+		{% endwith %}
+	{% else %}
+			<p class="p-2 text-muted">There are no registered pricing statuses</p>
+	{% endif %}
+</div>

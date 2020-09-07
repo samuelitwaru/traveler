@@ -1,0 +1,25 @@
+{% from 'helpers.html' import render_string_field %}
+
+<div class="card btn-block">
+	<div class="card-body">
+		<h5>Pickup Points</h5>
+		<form method="POST" action="{{ url_for('pickup.create_pickup', journey_id=journey.id) }}">
+			{{create_pickup_form.hidden_tag()}}
+			{{ render_string_field (create_pickup_form.name) }} 
+		</form>
+		<ul class="list-group">
+		{% for pickup in journey.pickups %}
+			<li class="list-group-item">
+				{{pickup}}
+				<form class="d-inline ajaxForm" method="GET" action="{{ url_for('pickup.delete_pickup', pickup_id=pickup.id) }}" data-patch-containers='["#deletePickupPatch"]' data-progress-container="#deletePickupPatch">	
+					<button class="btn btn-danger float-right badge badge-danger" data-toggle="modal" data-target="#deletePickupModal">&times;</button>
+				</form>
+			</li>
+		{% else %}
+			<p class="text-center text-muted">No pickups</p>
+		{% endfor %}
+		</ul>
+	</div>
+	{% include 'pickup/delete-pickup-modal.html' %}
+
+</div>

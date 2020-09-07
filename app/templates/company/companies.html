@@ -1,0 +1,40 @@
+{% extends 'index/admin-base.html' %}
+
+{% block content %}
+	<div class="container-fluid p-0">
+	    <div class="bg-info p-2 shadow fixed d-flex">
+	        <div class="flex-fill m-auto">
+	            <h4 class="text-light">Companies</h4>
+	        </div>
+
+	        <div align="right">
+	            <a class="btn btn-outline-light" href="{{ url_for('company.create_company') }}"><span class="fa fa-plus"></span> New Company</a>
+	        </div>
+	    </div>
+
+	    <table class="table table-responsive-sm border">
+	        <tbody>
+	            {% for company in companies %} 
+	                <tr>
+	                    <td>
+	                    	<img class="img-fluid rounded" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=company.logo)}}" />
+	                    </td>
+	                    
+	                    <td class="border m-auto">
+	                        <p>{{ company.name }}</p>
+	                        <small>Created: </small>
+	                    </td>
+	                    
+	                    <td><a href="{{ url_for('company.get_company_buses', company_id=company.id) }}" class='btn btn-info'>Details</a></td>
+	                </tr>
+	            {% else %}
+	                <div class="container" align="center">
+	                    <label class="display-4 text-muted">No Companies!</label>
+	                    <hr>
+	                    <a class="btn btn-primary" href="{{ url_for('company.create_company') }}"><span class="fa fa-plus"></span> New Company</a>
+	                </div>
+	            {% endfor %}
+	        </tbody>
+	    </table>
+	</div>
+{% endblock %}

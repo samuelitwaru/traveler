@@ -1,0 +1,311 @@
+<script src="/static/js/muuri.min.js"></script>
+
+<h4 class="flex-fill">Layout </h4>
+<hr>
+
+<form class="-flex" method="POST" action="{{ url_for('bus.update_bus_layout', bus_id=bus.id) }}">
+	{{ update_bus_layout_form.hidden_tag() }}
+	<small>Exisiting</small>
+	<select id="layout-selector" onchange="">
+		<option>A</option>
+		<option>B</option>
+		<option>C</option>
+	</select>
+	<small>{{update_bus_layout_form.columns.label}}</small> {{ update_bus_layout_form.columns(onchange="setCols(event)") }}
+	<small>{{update_bus_layout_form.rows.label}}</small> {{ update_bus_layout_form.rows(onchange="setRows(event)") }}
+	{{ update_bus_layout_form.layout }}
+	<button class="btn btn-info btn-sm float-right"><span class="fa fa-save"></span> Save</button>
+</form>
+
+<hr>
+
+<div class="form-group d-flex">
+	<div class="custom-control custom-checkbox flex-fill">
+		<input type="checkbox" class="custom-control-input" id="autoSeatNumbering" onchange="setAutoSeatNumbering(event)" checked>
+		<label class="custom-control-label" for="autoSeatNumbering">Auto Seat Numbering</label>
+	</div>
+
+	<div class="custom-control custom-checkbox">
+		<input type="checkbox" class="custom-control-input" id="numberReservedSeats" onchange="setNumberReservedSeats(event)" checked>
+		<label class="custom-control-label" for="numberReservedSeats">Number Reserved Seats</label>
+	</div>
+</div>
+
+<hr>
+
+<div class="d-flex">
+	<!-- <div id="selected-grids" class="col-md-12"></div> -->
+	<div class="p-2 flex-fill">
+		<button class="flex-fill" onclick="changeGridItems(1)"><span class="fa fa-user"></span></button>
+		Passenger
+	</div>
+	<div class="p-2 flex-fill">
+		<button class="flex-fill" onclick="changeGridItems(2)"><span class="fa fa-user-times"></span></button>
+		Reserved
+	</div>
+	<div class="p-2 flex-fill">
+		<button class="flex-fill"  onclick="changeGridItems(0)"><span class="fa fa-minus-square-o"></span></button>
+		Space
+	</div>
+	<div class="p-2 flex-fill">
+		<button class="flex-fill"><span class="fa fa-undo"></span></button>
+	</div>
+</div>
+
+<hr>
+
+<div align="center">
+	<div id="grid" class="grid border"></div>
+</div>
+
+<hr>
+
+<div class="row">
+	<div class="col"><small>Selections: </small><small id="selection-count">3</small></div>
+	<div class="col"><small>Pasenger: </small><small id="passenger-count">3</small></div>
+	<div class="col"><small>Reserved: </small><small id="reserved-count">3</small></div>
+	<div class="col"><small>Empty: </small><small id="empty-count">3</small></div>
+</div>
+
+
+<script>
+	let grid;
+	let gridItemClasses = ['space', 'passenger', 'reserved'];
+	let data = {
+		cols: Number("{{bus.columns}}"),
+		rows: Number("{{bus.rows}}"),
+		// colList: [3,4,5,6,7],
+		// rowList:[5,6,7,8,9,10,11,12,13,14,15],
+		autoSeatNumbering: true,
+		numberReservedSeats: true,
+		grids: {{ bus.grids_dict() }},
+		selected: []
+	}
+
+
+	// data: Initialize Muuri grid
+	initGrid = function(){
+		grid = new Muuri('.grid', {
+			dragEnabled: false,
+			layoutOnResize: false
+		});
+	}
+
+
+	// interface: put options in the column selector
+	// fillColSelector = function(){
+	// 	$('#col-selector').html('');
+
+	// 	for (var i=0; i < data.colList.length; i++) {
+	// 		colNumber = data.colList[i];
+	// 		$('#col-selector').append(`<option>${colNumber}</option>`)	
+	// 	}
+	// }
+
+
+	// interface: put options in the row selector
+	// fillRowSelector = function(){
+	// 	$('#row-selector').html('');
+
+	// 	for (var i=0; i < data.rowList.length; i++) {
+	// 		rowNumber = data.rowList[i]
+	// 		$('#row-selector').append(`<option>${rowNumber}</option>`)	
+	// 	}
+	// }
+
+
+	// interface: arrange grid items in the grid box
+	fillGrid = function(){
+		// empty selected list
+		data.selected = []
+
+		// remove all child elements from the grid box
+		$('#grid').html('');
+
+		// calculate and set the width of the grid box
+		gridWidth = (data.cols*40) + (data.cols*2)
+		$('#grid').width(gridWidth)
+
+		// append grid items into grid box
+		for (var i=0; i < data.grids.length; i++) {
+			grid = data.grids[i];
+
+			$('#grid').append(
+				`<div class="item ${gridItemClasses[grid.grid_type]}"><div data-index="${grid.index}" id="${grid.index}" onclick="selectGrid(event)" class="item-content">${Boolean(grid.number) ? grid.number : ''}</div></div>`
+			)	
+		}
+
+		// initialize Muuri grid
+		initGrid();
+
+		// update counts
+		setCounts();
+	}
+
+
+	// data: change number of columns
+	setCols = function(event){
+		// change number of columns
+		data.cols = parseInt(event.target.value)
+
+		// reset grids
+		setGrids();
+		fillGrid();
+
+		// update layout form fiels
+		setLayoutFormField()
+	}
+
+
+	// data: change number of columns
+	setRows = function(event){
+		// change number of rows
+		data.rows = parseInt(event.target.value)
+
+		// reset grids
+		setGrids();
+		fillGrid();
+
+		// update layout form fiels
+		setLayoutFormField()
+	}
+
+
+	// data: set grids array
+	setGrids = function(){
+		// empty the grids array
+		// data.grids = [];
+
+		// get the previous number of grid items
+		var p = data.grids.length;
+		// calculate the new number of grid items needed
+		var n = data.cols * data.rows
+
+		// if less grid items are needed
+		if (p>n) {
+			// reduce the grids list
+			data.grids = data.grids.slice(0, n)
+		}
+		// if more grid items are needed
+		else if(p<n){
+			var extra = n-p
+			// append extra empty grids to the end of the grids list
+			for (var i=p; i<p+extra; i++){
+				data.grids.push({index:i, grid_type:0})
+			}
+		}
+	}
+
+
+	// data and interface: select or unselect a grid item
+	selectGrid = function(event){
+		// data: push to selected array if it's not there 
+		if (data.selected.includes(parseInt(event.target.dataset.index))){
+			data.selected = data.selected.filter((i)=>{
+				return i !== parseInt(event.target.dataset.index)
+			})
+		}
+		else {
+			data.selected.push(parseInt(event.target.dataset.index))
+		}
+
+		// interface: sytle selected grid
+		$(event.target).parent().toggleClass("selected");
+
+		// interface: update counts
+		setCounts();
+	}
+
+
+	// data and interface: change selected grid items to the specified type
+	changeGridItems = function(type){
+		if(data.selected.length){
+			for (var i=0; i<data.selected.length; i++) {
+				data.grids[data.selected[i]].grid_type = type
+			}
+			console.log(data.grids)
+		}
+		else{
+			alert("Select at least 1 grid")
+		}
+	
+		// set seat numbers and refill the grid box
+		setSeatNumbers();
+
+		// update layout form fiels
+		setLayoutFormField()
+	}
+
+
+	// data and inteface: set seat numbers and rearrange itms in the grid
+	setSeatNumbers = function(){
+		// init count as 1
+		n = 1
+
+		// update the number attributes of all passenger and reserved grids
+		for (var i=0; i<data.grids.length; i++){
+			if ((data.grids[i].grid_type===1 && data.autoSeatNumbering) || (data.grids[i].grid_type==2 && data.numberReservedSeats)) {
+				data.grids[i].number = n
+				n++
+			}
+			else{
+				data.grids[i].number = null
+			}
+		}
+
+		// rearrange the grid
+		fillGrid();
+	}
+
+
+	// data and interface: set autoSeatNumbering to true/false
+	setAutoSeatNumbering = function(event){
+		// sets autoSeatNumbering to true/false
+		data.autoSeatNumbering = event.target.checked
+		
+		// update seat numbers
+		setSeatNumbers()
+
+		// update layout form fiels
+		setLayoutFormField()
+	}
+
+
+	// data and interface: sets numberReservedSeats to true/false
+	setNumberReservedSeats = function(event){
+		// set numberReservedSeats to true/false
+		data.numberReservedSeats = event.target.checked
+
+		// update seat numbers
+		setSeatNumbers()
+
+		// update layout form fiels
+		setLayoutFormField()
+	}
+
+
+	// interface: set selection, passenger, reserved, and empty grid counts
+	setCounts = function(){
+		// set selection count
+		$('#selection-count').html(data.selected.length)
+		
+		// set passenger count
+		$('#passenger-count').html(data.grids.filter((grid)=>{return grid.grid_type===1}).length)
+		
+		// set reserved count
+		$('#reserved-count').html(data.grids.filter((grid)=>{return grid.grid_type===2}).length)
+		
+		// set empty count
+		$('#empty-count').html(data.grids.filter((grid)=>{return grid.grid_type===0}).length)
+	}
+
+	setLayoutFormField = function(){
+		$('#layout').val(JSON.stringify(data.grids))
+	}
+
+	// fillColSelector();
+	// fillRowSelector();
+	setGrids();
+	fillGrid();
+	setLayoutFormField()
+</script>

@@ -1,0 +1,62 @@
+{% extends 'company/company.html' %}
+
+{% block company_content %}
+<div class="container-fluid">
+	<h4><span class="fa fa-building pt-2"></span> {{branch.name}}</h4>
+	<hr>
+	<div class="row">
+		<div class="col-md-6">
+			<table class="table table-bordered">
+				<tbody>
+					<tr>
+						<td>Name</td><td>{{branch.name}}</td>
+					</tr>
+					<tr>
+						<td>Location</td><td>{{branch.location}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-md-6">
+			{% with manager=branch.manager() %}
+			<table class="table table-bordered">
+				<tbody>
+					<thead>
+						<th colspan="2"><span class="fa fa-user"></span> Manager</th>
+					</thead>
+					{% if manager %}
+					<tr>
+						<td>Name</td><td>{{manager}}</td>
+					</tr>
+					<tr>
+						<td>Email</td><td>{{manager.user.email}}</td>
+					</tr>
+					<tr>
+						<td>Telephone</td><td>{{manager.telephone}}</td>
+					</tr>
+					<tr>
+						<td colspan="2" align="right">
+							<button class="btn btn-info">edit</button>
+							<button class="btn btn-info">generate token</button>
+							<button class="btn btn-danger" data-toggle="modal" data-target="#deleteBranchManagerModal">remove</button>
+						</td>
+					</tr>
+					{% include 'profile/delete-branch-manager-modal.html' %}
+
+					{% else %}
+					<tr>
+						<td colspan="2" align="center">
+							<p class="text-muted">No Manager</p>
+							<hr>
+							<button data-toggle="modal" data-target="#createBranchManagerModal">Create Manager</button>
+						</td>
+					</tr>
+					{% include 'profile/create-branch-manager-modal.html' %}
+					{% endif %}
+				</tbody>
+			</table>
+			{% endwith %}
+		</div>
+	</div>
+</div>
+{% endblock %}

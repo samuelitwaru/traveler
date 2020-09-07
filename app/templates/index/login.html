@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% from 'helpers.html' import render_string_field %}
+
+{% block body %}
+	<div class="container">
+			<div class="login-content">
+				<div class="">
+					<div class="card-header bg-dark">
+						<h3 class="text-light text-center"><span class="text-info">Traveler</h3>
+						<p class="text-light text-center">Login</p>
+					</div>
+					<div class="border">
+						<div class="text-center">
+							{% for category, message in get_flashed_messages(with_categories=true) %}
+								<div class="alert alert-{{category}} alert-dismissable">
+									<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+									{{ message }}
+								</div>
+							{% endfor %}
+						</div>
+						<form method="POST" action="">
+							<div class="card-body bg-white">
+								{{ login_form.csrf_token }}
+								{{ render_string_field(login_form.email) }}
+								{{ render_string_field(login_form.password) }}
+							    <div align="center" class="border-0">
+									<button class="btn btn-info">Login <span class="fa fa-sign-in"></span></button>
+									<a href="{{ url_for('auth.reset_password') }}" class="nav-link">Forgot Password</a>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+ {% extends 'index/manager-base.html' %}
+
+{% block content %}
+	<div class="container">
+		<div class="row pt-2">
+			<div class="col-md-6">
+				<div class="card">
+					<div class="card-body">
+						<h4>
+							{{journey.from_}} to {{journey.to}} 
+							<button class="btn btn-info float-right" data-toggle="modal" data-target="#updateJourneyModal"><span class="fa fa-pencil"></span></button>
+						</h4>
+
+						<table class="table">
+							<tbody>
+								<tr>
+									<td>Distance</td>
+									<td>{{journey.distance}} Kilometers</td>
+								</tr>
+								<tr>
+									<td>Duration</td>
+									<td>{{journey.duration}} Hours</td>
+								</tr>
+							</tbody>
+						</table>
+
+						{% include 'journey/update-journey-modal.html' %}
+					</div>
+				</div>
+				
+				<hr>
+
+				{% include 'pickup/pickups.html' %}
+
+				<hr>
+
+			</div>
+
+			<div class="col-md-6">
+				{% include 'pricing/pricings.html' %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

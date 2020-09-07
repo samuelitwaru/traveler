@@ -1,0 +1,34 @@
+{% extends 'index/admin-base.html' %}
+{% from 'helpers.html' import render_string_field, render_file_field %}
+
+{% block content %}
+	<div class="container">
+		<form id="registerCompanyForm" method="POST" enctype="multipart/form-data" action="{{ url_for('company.create_company') }}">
+			<h4>New Company</h4>
+			{{ create_company_form.hidden_tag() }}
+			<div class="row">
+				<div class="col-md-7">
+
+					{{ render_string_field(create_company_form.name) }}
+
+					{{ render_file_field(create_company_form.logo, "file-input-label", onchange="renderImage(this)", accept="image/*")}}
+
+					<div class="collapse">
+						{{ create_company_form.h() }}
+						{{ create_company_form.w() }}
+						{{ create_company_form.x() }}
+						{{ create_company_form.y() }}
+					</div>
+
+					<div class="form-group py-2">
+						<button class="btn btn-block btn-success">Submit</button>
+					</div>
+				</div>
+
+				<div class="col-md-5 border">
+					{% include 'company/company-logo-cropper.html' %}
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}

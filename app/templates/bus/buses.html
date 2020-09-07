@@ -1,0 +1,31 @@
+{% extends 'index/manager-base.html' %}
+
+{% block buses_active %}active{% endblock %}
+
+{% block content %}
+	<div class="container-fluid p-0">
+
+	    <table class="table table-responsive-sm border">
+	        <tbody>
+	            {% for bus in buses %} 
+	                <tr>
+	                    <td>
+	                    	<span class="fa fa-bus fa-3x"></span>
+	                    </td>
+	                    
+	                    <td class="border m-auto">
+	                        <p>{{bus.number}}</p>
+	                        <small>Seats: </small>
+	                    </td>
+	                    
+	                    <td><a href="{{ url_for('bus.get_bus', bus_id=bus.id) }}" class='btn btn-info'>Details</a></td>
+	                </tr>
+	            {% else %}
+	                <div class="container" align="center">
+	                    <p class="display-5 text-muted p-2">No Buses!</p>
+	                </div>
+	            {% endfor %}
+	        </tbody>
+	    </table>
+	</div>
+{% endblock %}

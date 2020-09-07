@@ -1,0 +1,40 @@
+{% extends 'company/company.html' %}
+
+{% block company_content %}
+<div class="row p-2 m-0">
+	<div class="col-md-4">
+		<h4><span class="fa fa-bus"></span> {{bus.number}}</h4>
+		<hr>
+		<table class="table table-bordered">
+			<tbody>
+				<tr>
+					<td>Columns</td><td>{{bus.columns}}</td>
+				</tr>
+				<tr>
+					<td>Rows</td><td>{{bus.rows}}</td>
+				</tr>
+				<tr>
+					<td>Status</td><td>{{bus.status}}</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class="table table-bordered">
+			<tbody>
+				<thead>
+					<th colspan="2">Schedule</th>
+				</thead>
+				<tr>
+					<td>Departure</td><td>{{bus.departure_time}}</td>
+				</tr>
+				<tr>
+					<td>Journey</td><td>{{bus.journey}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-md-8">
+		{% include 'bus/bus-layout.html' %}
+	</div>
+</div>
+{% endblock %}

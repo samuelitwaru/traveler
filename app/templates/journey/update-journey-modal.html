@@ -1,0 +1,40 @@
+{% from 'helpers.html' import render_string_field, render_select_field %}
+
+<div class="modal fade" id="updateJourneyModal" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Journey</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{{ url_for('journey.update_journey', journey_id=journey.id) }}">
+                <div class="modal-body">
+                    {{ update_journey_form.hidden_tag() }}
+                    <div class="row">
+                        <div class="col">
+                            {{ render_string_field (update_journey_form.from_) }}  
+                        </div>
+                        <div class="col">
+                            {{ render_string_field(update_journey_form.to) }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            {{ render_string_field (update_journey_form.distance, type="number") }}  
+                        </div>
+                        <div class="col">
+                            {{ render_string_field(update_journey_form.duration, type="number") }}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    {{update_journey_form.submit(class="btn btn-info")}}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

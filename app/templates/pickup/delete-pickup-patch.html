@@ -1,0 +1,10 @@
+<div id="deletePickupPatch" class="modal-body">          
+	<form method="POST" action="{{ url_for('pickup.delete_pickup', pickup_id=pickup.id) }}" >
+		<p>Are you sure you want to delete pickup "{{pickup.name}}"?</p>
+		{{delete_pickup_form.id()}}
+		<div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        {{delete_pickup_form.submit(class="btn btn-info")}}
+	    </div>
+	</form>
+</div>

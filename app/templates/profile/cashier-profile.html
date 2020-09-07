@@ -1,0 +1,21 @@
+{% extends 'index/manager-base.html' %}
+
+{% block content %}
+	<div class="card mt-2 login-content" style="width: 18rem;">
+		<div class="card-body p-2">
+			<h1 class="fa fa-user fa-5x"></h1>
+			<h4>{{cashier.display_name()}}</h4>
+			<p class="m-0">{{cashier.telephone}}</p>
+			<small>{{cashier.user.email}}</small>
+			<hr>
+			<div class="d-flex flex-row-reverse">
+				<button class="btn btn-danger m-1" data-toggle="modal" data-target="#deleteCashierProfileModal"><span class="fa fa-trash"></span></button>
+
+				<button class="btn btn-info m-1" data-toggle="modal" data-target="#updateCashierProfileModal"><span class="fa fa-pencil"></span></button>
+			</div>
+		</div>
+	</div>
+
+	{% include 'profile/delete-cashier-profile-modal.html' %}
+	{% include 'profile/update-cashier-profile-modal.html' %}
+{% endblock %}

@@ -1,0 +1,31 @@
+{% from 'helpers.html' import render_string_field, render_file_field %}
+
+<div class="container pt-2">
+	<form id="registerCompanyForm" method="POST" enctype="multipart/form-data" action="{{ url_for('company.create_company') }}">
+		<h4>{{company.name}}</h4>
+		{{ update_company_form.hidden_tag() }}
+		<div class="row">
+			<div class="col-md-7">
+
+				{{ render_string_field(update_company_form.name) }}
+
+				{{ render_file_field(update_company_form.logo, "file-input-label", onchange="renderImage(this)", accept="image/*")}}
+
+				<div class="collapse">
+					{{ update_company_form.h() }}
+					{{ update_company_form.w() }}
+					{{ update_company_form.x() }}
+					{{ update_company_form.y() }}
+				</div>
+
+				<div class="form-group py-2">
+					<button class="btn btn-block btn-success">Submit</button>
+				</div>
+			</div>
+
+			<div class="col-md-5 border">
+				{% include 'company/company-logo-cropper.html' %}
+			</div>
+		</div>
+	</form>
+</div>

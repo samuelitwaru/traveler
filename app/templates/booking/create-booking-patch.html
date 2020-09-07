@@ -1,0 +1,21 @@
+{% from 'helpers.html' import render_string_field, render_boolean_field %}
+<div id="createBookingPatch" class="modal-body">
+    <form method="POST" action="{{ url_for('booking.create_booking', grid_id=grid.id) }}">
+        <div class="modal-body">
+                Seat {{grid.number}}
+                <hr>
+                {{ create_booking_form.csrf_token }}
+
+                {{ create_booking_form.grid_id(value=grid.id) }}
+                {{ render_string_field(create_booking_form.passenger_name) }}
+                {{ render_string_field(create_booking_form.passenger_telephone) }}
+                {{ render_string_field(create_booking_form.pricing_id) }}
+                {{ render_boolean_field(create_booking_form.paid) }}
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            {{create_booking_form.submit(class="btn btn-info")}}
+        </div>
+    </form>
+</div>

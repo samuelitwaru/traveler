@@ -1,0 +1,40 @@
+{% extends 'company/company.html' %}
+
+{% block company_content %}
+	<div class="container-fluid p-0">
+
+	    <table class="table table-responsive-sm border">
+	    	{% if branches.length %}
+	        <thead>
+	        	<th span="2">Branches</th>
+	        	<th>
+	                <a class="btn btn-primary" href=""><span class="fa fa-plus"></span> New Branch</a>
+	        	</th>
+	        </thead>
+	        {% endif %}
+	        <tbody>
+	            {% for branch in branches %} 
+	                <tr>
+	                    <td>
+	                    	<span class="fa fa-building fa-3x"></span>
+	                    </td>
+	                    
+	                    <td class="border m-auto">
+	                        <p>{{branch.name}}</p>
+	                        <small>Location: {{branch.location}}</small>
+	                    </td>
+	                    
+	                    <td><a href="{{ url_for('company.get_company_branch', company_id=company.id, branch_id=branch.id) }}" class='btn btn-info'>Details</a></td>
+	                </tr>
+	            {% else %}
+	                <div class="container" align="center">
+	                    <p class="display-5 text-muted p-2">No Branches!</p>
+	                    <br>
+	                    <button class="btn btn-primary" data-toggle="modal" data-target="#createBranchModal"><span class="fa fa-plus"></span> New Branch</button>
+	                </div>
+	            {% endfor %}
+	        </tbody>
+	    </table>
+	</div>
+	{% include 'branch/create-branch-modal.html' %}
+{% endblock %}

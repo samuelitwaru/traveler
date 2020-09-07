@@ -1,0 +1,26 @@
+
+<div class="modal fade" id="deleteBranchManagerModal" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirm delete branch manager</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <form method="POST" action="{{ url_for('branch.delete_branch_manager', branch_id=branch.id) }}">
+                <div class="modal-body">
+                    {{ delete_profile_form.hidden_tag() }}
+                    {{ delete_profile_form.id() }}
+                    <p>Are you sure want to delete "{{manager}}" as branch manager?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    {{delete_profile_form.submit(class="btn btn-info")}}
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>

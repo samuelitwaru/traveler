@@ -1,0 +1,42 @@
+{% extends 'index/manager-base.html' %}
+
+{% block journeys_active %}active{% endblock %}
+
+{% block content %}
+	<div class="container-fluid p-0">
+
+	    <table class="table table-responsive-sm border">
+	    	{% if journeys|length %}
+	        <thead>
+	        	<th colspan="3">
+	                <button class="btn btn-primary" data-toggle="modal" data-target="#createJourneyModal"><span class="fa fa-plus"></span> New Journey</button>
+	                
+	        	</th>
+	        </thead>
+	        {% endif %}
+	        <tbody>
+	            {% for journey in journeys %} 
+	                <tr>
+	                    <td>
+	                    	<span class="fa fa-bus fa-3x"></span>
+	                    </td>
+	                    
+	                    <td class="border m-auto">
+	                        <p>{{journey.from_}} to {{journey.to}}</p>
+	                        <small>{{journey.distance}} Kilometers, {{journey.duration}} Hours</small>
+	                    </td>
+	                    
+	                    <td><a href="{{ url_for('journey.get_journey', journey_id=journey.id) }}" class='btn btn-info'>Details</a></td>
+	                </tr>
+	            {% else %}
+	                <div class="container" align="center">
+	                    <p class="display-5 text-muted p-2">No Journeys!</p>
+	                    <br>
+	                    <button class="btn btn-primary" data-toggle="modal" data-target="#createJourneyModal"><span class="fa fa-plus"></span> New Journey</button>
+	                </div>
+	            {% endfor %}
+	        </tbody>
+	    </table>
+	</div>
+	{% include 'journey/create-journey-modal.html' %}
+{% endblock %}

@@ -1,0 +1,10 @@
+<div id="deletePickupPatch" class="modal-body">          
+	<form method="POST" action="{{ url_for('status.delete_status', status_id=status.id) }}" >
+		<p>Are you sure you want to delete status "{{status.name}}"?</p>
+		{{delete_status_form.id()}}
+		<div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        {{delete_status_form.submit(class="btn btn-info")}}
+	    </div>
+	</form>
+</div>

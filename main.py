@@ -1,4 +1,5 @@
-from application import app
-from application import socketio
-# app.run()
-socketio.run(app, host="0.0.0.0")
+from app import app
+from app import socketio
+app.debug = True
+app.run()
+#socketio.run(app)

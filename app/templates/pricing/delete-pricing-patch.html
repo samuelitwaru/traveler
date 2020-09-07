@@ -1,0 +1,10 @@
+<div id="deletePricingPatch" class="modal-body">          
+	<form method="POST" action="{{ url_for('pricing.delete_pricing', pricing_id=pricing.id) }}" >
+		<p>Are you sure you want to delete this pricing?</p>
+		{{delete_pricing_form.id()}}
+		<div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        {{delete_pricing_form.submit(class="btn btn-info")}}
+	    </div>
+	</form>
+</div>

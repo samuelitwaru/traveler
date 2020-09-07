@@ -1,0 +1,42 @@
+{% from 'helpers.html' import render_string_field, render_select_field %}
+
+<div class="modal fade" id="createBusModal" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New Bus</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{{ url_for('bus.create_bus', company_id=company.id) }}">
+                <div class="modal-body">
+                        {{ create_bus_form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col">
+                                {{ render_string_field(create_bus_form.number, placeholder='eg UBB 123B') }}
+                            </div>
+                            <div class="col">
+                                {{ render_string_field(create_bus_form.status_id) }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                {{ render_string_field (create_bus_form.columns) }}                                
+                            </div>
+                            <div class="col">
+                                {{ render_string_field(create_bus_form.rows) }}
+                            </div>
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    {{create_bus_form.submit(class="btn btn-info")}}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

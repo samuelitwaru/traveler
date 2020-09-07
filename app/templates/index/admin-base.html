@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block body %}
+	<body>
+		<div class="bg-dark d-flex p-2">
+			<div class="flex-fill">
+				<a href="{{url_for('index.index')}}" class="navbar-brand">
+					Traveler
+	            </a>
+            </div>
+            <button type="button" class="btn btn-dark" data-toggle="dropdown">
+				<span class="fa fa-user"></span> {{current_user}}</span>
+				<span class="sr-only">unread messages</span>
+			</button>
+
+			<div class="dropdown-menu dropdown-menu-right rounded-0 shadow" align="right">
+				<a href="" class="dropdown-item"><span></span><span class="fa fa-user"></span> Account</a>
+				<div class="dropdown-divider"></div>
+				<a href="{{ url_for('index.logout') }}" class="dropdown-item"><span class="fa fa-power-off"></span> Logout</a>
+			</div>
+        </div>
+
+		<div>
+			{% for category, message in get_flashed_messages(with_categories=true) %}
+				<div class="alert alert-{{category}} alert-dismissable">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					{{ message }}
+				</div>
+			{% endfor %}
+		</div>
+		
+		{% block content %}
+		{% endblock %}
+	</body>
+{% endblock %}

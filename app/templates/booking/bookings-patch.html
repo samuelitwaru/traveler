@@ -1,0 +1,24 @@
+<div id="busBookingsPatch">
+	<table class="table table-sm table-responsive-sm border">
+		<thead>
+			<th></th>
+			<th>Seat</th>
+			<th>Passenger</th>
+			<th>Payment</th>
+		</thead>
+		<tbody>
+		    {% for booking in bookings %}
+		        <tr>
+		            <td><span class="fa fa-calendar-check-o"></span></td>
+		            <td>{{booking.booked_grid}}</td>
+		            <td>{{booking.passenger_name}} <small>{{booking.passenger_telephone}}</small></td>
+		            <td>{{booking.fare}} {% if booking.paid %}<span class="fa fa-check"></span>{% endif %}</small></td>
+		        </tr>
+		    {% else %}
+		        <div class="container" align="center">
+		            <p class="display-5 text-muted p-2">No Bookings!</p>
+		        </div>
+		    {% endfor %}
+		</tbody>
+	</table>
+</div>

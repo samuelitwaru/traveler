@@ -1,0 +1,38 @@
+{% extends 'company/company.html' %}
+
+{% block company_content %}
+	<div class="">
+		<table class="table table-responsive-sm border">
+	    	{% if buses|length %}
+	        <thead>
+	        	<th colspan="3">
+	                <button class="btn btn-primary" data-toggle="modal" data-target="#createBusModal"><span class="fa fa-plus"></span> New Bus</button>
+	        	</th>
+	        </thead>
+	        {% endif %}
+	        <tbody>
+	            {% for bus in buses %} 
+	                <tr>
+	                    <td>
+	                    	<span class="fa fa-bus fa-3x"></span>
+	                    </td>
+	                    
+	                    <td class="border m-auto">
+	                        <p>{{bus.number}}</p>
+	                        <small>Seats: </small>
+	                    </td>
+	                    
+	                    <td><a href="{{ url_for('company.get_company_bus', company_id=company.id, bus_id=bus.id) }}" class='btn btn-info'>Details</a></td>
+	                </tr>
+	            {% else %}
+	                <div class="container" align="center">
+	                    <p class="display-5 text-muted p-2">No Buses!</p>
+	                    <br>
+	                    <button class="btn btn-primary" data-toggle="modal" data-target="#createBusModal"><span class="fa fa-plus"></span> New Bus</button>
+	                </div>
+	            {% endfor %}
+	        </tbody>
+	    </table>
+	</div>
+	{% include 'bus/create-bus-modal.html' %}
+{% endblock %}

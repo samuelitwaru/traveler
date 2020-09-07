@@ -1,0 +1,60 @@
+{% from 'helpers.html' import render_string_field %}
+
+<div class="tab-content" id="statusPatch">
+	<ul class="nav nav-tabs bg-light pt-2 px-2 bg-white" role="tablist">
+		
+		{% for status in statuses %}
+		<li class="nav-item">
+			<form class="ajaxForm m-0" method="GET" data-patch-containers='["#statusPatch"]' data-progress-container="#pricingsProgressContainer" action="{{url_for('status.get_status', status_id=status.id)}}">
+				<button class="nav-link rounded-0 {% if status==active_status %}active{% endif %}">{{status}}</button>
+			</form>
+		</li>
+		{% endfor %}
+	</ul>
+
+	<div id="pricingsProgressContainer" style="min-height: 500;">
+		<div class="tab-pane p-2 fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+			<form class="form-row" method="POST" action="{{url_for('pricing.create_pricing', journey_id=journey.id, status_id=active_status.id)}}">
+				{{create_pricing_form.hidden_tag()}}
+				<div class="col-md-4">
+					{{ render_string_field(create_pricing_form.stop) }}
+				</div>	
+				<div class="col-md-4">
+					{{ render_string_field(create_pricing_form.price, type="number") }}
+				</div>
+				<div class="form-group col-md-4">
+					<small>`</small>
+					{{ create_pricing_form.submit(class="btn btn-block btn-info") }}
+				</div>
+			</form>
+		</div>
+
+		{% with pricings=active_status.pricings %}
+		<div class="px-2">
+			<ul id="pricing-list" class="list-group">
+				{% for pricing in pricings %}
+				<li class="list-group-item d-flex">
+					<label class="flex-fill">{{journey.from_}} <span class="text-info">to</span> {{pricing.stop}}</label>
+					
+					<form class="d-inline ajaxForm m-0" method="GET" action="{{ url_for('pricing.delete_pricing', pricing_id=pricing.id) }}" data-patch-containers='["#deletePricingPatch"]' data-progress-container="#deletePricingPatch">	
+						<label class="px-2">{{pricing.price}} </label>
+						<button class="btn btn-danger float-right badge badge-danger" data-toggle="modal" data-target="#deletePricingModal">&times;</button>
+					</form>
+				</li>
+				{% else %}
+				<p class="text-muted text-center">There are no pricings for "{{active_status}}" status</p>
+				{% endfor %}
+			</ul>	
+		</div>
+		{% if pricings|length %}
+			{% include 'pricing/delete-pricing-modal.html' %}
+		{% endif %}
+
+		{% endwith %}
+
+	</div>
+
+</div>
+<script type="text/javascript">
+	$(".ajaxForm").submit(ajaxSubmit)	
+</script>

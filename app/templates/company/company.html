@@ -1,0 +1,13 @@
+{% extends 'company/company-base.html' %}
+
+{% block company_content %}
+	<div class="login-content">
+		<a href="{{url_for('company.get_company_buses', company_id=company.id)}}" class="btn btn-primary btn-block">Buses</a>
+
+		<a href="{{url_for('company.get_company_statuses', company_id=company.id)}}" class="btn btn-primary btn-block">Statuses</a>
+
+
+		<a href="{{url_for('company.get_company_branches', company_id=company.id)}}" class="btn btn-primary btn-block">Branches (Parks)</a>
+
+	</div>
+{% endblock %}

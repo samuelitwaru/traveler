@@ -1,0 +1,15 @@
+{% from 'helpers.html' import render_string_field %}
+<div id="updatePickupPatch" class="modal-body">          
+	<form method="POST" action="{{ url_for('status.update_status', status_id=status.id) }}">
+        <div class="modal-body">
+                {{ update_status_form.hidden_tag() }}
+
+                {{ render_string_field(update_status_form.name, placeholder='eg Ordinary') }}
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            {{update_status_form.submit(class="btn btn-info")}}
+        </div>
+    </form>
+</div>

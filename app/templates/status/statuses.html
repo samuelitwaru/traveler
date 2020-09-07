@@ -1,0 +1,47 @@
+{% extends 'company/company.html' %}
+
+{% block company_content %}
+	<div class="login-content">
+
+	    <table class="table table-responsive-sm table-bordered">
+	        <thead>
+	        	<th colspan="2">
+	        		Statuses
+	        		<button class="btn btn-sm btn-info float-right" data-toggle="modal" data-target="#createStatusModal">&plus;</button>
+	        	</th>
+	        </thead>
+
+	        <tbody>
+	            {% for status in statuses %} 
+	                <tr>
+	                    <td>
+	                        {{status.name}}
+	                    </td>
+	                    
+	                    <td>
+	                    	<form class="ajaxForm d-inline p-1" method="GET" action="{{ url_for('status.update_status', status_id=status.id) }}" data-patch-containers='["#updateStatusPatch"]' data-progress-container="#updateStatusPatch">
+		        				<button class="btn btn-sm btn-info m-1 float-right" data-toggle="modal" data-target="#updateStatusModal" ><span class="fa fa-pencil"></span></button>
+		        			</form>
+
+	                    	{% if not status.default %}
+	                    	<form class="ajaxForm d-inline" method="GET" action="{{ url_for('status.delete_status', status_id=status.id) }}" data-patch-containers='["#deleteStatusPatch"]' data-progress-container="#deleteStatusPatch">
+		        				<button class="btn btn-sm btn-danger m-1 float-right" data-toggle="modal" data-target="#deleteStatusModal" ><span class="fa fa-times"></span></button>
+		        			</form>
+		        			{% endif %}
+	                    </td>
+	                </tr>
+	            {% else %}
+	            	<tr>
+	                    <td colspan="2">
+	                        <p class="text-center text-muted">No Statuses!</p>
+	                    </td>
+	                </tr>
+	            {% endfor %}
+	        </tbody>
+	    </table>
+	</div>
+
+	{% include 'status/create-status-modal.html' %}
+	{% include 'status/update-status-modal.html' %}
+	{% include 'status/delete-status-modal.html' %}
+{% endblock %}

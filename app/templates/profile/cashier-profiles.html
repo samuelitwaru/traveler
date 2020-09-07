@@ -1,0 +1,41 @@
+{% extends 'index/manager-base.html' %}
+
+{% block cashiers_active %}active{% endblock %}
+
+{% block content %}
+	<div class="container-fluid p-0">
+
+	    <table class="table table-responsive-sm border">
+	        {% if cashiers|length %}
+	        <thead>
+	        	<th colspan="3">
+	                <button class="btn btn-primary" data-toggle="modal" data-target="#createCashierProfileModal"><span class="fa fa-plus"></span> New Cashier</button>
+	        	</th>
+	        </thead>
+	        {% endif %}
+
+	        <tbody>
+	            {% for cashier in cashiers %} 
+	                <tr>
+	                    <td>
+	                    	<span class="fa fa-user fa-3x"></span>
+	                    </td>
+	                    
+	                    <td class="border m-auto">
+	                        <p>{{cashier}}</p>
+	                    </td>
+	                    
+	                    <td><a href="{{ url_for('profile.get_cashier_profile', profile_id=cashier.id) }}" class='btn btn-info'>Details</a></td>
+	                </tr>
+	            {% else %}
+	                <div class="container" align="center">
+	                    <p class="display-5 text-muted p-2">No Cashiers!</p>
+	                    <button class="btn btn-primary" data-toggle="modal" data-target="#createCashierProfileModal"><span class="fa fa-plus"></span> New Cashier</button>
+	                </div>
+	            {% endfor %}
+	        </tbody>
+	    </table>
+	</div>
+
+	{% include 'profile/create-cashier-profile-modal.html' %}
+{% endblock %}

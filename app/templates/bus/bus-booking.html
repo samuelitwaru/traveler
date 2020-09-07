@@ -1,0 +1,89 @@
+<script src="/static/js/muuri.min.js"></script>
+
+<h4 class="flex-fill">Bookings </h4>
+
+<hr>
+
+<div class="row">
+	<div class="col-md-6">
+		<div align="center">
+			<div id="grid" class="grid border"></div>
+		</div>
+		<hr>
+	</div>
+	<div class="col-md-6">
+		<div class="collapse">
+			<form id="getBusBookingsForm" class="ajaxForm d-inline p-1 collapse" method="GET" action="{{ url_for('booking.get_bus_bookings', bus_id=bus.id) }}" data-patch-containers='["#busBookingsPatch"]' data-progress-container="#busBookingsPatch"></form> 
+		</div>
+		<div id="busBookingsPatch"></div>	
+		</div>
+	</div>
+</div>
+
+{% include 'booking/create-booking-modal.html' %}
+
+
+<script>
+	let grid;
+	let gridItemClasses = ['space', 'passenger', 'reserved'];
+	let data = {
+		cols: Number("{{bus.columns}}"),
+		rows: Number("{{bus.rows}}"),
+		colList: [3,4,5,6,7],
+		rowList:[5,6,7,8,9,10,11,12,13,14,15],
+		autoSeatNumbering: true,
+		numberReservedSeats: true,
+		grids: {{ bus.grids_dict() }},
+		selected: []
+	}
+
+	// data: Initialize Muuri grid
+	initGrid = function(){
+		grid = new Muuri('.grid', {
+			dragEnabled: false,
+			layoutOnResize: false
+		});
+	}
+
+	// interface: arrange grid items in the grid box
+	fillGrid = function(){
+		// empty selected list
+		data.selected = []
+
+		// remove all child elements from the grid box
+		$('#grid').html('');
+
+		// calculate and set the width of the grid box
+		gridWidth = (data.cols*40) + (data.cols*2)
+		$('#grid').width(gridWidth)
+
+		// append grid items into grid box
+		for (var i=0; i < data.grids.length; i++) {
+			grid = data.grids[i];
+			widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><div data-index="${grid.index}" id="${grid.index}" class="item-content">${Boolean(grid.number) ? grid.number : ''}</div></div>`
+
+			if (grid.grid_type == 1) {
+				createBookingUrl = `/booking/create/${grid.id}`
+				if (grid.booked) {
+					widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button class="w-100 btn-dark" id="${grid.index}" data-index="${grid.index}" data-toggle="modal" data-target="#updateBookingModal">${Boolean(grid.number) ? grid.number : ''}</button></div>`
+				}else{
+					widget = `<form class="ajaxForm item ${gridItemClasses[grid.grid_type]}" data-patch-containers='["#createBookingPatch"]' data-progress-container="#createBookingPatch" method="GET" action="${createBookingUrl}"><button class="w-100" id="${grid.index}" data-index="${grid.index}" data-toggle="modal" data-target="#createBookingModal">${Boolean(grid.number) ? grid.number : ''}</button></form>`
+
+				}
+			}
+			
+			$('#grid').append(widget)	
+		}
+
+		// initialize Muuri grid
+		initGrid();
+
+	}
+
+	fillGrid()
+
+	$(document).ready(function() {
+		// $(".ajaxForm").submit(ajaxSubmit)
+		$("#getBusBookingsForm").submit()
+	});
+</script>
