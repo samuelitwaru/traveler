@@ -12,6 +12,7 @@ class CreateBookingForm(FlaskForm):
     pricing_id = SelectField("Select Fare", validators=[DataRequired()], coerce=int)
     passenger_name = StringField("Passenger Name", validators=[DataRequired()])
     passenger_telephone = StringField("Passenger Telephone")
+    pickup = SelectField("Pickup Station")
     paid = BooleanField("Paid ?", default=True)
     submit = SubmitField('Book')
 
@@ -20,4 +21,6 @@ class CreateBookingForm(FlaskForm):
         bus = grid.bus
         journey = bus.journey
         pricings = journey.pricings
+        pickups = journey.pickups
         self.pricing_id.choices = [(pricing.id, pricing) for pricing in pricings]
+        self.pickup.choices = [(pickup.name, pickup.name) for pickup in pickups]

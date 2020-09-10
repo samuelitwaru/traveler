@@ -1,0 +1,37 @@
+from flask import request
+from flask_restful import Resource, marshal_with
+from ..fields import Fields
+from app.models.models import {{res}}, db
+
+{{res|lower}}_fields = Fields().{{res|lower}}_fields()
+
+class {{res}}ListAPI(Resource):
+
+    @marshal_with({{res|lower}}_fields)
+    def get(self):
+        {{res|lower()}}s = {{res}}.query.all()
+        return {{res|lower()}}s
+
+    @marshal_with({{res|lower}}_fields)
+    def post(self):
+        return {}
+
+
+class {{res}}API(Resource):
+
+    @marshal_with({{res|lower}}_fields)
+    def get(self, id):
+        {{res|lower}} = {{res}}.query.get(id)
+        return {{res|lower}}
+
+    @marshal_with({{res|lower}}_fields)
+    def delete(self, id):
+        {{res|lower}} = {{res}}.query.get(id)
+        db.session.delete({{res|lower}})
+        db.session.commit()
+        {{res|lower}}s = {{res}}.query.all()
+        return {{res|lower}}s
+
+    @marshal_with({{res|lower}}_fields)
+    def put(self, id):
+        return {}

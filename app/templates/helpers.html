@@ -14,6 +14,22 @@
 	</div>
 {% endmacro %}
 
+{% macro render_radio_field(field) %}
+	<div class='form-group'>
+		<small>{{field.label.text}}</small>
+		{% if field.errors %}
+			{{ field(class="is-invalid", **kwargs)|safe }}
+			<div class="invalid-feedback">
+				{% for error in field.errors %}
+					{{ error }}
+				{% endfor %}
+			</div>
+		{% else %}
+		{{ field(**kwargs)|safe }}
+		{% endif %} 
+	</div>
+{% endmacro %}
+
 {% macro render_boolean_field(field) %}
 	<div class='form-group'>
 		{% if field.errors %}
@@ -33,6 +49,7 @@
 
 {% macro render_datetime_field(field, datetimepicker_id) %}
 	<div class="form-group">
+		<small>{{field.label.text}}</small>
 		{% if field.errors %}
 			{{ field(type="text", class="form-control is-invalid datetimepicker-input", data_target="#{{datetimepicker_id}}", **kwargs)|safe }}
 			<div class="invalid-feedback">

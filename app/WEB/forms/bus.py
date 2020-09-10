@@ -10,6 +10,11 @@ from app.models import Journey, Status
 
 columns_choices = [(i,i) for i in range(3,8)]
 rows_choices = [(i,i) for i in range(5,16)]
+booking_deadline_choices = [
+	(30,"30 Minutes before departure"), (60,"1 Hour before departure"), 
+	(120,"2 Hours before departure"), (180,"3 Hours before departure")
+]
+
 
 class CreateBusForm(FlaskForm):
     number = StringField("Bus number", validators=[DataRequired()])
@@ -35,7 +40,7 @@ class UpdateBusLayoutForm(FlaskForm):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.columns.choices = columns_choices
-		self.rows.choices = rows_choices    
+		self.rows.choices = rows_choices  
 
 	def validate_layout(form, field):
 		layout = field.data
@@ -52,6 +57,7 @@ class UpdateBusLayoutForm(FlaskForm):
 class UpdateBusScheduleForm(FlaskForm):
 	UTC_offset = StringField(widget=HiddenInput())
 	departure_time = StringField("Departure Time", validators=[DataRequired()])
+	booking_deadline = RadioField("Booking deadline", validators=[DataRequired()], coerce=int)
 	journey_id = SelectField("Journey", validators=[DataRequired()], coerce=int)
 	broadcast = BooleanField("Broadcast")
 	submit = SubmitField('Save')
@@ -59,8 +65,10 @@ class UpdateBusScheduleForm(FlaskForm):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.datetime_format = "%B %d %Y, %I:%M %p %z"
+		self.booking_deadline.choices = booking_deadline_choices
 		branch = get_current_branch()
 		self.journey_id.choices = [(journey.id, journey) for journey in Journey.query.filter_by(branch_id=branch.id)]
+
 
 	def validate_UTC_offset(form, field):
 		pass

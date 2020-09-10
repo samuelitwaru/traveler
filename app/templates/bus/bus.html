@@ -30,6 +30,9 @@
 				<tr>
 					<td>Journey</td><td>{{bus.journey}}</td>
 				</tr>
+				<tr>
+					<td>Broadcasting</td><td>{% if bus.broadcast %}YES{% else %}NO{% endif %}</td>
+				</tr>
 			</tbody>
 		</table>
 		{% include 'bus/update-bus-schedule-modal.html' %}
@@ -38,4 +41,16 @@
 		{% include 'bus/bus-booking.html' %}
 	</div>
 </div>
+
+<script>
+		let socket;
+		$(document).ready(function(){
+			socket = io.connect('http://127.0.0.1:5000/desktop');
+
+			socket.on('booked', function(data){
+				console.log(data)
+				$(`#${data['id']}`).attr('style','background-color:red;')
+			})
+		})
+	</script>
 {% endblock %}

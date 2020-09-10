@@ -1,4 +1,5 @@
 import json
+from datetime import timedelta
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session
 from app.models import Bus, Company, db
 from app.utils import  get_current_branch, set_bus_layout, change_bus_layout
@@ -70,10 +71,12 @@ def update_bus_schedule(bus_id):
 	if update_bus_schedule_form.validate_on_submit():
 		journey_id = update_bus_schedule_form.journey_id.data
 		departure_time = update_bus_schedule_form.departure_time.data
+		booking_deadline = departure_time + timedelta(minutes=update_bus_schedule_form.booking_deadline.data)
 		broadcast = update_bus_schedule_form.broadcast.data
 		UTC = update_bus_schedule_form.UTC_offset.data
 		bus.journey_id = journey_id
 		bus.departure_time = departure_time
+		bus.booking_deadline = booking_deadline
 		bus.broadcast = broadcast
 		db.session.commit()
 		flash("Bus scheduled.", "success")

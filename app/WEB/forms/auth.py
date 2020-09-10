@@ -13,9 +13,9 @@ class SetPasswordForm(FlaskForm):
 		super().__init__(*args, **kwargs)
 
 
-class ForgotPasswordForm(FlaskForm):
-	email = StringField("Email", validators=[DataRequired(), Email()])
-	submit = SubmitField("Submit")
+class ResetPasswordForm(FlaskForm):
+	email = StringField("Please enter your email address to continue.", validators=[DataRequired(), Email()])
+	submit = SubmitField("Continue")
 
 
 	def __init__(self, *args, **kwargs):

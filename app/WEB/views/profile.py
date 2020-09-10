@@ -89,7 +89,7 @@ def delete_cashier_profile(profile_id):
 		profile = Profile.query.get(profile_id)
 		if cashier_profile == profile:
 			db.session.delete(profile)
-			db.session.delete(profile.user)
+			# db.session.delete(profile.user)
 			db.session.commit()
 			flash("Cashier deleted", "success")
 		else:

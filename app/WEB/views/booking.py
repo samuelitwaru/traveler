@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, url_for, request, redirect, flash,
 from app.models import Grid, Pricing, Passenger, Booking, db
 from app.utils import  get_current_branch
 from ..forms import CreateBookingForm
+from .payment import create_payment
 
 
 booking_bp = Blueprint('booking', __name__, url_prefix='/booking')
@@ -54,6 +55,7 @@ def create_booking(grid_id):
 			booking = Booking(passenger_name=passenger_name, passenger_telephone=passenger_telephone, fare=fare, paid=paid, grid_id=grid_id, pricing_id=pricing_id)
 			db.session.add(booking)
 			grid.booking = booking
+			create_payment(booking)
 			db.session.commit()
 			flash("Booking created.", "success")
 		else:

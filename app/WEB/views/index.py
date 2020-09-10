@@ -10,9 +10,10 @@ index_bp = Blueprint('index', __name__, url_prefix='/')
 def index():
 	user = current_user
 	if user.is_authenticated:
-		if user.profile.is_admin:
+		profile = user.profile
+		if profile.is_admin:
 			return redirect(url_for('company.get_companies'))
-		elif user.profile.is_manager:
+		elif profile.is_manager or profile.is_cashier:
 			return redirect(url_for('bus.get_buses'))
 		else:
 			return redirect(url_for('index.logout'))

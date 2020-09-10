@@ -100,6 +100,7 @@ class Bus(db.Model):
     rows = db.Column(db.Integer)
     broadcast = db.Column(db.Boolean)
     departure_time = db.Column(db.DateTime)  # nullable
+    booking_deadline = db.Column(db.DateTime)
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
     status_id = db.Column(db.Integer, db.ForeignKey("status.id"))
     journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))  # nullable
@@ -113,6 +114,8 @@ class Bus(db.Model):
         grids = [{"id":grid.id, "index":grid.index, "grid_type":grid.grid_type, "number":grid.number, "label":grid.label, "booked":bool(grid.booking)} for grid in self.grids]
         return json.dumps(grids).replace('"', '')
 
+    def seats(self):
+        return list(filter(lambda grid:grid.grid_type==1, self.grids))
 
 class Grid(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -133,6 +136,7 @@ class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     passenger_name = db.Column(db.String(128))
     passenger_telephone = db.Column(db.String(16))
+    pickup = db.Column(db.String(64))
     fare = db.Column(db.Integer)
     paid = db.Column(db.Boolean)
     grid_id = db.Column(db.Integer, db.ForeignKey("grid.id", ondelete="SET NULL")) # nullable
@@ -147,7 +151,7 @@ class Payment(db.Model):
     reference = db.Column(db.String(64))
     amount = db.Column(db.Integer)
     method = db.Column(db.String(64))
-    time = db.Column(db.DateTime, default=datetime.utcnow)  # TODO: Find out about time zones
+    time = db.Column(db.DateTime, default=now())  # TODO: Find out about time zones
     app = db.Column(db.String(64))
     company_name = db.Column(db.String(64))
     branch_name = db.Column(db.String(64))
@@ -160,8 +164,6 @@ class Payment(db.Model):
     passenger_id = db.Column(db.Integer, db.ForeignKey("passenger.id"))  # nullable
 
 
-
-
 class Passenger(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(32))
@@ -172,19 +174,6 @@ class Passenger(db.Model):
 
     payments = db.relationship("Payment", backref="passenger")
 
-    # def __init__(self, first_name, last_name, email, telephone, password):
-    #     self.first_name = first_name
-    #     self.last_name = last_name
-    #     self.email = email
-    #     self.telephone = telephone
-    #     self.password = generate_password_hash(password)
-
-    # def update(self, first_name, last_name, email, telephone):
-    #     if first_name: self.first_name = first_name
-    #     if last_name: self.last_name = last_name
-    #     if email: self.email = email
-    #     if telephone: self.telephone = telephone
-
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -192,8 +181,8 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(64), unique=True)
     password = db.Column(db.String(128))
 
-    profile = db.relationship("Profile", backref="user", uselist=False)
-    token = db.relationship("Token", backref="user", uselist=False)
+    profile = db.relationship("Profile", backref=db.backref("user", uselist=False), uselist=False, cascade="delete")
+    token = db.relationship("Token", backref="user", cascade="delete", uselist=False)
 
     def __init__(self, *args, **kwargs):
         self.email = kwargs.get("email")
@@ -218,7 +207,7 @@ class Profile(db.Model):
     is_manager = db.Column(db.Boolean())
     is_cashier = db.Column(db.Boolean())
     branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
 
     def display_name(self):
         return f"{self.first_name} {self.last_name}"
@@ -241,37 +230,9 @@ class Token(db.Model):
             return True
         return False
 
-class Connection(db.Model):
+class Connection(db.Model):    
     id = db.Column(db.Integer, primary_key=True)
-    sid = db.Column(db.String(64), primary_key=True, nullable=False)
-    connect_time = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+    sid = db.Column(db.String(64), nullable=False)
+    connect_time = db.Column(db.DateTime, default=now(), nullable=False)
     disconnect_time = db.Column(db.DateTime)
     client_type = db.Column(db.String(32))
-    client_name = db.Column(db.String(128))
-
-    def __init__(self, sid, client_type, client_name):
-        self.sid = sid
-        self.client_type = client_type
-        self.client_name = client_name
-
-
-# DESKTOP USER
-# - add/delete/update bus {add:[], delete:[], update:[]}
-# - add/delete/update bus schedule {add:[], delete:[], update:[]}
-# - add/delete/update journey {add:[], delete:[], update:[]}
-# - add/delete/update staff {add:[], delete:[], update:[]}
-# - add/delete/update user {add:[], delete:[], update:[]}
-# - update seat {add:[], delete:[], update:[]}
-# - update payment {add:[], delete:[], update:[]}
-
-
-# MOBILE USER
-# - update seat {add:[], delete:[], update:[]}
-# - update payment {add:[], delete:[], update:[]}
-# - update passenger {add:[], delete:[], update:[]}
-
-
-# ADMIN USER
-# - add/delete/update company {add:[], delete:[], update:[]}
-# - add/delete/update branch {add:[], delete:[], update:[]}
-# - add/delete/update admin {add:[], delete:[], update:[]}

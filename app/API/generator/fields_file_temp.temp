@@ -1,0 +1,16 @@
+from flask_restful import fields
+
+class Fields:
+{% for res, attrs in resources.items() %}
+	def {{res|lower}}_fields(self):
+		return { {% for attr in attrs %}
+			"{{attr['name']}}": fields.{{attr['type']}},{% endfor %}
+		}
+
+	def {{res|lower}}_fields_min(self):
+		return { {% for attr in attrs %}{% if not attr['is_rel'] %}
+			"{{attr['name']}}": fields.{{attr['type']}},{% endif %}{% endfor %}
+		}
+
+
+{% endfor %}

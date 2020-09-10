@@ -25,76 +25,40 @@ from app.setup import *
 from app.WEB.context_processors import *
 
 # load api resources
-# from app.API.resources.Company.company import CompanyAPI, CompanyListAPI
-# from app.API.resources.Branch.branch import BranchAPI, BranchListAPI
+from app.API.resources.bus import BusAPI, BusListAPI
+from app.API.resources.journey import JourneyAPI, JourneyListAPI
+from app.API.resources.payment import PaymentAPI, PaymentListAPI
+from app.API.resources.passenger import PassengerAPI, PassengerListAPI
+from app.API.resources.profile import ProfileAPI, ProfileListAPI
+from app.API.resources.user import UserAPI, UserListAPI
 
-# from app.API.resources.Bus.bus import BusAPI, BusListAPI
-# from app.API.resources.Grid.grid import GridAPI, GridListAPI
+api.add_resource(BusListAPI, '/bus/api/v1.0/buses', endpoint="buses")
+api.add_resource(BusAPI, '/bus/api/v1.0/buses/<int:id>', endpoint="bus")
 
-# from app.API.resources.Passenger.passenger import PassengerAPI, PassengerListAPI
-# from app.API.resources.Payment.payment import PaymentAPI, PaymentListAPI
+api.add_resource(JourneyListAPI, '/bus/api/v1.0/journeys', endpoint="journeys")
+api.add_resource(JourneyAPI, '/bus/api/v1.0/journeys/<int:id>', endpoint="journey")
 
-# from app.API.resources.Journey.journey import JourneyAPI, JourneyListAPI
-# from app.API.resources.Pickup.pickup import PickupAPI, PickupListAPI
-# from app.API.resources.Status.status import StatusAPI, StatusListAPI
-# from app.API.resources.Stop.stop import StopAPI, StopListAPI
-# from app.API.resources.Pricing.pricing import PricingAPI, PricingListAPI
+api.add_resource(PaymentListAPI, '/bus/api/v1.0/payments', endpoint="payments")
+api.add_resource(PaymentAPI, '/bus/api/v1.0/payments/<int:id>', endpoint="payment")
 
-# from app.API.resources.User.user import UserAPI, UserListAPI
-# from app.API.resources.Staff.staff import StaffAPI, StaffListAPI
-# from app.API.resources.Admin.admin import AdminAPI, AdminListAPI
+api.add_resource(PassengerListAPI, '/bus/api/v1.0/passengers', endpoint="passengers")
+api.add_resource(PassengerAPI, '/bus/api/v1.0/passengers/<int:id>', endpoint="passenger")
 
-# api.add_resource(CompanyListAPI, '/bus/api/v1.0/companies', endpoint="companies")
-# api.add_resource(CompanyAPI, '/bus/api/v1.0/companies/<int:id>', endpoint="company")
+api.add_resource(ProfileListAPI, '/bus/api/v1.0/profiles', endpoint="profiles")
+api.add_resource(ProfileAPI, '/bus/api/v1.0/profiles/<int:id>', endpoint="profile")
 
-# api.add_resource(BranchListAPI, '/bus/api/v1.0/branches', endpoint="branches")
-# api.add_resource(BranchAPI, '/bus/api/v1.0/branches/<int:id>', endpoint="branch")
-
-# api.add_resource(BusListAPI, '/bus/api/v1.0/buses', endpoint="buses")
-# api.add_resource(BusAPI, '/bus/api/v1.0/buses/<int:id>', endpoint="bus")
-
-# api.add_resource(GridListAPI, '/bus/api/v1.0/grids', endpoint="grids")
-# api.add_resource(GridAPI, '/bus/api/v1.0/grids/<int:id>', endpoint="grid")
-
-# api.add_resource(PassengerListAPI, '/bus/api/v1.0/passengers', endpoint="passengers")
-# api.add_resource(PassengerAPI, '/bus/api/v1.0/passengers/<int:id>', endpoint="passenger")
-
-# api.add_resource(PaymentListAPI, '/bus/api/v1.0/payments', endpoint="payments")
-# api.add_resource(PaymentAPI, '/bus/api/v1.0/payments/<int:id>', endpoint="payment")
-
-# api.add_resource(JourneyListAPI, '/bus/api/v1.0/journeys', endpoint="journeys")
-# api.add_resource(JourneyAPI, '/bus/api/v1.0/journeys/<int:id>', endpoint="journey")
-
-# api.add_resource(PickupListAPI, '/bus/api/v1.0/pickups', endpoint="pickups")
-# api.add_resource(PickupAPI, '/bus/api/v1.0/pickups/<int:id>', endpoint="pickup")
-
-# api.add_resource(StatusListAPI, '/bus/api/v1.0/status', endpoint="statuses")
-# api.add_resource(StatusAPI, '/bus/api/v1.0/status/<int:id>', endpoint="status")
-
-# api.add_resource(StopListAPI, '/bus/api/v1.0/stops', endpoint="stops")
-# api.add_resource(StopAPI, '/bus/api/v1.0/stops/<int:id>', endpoint="stop")
-
-# api.add_resource(PricingListAPI, '/bus/api/v1.0/pricing', endpoint="pricing_list")
-# api.add_resource(PricingAPI, '/bus/api/v1.0/pricing/<int:id>', endpoint="pricing")
-
-# api.add_resource(UserListAPI, '/bus/api/v1.0/users', endpoint="users")
-# api.add_resource(UserAPI, '/bus/api/v1.0/users/<int:id>', endpoint="user")
-
-# api.add_resource(StaffListAPI, '/bus/api/v1.0/staff', endpoint="staff_list")
-# api.add_resource(StaffAPI, '/bus/api/v1.0/staff/<int:id>', endpoint="staff")
-
-# api.add_resource(AdminListAPI, '/bus/api/v1.0/admins', endpoint="admins")
-# api.add_resource(AdminAPI, '/bus/api/v1.0/admins/<int:id>', endpoint="admin")
+api.add_resource(UserListAPI, '/bus/api/v1.0/users', endpoint="users")
+api.add_resource(UserAPI, '/bus/api/v1.0/users/<int:id>', endpoint="user")
 
 
 # load web socket namespaces
-# from app.API.web_socket.default import DefaultNamespace
-# from app.API.web_socket.mobile import MobileNamespace
-# from app.API.web_socket.desktop import DesktopNamespace
+from app.WEB_SOCKET.default import DefaultNamespace
+from app.WEB_SOCKET.mobile import MobileNamespace
+from app.WEB_SOCKET.desktop import DesktopNamespace
 
-# socketio.on_namespace(DefaultNamespace('/'))
-# socketio.on_namespace(MobileNamespace('/mobile'))
-# socketio.on_namespace(DesktopNamespace('/desktop'))
+socketio.on_namespace(DefaultNamespace('/'))
+socketio.on_namespace(MobileNamespace('/mobile'))
+socketio.on_namespace(DesktopNamespace('/desktop'))
 
 
 # load web app views

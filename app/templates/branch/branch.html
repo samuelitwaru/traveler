@@ -37,8 +37,9 @@
 					<tr>
 						<td colspan="2" align="right">
 							<button class="btn btn-info">edit</button>
-							<button class="btn btn-info">generate token</button>
 							<button class="btn btn-danger" data-toggle="modal" data-target="#deleteBranchManagerModal">remove</button>
+							<hr>
+							<a href="{{ url_for('auth.set_token', user_id=manager.user.id) }}" class="nav-link"><span class="fa fa-key"> generate token</span></button>
 						</td>
 					</tr>
 					{% include 'profile/delete-branch-manager-modal.html' %}

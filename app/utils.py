@@ -41,7 +41,7 @@ def save_logo(logo, x, y, w, h):
 
 def authenticate_user(username, password):
 	user = User.query.filter_by(username=username).first()
-	if user and check_password_hash(user.password, password):
+	if user and user.password and check_password_hash(user.password, password):
 		return user
 	return None
 
@@ -64,7 +64,6 @@ def set_bus_layout(bus, columns, rows):
 
 def change_bus_layout(bus, layout):
 	new_grid_ids = []
-	print(layout)
 	for item in layout:
 		grid_id = item.get("id", 0)
 		grid = Grid.query.filter_by(id=grid_id, bus_id=bus.id).first() 
@@ -79,7 +78,6 @@ def change_bus_layout(bus, layout):
 			grid = Grid(index=item["index"], grid_type=item["grid_type"], bus=bus)
 			db.session.add(grid)
 			db.session.commit()
-			print('hello', grid.id)
 		new_grid_ids.append(grid.id)
 
 	grids_to_delete = Grid.query.filter(

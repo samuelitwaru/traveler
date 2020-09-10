@@ -15,7 +15,7 @@
 	                    
 	                    <td class="border m-auto">
 	                        <p>{{bus.number}}</p>
-	                        <small>Seats: </small>
+	                        <small>Passenger Seats: {{bus.seats()|length}} </small>
 	                    </td>
 	                    
 	                    <td><a href="{{ url_for('bus.get_bus', bus_id=bus.id) }}" class='btn btn-info'>Details</a></td>
