@@ -1,5 +1,4 @@
 import json
-from flask_restful import reqparse
 from flask import request
 from flask_socketio import emit, send, join_room, leave_room, rooms, Namespace
 from app import socketio
@@ -7,15 +6,6 @@ from app.models import Booking, Grid, Pricing, Connection, db
 from app.helpers import now
 from app.utils import create_payment, update_payment, parse_query_string
 from app.WEB.forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm
-
-
-parser = reqparse.RequestParser()
-parser.add_argument('grid_id', required=True, type=int, location='event.data')
-parser.add_argument('passenger_name', required=True, type=str, location='event.data')
-parser.add_argument('passenger_telephone', type=str, location='event.data')
-parser.add_argument('pricing_id', required=True, type=int, location='event.data')
-parser.add_argument('pickup', required=True, type=str, location='event.data')
-parser.add_argument('paid', type=bool, location='event.data')
 
 
 class DefaultNamespace(Namespace):
@@ -32,7 +22,7 @@ class DefaultNamespace(Namespace):
 
     def on_leave(self, bus_id):
         # remove client from room
-        leave_room(room)
+        leave_room(bus_number)
 
     def on_create_booking(self, query_string):
         form_data = parse_query_string(query_string)
