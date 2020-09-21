@@ -14,6 +14,7 @@ class DefaultNamespace(Namespace):
         pass
 
     def on_disconnect(self):
+        print("disconnected")
         pass
 
     def on_join(self, bus_number):
@@ -46,11 +47,11 @@ class DefaultNamespace(Namespace):
         	create_payment(booking)
         	
         	db.session.commit()
-        	room = grid.bus.number ;print("emitting to room ", room)
+        	room = grid.bus.number
         	emit("create_booking_passed", grid.grid_dict(), room=room, broadcast=True)
-        
         else:
-            emit("create_booking_failed", create_booking_form.errors, room=room, broadcast=True)
+            print(create_booking_form.errors)
+            emit("create_booking_failed", create_booking_form.errors, broadcast=False)
 
     def on_update_booking(self, query_string):
         form_data = parse_query_string(query_string)
@@ -75,7 +76,7 @@ class DefaultNamespace(Namespace):
             emit("update_booking_passed", grid.grid_dict(), room=room, broadcast=True)
         
         else:
-            emit("update_booking_failed", update_booking_form.errors, room=room, broadcast=True)
+            emit("update_booking_failed", update_booking_form.errors, broadcast=False)
 
 
     def on_delete_booking(self, query_string):
@@ -90,4 +91,4 @@ class DefaultNamespace(Namespace):
             room = grid.bus.number
             emit("delete_booking_passed", grid.grid_dict(), room=room, broadcast=True)
         else:
-            emit("delete_booking_failed", delete_booking_form.errors, room=room, broadcast=True)
+            emit("delete_booking_failed", delete_booking_form.errors, broadcast=False)

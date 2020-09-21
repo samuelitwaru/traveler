@@ -28,7 +28,6 @@ def crop_image(image_path, crop_path, x,y,w,h):
 
 def save_logo(logo, x, y, w, h):
 	# give image a name
-	print(logo.filename)
 	split = logo.filename.split('.')
 	ext = split[-1]
 	filename = f"{str(uuid.uuid1().int)}.{ext}"
@@ -71,13 +70,11 @@ def change_bus_layout(bus, layout):
 		grid_id = item.get("id", 0)
 		grid = Grid.query.filter_by(id=grid_id, bus_id=bus.id).first() 
 		if grid:
-			print("updated", item["index"], item["grid_type"])
 			grid.index = item["index"]
 			grid.grid_type = item["grid_type"]
 			grid.number = item.get("number", None)
 			grid.label = item.get("number", None)
 		else:
-			print("created", item["index"], item["grid_type"])
 			grid = Grid(index=item["index"], grid_type=item["grid_type"], bus=bus)
 			db.session.add(grid)
 			db.session.commit()

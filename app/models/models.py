@@ -99,11 +99,11 @@ class Bus(db.Model):
     columns = db.Column(db.Integer)
     rows = db.Column(db.Integer)
     broadcast = db.Column(db.Boolean)
-    departure_time = db.Column(db.DateTime)  # nullable
+    departure_time = db.Column(db.DateTime)
     booking_deadline = db.Column(db.DateTime)
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
     status_id = db.Column(db.Integer, db.ForeignKey("status.id"))
-    journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))  # nullable
+    journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))
 
     grids = db.relationship("Grid", backref="bus")
 
@@ -121,9 +121,9 @@ class Grid(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     index = db.Column(db.Integer)
     grid_type = db.Column(db.Integer)
-    number = db.Column(db.String(3))  # nullable
+    number = db.Column(db.String(3))
     label = db.Column(db.String(32))
-    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id"))  # nullable # current_booking
+    booking_id = db.Column(db.Integer, db.ForeignKey("booking.id")) # current_booking
     bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"))
 
     bookings = db.relationship("Booking", backref="grid", foreign_keys=booking_id)
@@ -138,14 +138,14 @@ class Grid(db.Model):
 
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    passenger_name = db.Column(db.String(128))
+    passenger_name = db.Column(db.String(128), nullable=False)
     passenger_telephone = db.Column(db.String(16))
-    pickup = db.Column(db.String(64))
-    fare = db.Column(db.Integer)
-    paid = db.Column(db.Boolean)
-    grid_id = db.Column(db.Integer, db.ForeignKey("grid.id", ondelete="SET NULL")) # nullable
-    pricing_id = db.Column(db.Integer, db.ForeignKey("pricing.id", ondelete="SET NULL")) # nullable
-    payment_id = db.Column(db.Integer, db.ForeignKey("payment.id", ondelete="SET NULL"))  # nullable
+    pickup = db.Column(db.String(64), nullable=False)
+    fare = db.Column(db.Integer, nullable=False)
+    paid = db.Column(db.Boolean, nullable=False)
+    grid_id = db.Column(db.Integer, db.ForeignKey("grid.id"), nullable=False)
+    pricing_id = db.Column(db.Integer, db.ForeignKey("pricing.id"), nullable=False)
+    payment_id = db.Column(db.Integer, db.ForeignKey("payment.id"))
     
     payment = db.relationship("Payment", backref=db.backref("booking", uselist=False), cascade="delete")
 
@@ -165,7 +165,7 @@ class Payment(db.Model):
     passenger_telephone = db.Column(db.String(16))
 
     grid_id = db.Column(db.Integer, db.ForeignKey("grid.id"))
-    passenger_id = db.Column(db.Integer, db.ForeignKey("passenger.id"))  # nullable
+    passenger_id = db.Column(db.Integer, db.ForeignKey("passenger.id"))
 
 
 class Passenger(db.Model):

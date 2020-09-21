@@ -45,30 +45,40 @@
 <script>
 		let socket;
 		$(document).ready(function(){
+			
 			socket = io.connect('http://127.0.0.1:5000/');
 			socket.emit('join', "{{bus}}")
+
+
+			socket.on('disconnect', (data) => {
+				socket = io.connect('http://127.0.0.1:5000/');
+				socket.emit('join', "{{bus}}")
+			})
+
+			
 			socket.on('create_booking_passed', function(grid){
 				data.grids[grid.index] = grid
 				fillGrid()
-				$("#getBusBookingsForm").submit()
 				$(".ajaxForm").on('submit', ajaxSubmit)
 				$("#createBookingModal").modal('hide')
+				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
+
 			})
 
 			socket.on('update_booking_passed', function(grid){
 				data.grids[grid.index] = grid
 				fillGrid()
-				$("#getBusBookingsForm").submit()
 				$(".ajaxForm").on('submit', ajaxSubmit)
 				$("#updateBookingModal").modal('hide')
+				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
 			})
 
 			socket.on('delete_booking_passed', function(grid){
 				data.grids[grid.index] = grid
 				fillGrid()
-				$("#getBusBookingsForm").submit()
 				$(".ajaxForm").on('submit', ajaxSubmit)
 				$("#deleteBookingModal").modal('hide')
+				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
 			})
 		})
 	</script>
