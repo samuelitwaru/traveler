@@ -1,0 +1,21 @@
+{% from 'helpers.html' import render_string_field, render_boolean_field %}
+<div id="deleteBookingPatch" class="modal-body">
+    <form class="socketForm" data-event="delete_booking" method="POST" id="createBookingForm" action="{{ url_for('booking.delete_booking', booking_id=booking.id) }}">
+        <div class="modal-body">
+            Seat {{grid.number}}
+            <hr>
+            {{ delete_booking_form.csrf_token }}
+            {{ delete_booking_form.id }}
+            <p class="alert alert-danger">All booking and payment records will be lossed if you proceed with this action.</p>
+            Are you sure you want to delete booking for <strong>seat {{grid.number}}</strong>?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            {{delete_booking_form.submit(class="btn btn-danger")}}
+        </div>
+    </form>
+
+    <script type="text/javascript">
+        $(".socketForm").on('submit', socketSubmit)
+    </script>
+</div>

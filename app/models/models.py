@@ -111,7 +111,7 @@ class Bus(db.Model):
         return self.number
 
     def grids_dict(self):
-        grids = [{"id":grid.id, "index":grid.index, "grid_type":grid.grid_type, "number":grid.number, "label":grid.label, "booked":bool(grid.booking)} for grid in self.grids]
+        grids = [grid.grid_dict() for grid in self.grids]
         return json.dumps(grids).replace('"', '')
 
     def seats(self):
@@ -132,6 +132,10 @@ class Grid(db.Model):
     def __str__(self):
         return self.number
 
+    def grid_dict(self):
+        return {"id":self.id, "index":self.index, "grid_type":self.grid_type, "number":self.number, "label":self.label, "booking_id":self.booking_id,"booked":bool(self.booking)}
+
+
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     passenger_name = db.Column(db.String(128))
@@ -143,7 +147,7 @@ class Booking(db.Model):
     pricing_id = db.Column(db.Integer, db.ForeignKey("pricing.id", ondelete="SET NULL")) # nullable
     payment_id = db.Column(db.Integer, db.ForeignKey("payment.id", ondelete="SET NULL"))  # nullable
     
-    payment = db.relationship("Payment", backref=db.backref("booking", uselist=False))
+    payment = db.relationship("Payment", backref=db.backref("booking", uselist=False), cascade="delete")
 
 
 class Payment(db.Model):

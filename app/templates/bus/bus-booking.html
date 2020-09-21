@@ -21,7 +21,8 @@
 </div>
 
 {% include 'booking/create-booking-modal.html' %}
-
+{% include 'booking/update-booking-modal.html' %}
+{% include 'booking/delete-booking-modal.html' %}
 
 <script>
 	let grid;
@@ -29,8 +30,6 @@
 	let data = {
 		cols: Number("{{bus.columns}}"),
 		rows: Number("{{bus.rows}}"),
-		colList: [3,4,5,6,7],
-		rowList:[5,6,7,8,9,10,11,12,13,14,15],
 		autoSeatNumbering: true,
 		numberReservedSeats: true,
 		grids: {{ bus.grids_dict() }},
@@ -63,10 +62,11 @@
 			widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><div data-index="${grid.index}" id="${grid.index}" class="item-content">${Boolean(grid.number) ? grid.number : ''}</div></div>`
 
 			if (grid.grid_type == 1) {
-				createBookingUrl = `/booking/create/${grid.id}`
 				if (grid.booked) {
-					widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button class="w-100 btn-dark" id="${grid.index}" data-index="${grid.index}" data-toggle="modal" data-target="#updateBookingModal">${Boolean(grid.number) ? grid.number : ''}</button></div>`
+					updateBookingUrl = `/booking/${grid.booking_id}/update` 
+					widget = `<form class="ajaxForm item ${gridItemClasses[grid.grid_type]}" data-patch-containers='["#updateBookingPatch"]' data-progress-container="#updateBookingPatch" method="GET" action="${updateBookingUrl}"><button class="w-100 btn-dark" id="${grid.index}" data-index="${grid.index}" data-toggle="modal" data-target="#updateBookingModal">${Boolean(grid.number) ? grid.number : ''}</button></form>`
 				}else{
+					createBookingUrl = `/booking/create/${grid.id}`
 					widget = `<form class="ajaxForm item ${gridItemClasses[grid.grid_type]}" data-patch-containers='["#createBookingPatch"]' data-progress-container="#createBookingPatch" method="GET" action="${createBookingUrl}"><button class="w-100" id="${grid.index}" data-index="${grid.index}" data-toggle="modal" data-target="#createBookingModal">${Boolean(grid.number) ? grid.number : ''}</button></form>`
 
 				}
@@ -83,7 +83,6 @@
 	fillGrid()
 
 	$(document).ready(function() {
-		// $(".ajaxForm").submit(ajaxSubmit)
 		$("#getBusBookingsForm").submit()
 	});
 </script>

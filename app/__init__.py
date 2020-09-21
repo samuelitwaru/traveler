@@ -24,8 +24,18 @@ from app.setup import *
 # load content processors
 from app.WEB.context_processors import *
 
+# load web socket namespaces
+from app.WEB_SOCKET.default import DefaultNamespace
+from app.WEB_SOCKET.mobile import MobileNamespace
+from app.WEB_SOCKET.desktop import DesktopNamespace
+
+socketio.on_namespace(DefaultNamespace('/'))
+socketio.on_namespace(MobileNamespace('/mobile'))
+socketio.on_namespace(DesktopNamespace('/desktop'))
+
 # load api resources
 from app.API.resources.bus import BusAPI, BusListAPI
+from app.API.resources.booking import BookingAPI, BookingListAPI
 from app.API.resources.journey import JourneyAPI, JourneyListAPI
 from app.API.resources.payment import PaymentAPI, PaymentListAPI
 from app.API.resources.passenger import PassengerAPI, PassengerListAPI
@@ -34,6 +44,9 @@ from app.API.resources.user import UserAPI, UserListAPI
 
 api.add_resource(BusListAPI, '/bus/api/v1.0/buses', endpoint="buses")
 api.add_resource(BusAPI, '/bus/api/v1.0/buses/<int:id>', endpoint="bus")
+
+api.add_resource(BookingListAPI, '/bus/api/v1.0/bookings', endpoint="bookings")
+api.add_resource(BookingAPI, '/bus/api/v1.0/bookings/<int:id>', endpoint="booking")
 
 api.add_resource(JourneyListAPI, '/bus/api/v1.0/journeys', endpoint="journeys")
 api.add_resource(JourneyAPI, '/bus/api/v1.0/journeys/<int:id>', endpoint="journey")
@@ -49,16 +62,6 @@ api.add_resource(ProfileAPI, '/bus/api/v1.0/profiles/<int:id>', endpoint="profil
 
 api.add_resource(UserListAPI, '/bus/api/v1.0/users', endpoint="users")
 api.add_resource(UserAPI, '/bus/api/v1.0/users/<int:id>', endpoint="user")
-
-
-# load web socket namespaces
-from app.WEB_SOCKET.default import DefaultNamespace
-from app.WEB_SOCKET.mobile import MobileNamespace
-from app.WEB_SOCKET.desktop import DesktopNamespace
-
-socketio.on_namespace(DefaultNamespace('/'))
-socketio.on_namespace(MobileNamespace('/mobile'))
-socketio.on_namespace(DesktopNamespace('/desktop'))
 
 
 # load web app views

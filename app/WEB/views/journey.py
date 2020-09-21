@@ -49,13 +49,14 @@ def create_journey():
 def update_journey(journey_id): 
 	update_journey_form = UpdateJourneyForm()
 	branch = get_current_branch()
-	cashier_profile = Journey.query.get(profile_id)
+	journey = Journey.query.get(journey_id)
 	if update_journey_form.validate_on_submit():
 		journey_id = update_journey_form.id.data
-		to = update_journey_form.to.data
-		from_ = update_journey_form.from_.data
-		distance = update_journey_form.distance.data
-		duration = update_journey_form.duration.data
+		journey.to = update_journey_form.to.data
+		journey.from_ = update_journey_form.from_.data
+		journey.distance = update_journey_form.distance.data
+		journey.duration = update_journey_form.duration.data
+		db.session.commit()
 		flash("Journey updated", "success")
 	else:
 		flash(f"{update_journey_form.errors}", "danger")

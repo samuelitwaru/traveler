@@ -1,0 +1,27 @@
+{% from 'helpers.html' import render_string_field, render_boolean_field %}
+<div id="updateBookingPatch" class="modal-body">
+    <form class="socketForm" data-event="update_booking" method="POST" id="createBookingForm" action="{{ url_for('booking.update_booking', booking_id=booking.id) }}">
+        <div class="modal-body">
+                Seat {{grid.number}}
+                <hr>
+                {{ update_booking_form.csrf_token }}
+                {{ update_booking_form.id }}
+
+                {{ update_booking_form.grid_id(value=grid.id) }}
+                {{ render_string_field(update_booking_form.passenger_name) }}
+                {{ render_string_field(update_booking_form.passenger_telephone) }}
+                {{ render_string_field(update_booking_form.pricing_id) }}
+                {{ render_string_field(update_booking_form.pickup) }}
+                {{ render_boolean_field(update_booking_form.paid) }}
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            {{update_booking_form.submit(class="btn btn-info")}}
+        </div>
+    </form>
+
+    <script type="text/javascript">
+        $(".socketForm").on('submit', socketSubmit)
+    </script>
+</div>

@@ -34,7 +34,6 @@
 <hr>
 
 <div class="d-flex">
-	<!-- <div id="selected-grids" class="col-md-12"></div> -->
 	<div class="p-2 flex-fill">
 		<button class="flex-fill" onclick="changeGridItems(1)"><span class="fa fa-user"></span></button>
 		Passenger
@@ -74,8 +73,6 @@
 	let data = {
 		cols: Number("{{bus.columns}}"),
 		rows: Number("{{bus.rows}}"),
-		// colList: [3,4,5,6,7],
-		// rowList:[5,6,7,8,9,10,11,12,13,14,15],
 		autoSeatNumbering: true,
 		numberReservedSeats: true,
 		grids: {{ bus.grids_dict() }},
@@ -90,29 +87,6 @@
 			layoutOnResize: false
 		});
 	}
-
-
-	// interface: put options in the column selector
-	// fillColSelector = function(){
-	// 	$('#col-selector').html('');
-
-	// 	for (var i=0; i < data.colList.length; i++) {
-	// 		colNumber = data.colList[i];
-	// 		$('#col-selector').append(`<option>${colNumber}</option>`)	
-	// 	}
-	// }
-
-
-	// interface: put options in the row selector
-	// fillRowSelector = function(){
-	// 	$('#row-selector').html('');
-
-	// 	for (var i=0; i < data.rowList.length; i++) {
-	// 		rowNumber = data.rowList[i]
-	// 		$('#row-selector').append(`<option>${rowNumber}</option>`)	
-	// 	}
-	// }
-
 
 	// interface: arrange grid items in the grid box
 	fillGrid = function(){
@@ -223,7 +197,6 @@
 			for (var i=0; i<data.selected.length; i++) {
 				data.grids[data.selected[i]].grid_type = type
 			}
-			console.log(data.grids)
 		}
 		else{
 			alert("Select at least 1 grid")

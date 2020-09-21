@@ -11,27 +11,27 @@ class DesktopNamespace(Namespace):
         connection = Connection(sid=request.sid, client_type=self.namespace)
         db.session.add(connection)
         db.session.commit()
-        pass
 
     def on_disconnect(self):
         # update disconnect time using the session id stored
         connection = Connection.query.filter(Connection.disconnect_time==None).filter_by(sid=request.sid).first()
         connection.disconnect_time = now()
         db.session.commit()
-        print(connection)
-        pass
 
     # rooms in mobile: [{bus_numbers}]
     def on_join(self, data):
         # add client to room
-        pass
+        room = data.get("bus")
+        join_room(room)
 
     # rooms in mobile: [{bus_numbers}]
     def on_leave(self, data):
         # remove client from room
-        pass
+        room = data.get("bus")
+        leave_room(room)
 
     def on_book(self, data):
+        print(">>>>>>>>>>>>>", data)
         # update bus seat column 'booked' to True
         # emit 'seat booked' event to bus room in global name space
         pass

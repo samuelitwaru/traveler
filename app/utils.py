@@ -1,5 +1,8 @@
+import uuid
 import cv2
 import os
+import json
+import urllib
 import time
 from datetime import timedelta 
 import uuid
@@ -9,7 +12,7 @@ import flask_sqlalchemy
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_login import current_user
 from app import app
-from .models import Company, Status, Grid, User, Token, db
+from .models import Company, Status, Grid, User, Token, Payment, db
 from .helpers import now
 
 
@@ -89,5 +92,41 @@ def change_bus_layout(bus, layout):
 
 def get_current_branch():
 	return  current_user.profile.branch
+
+
+
+def create_payment(booking):
+	grid = booking.booked_grid
+	bus = grid.bus
+	company = bus.company
+	branch = get_current_branch()
+	payment = Payment(reference=generate_reference(), amount=booking.fare, 
+		method="CASH", passenger_name=booking.passenger_name, 
+		passenger_telephone=booking.passenger_telephone, branch_name=branch.name,
+		company_name=company.name, grid_number=grid.number, bus_number=bus.number,
+		grid_id=grid.id)
+	booking.payment = payment
+	db.session.add(payment)
+
+
+def update_payment(booking):
+	payment = booking.payment
+	payment.amount = booking.fare
+	payment.passenger_name = booking.passenger_name
+	payment.passenger_telephone = booking.passenger_telephone
+
+
+def generate_reference():
+	return str(uuid.uuid4())
+
+
+def parse_query_string(query_string):
+	result = urllib.parse.parse_qs(query_string)
+	for k, v in result.items():
+		if isinstance(v, list) and len(v) == 1:
+			result[k] = v[0]
+	return result
+
+
 
 
