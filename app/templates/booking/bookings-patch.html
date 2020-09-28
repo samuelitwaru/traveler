@@ -2,7 +2,7 @@
 	
 	<table class="table table-sm table-responsive-sm border">
 		<thead>
-			<th></th>
+			<th>No</th>
 			<th>Seat</th>
 			<th>Passenger</th>
 			<th>Payment</th>
@@ -11,7 +11,7 @@
 		<tbody>
 		    {% for booking in bookings %}
 		        <tr>
-		            <td><span class="fa fa-calendar-check-o"></span></td>
+		            <td>{{loop.index}}</td>
 		            <td>{{booking.booked_grid}}</td>
 		            <td>{{booking.passenger_name}} <small>{{booking.passenger_telephone or ''}}</small></td>
 		            <td>{{booking.fare}} {% if booking.paid %}<span class="fa fa-check"></span>{% endif %}</small></td>

@@ -119,12 +119,12 @@ class Bus(db.Model):
 
 class Grid(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    index = db.Column(db.Integer)
-    grid_type = db.Column(db.Integer)
+    index = db.Column(db.Integer, nullable=False)
+    grid_type = db.Column(db.Integer, nullable=False)
     number = db.Column(db.String(3))
     label = db.Column(db.String(32))
     booking_id = db.Column(db.Integer, db.ForeignKey("booking.id")) # current_booking
-    bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"))
+    bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"), nullable=False)
 
     bookings = db.relationship("Booking", backref="grid", foreign_keys=booking_id)
     booking = db.relationship("Booking", backref=db.backref("booked_grid", uselist=False), foreign_keys=booking_id)
@@ -155,7 +155,7 @@ class Payment(db.Model):
     reference = db.Column(db.String(64))
     amount = db.Column(db.Integer)
     method = db.Column(db.String(64))
-    time = db.Column(db.DateTime, default=now())  # TODO: Find out about time zones
+    time = db.Column(db.DateTime, default=now())
     app = db.Column(db.String(64))
     company_name = db.Column(db.String(64))
     branch_name = db.Column(db.String(64))

@@ -50,6 +50,7 @@ def reset_password():
 @auth_bp.route('token/<int:user_id>/set')
 def set_token(user_id):
     user = User.query.get(user_id)
+    token = user.token
     if user.token:
         db.session.delete(token)
     create_user_token(user)
