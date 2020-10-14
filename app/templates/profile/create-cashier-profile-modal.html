@@ -1,4 +1,4 @@
-{% from 'helpers.html' import render_string_field, render_select_field %}
+{% from 'helpers.html' import render_string_field, render_select_field, render_telephone_field %}
 
 <div class="modal fade" id="createCashierProfileModal" tabindex="-1">
     <div class="modal-dialog" role="document">
@@ -15,7 +15,7 @@
                     {{ render_string_field(create_profile_form.first_name) }}
                     {{ render_string_field(create_profile_form.last_name) }}
                     {{ render_string_field(create_profile_form.email) }}
-                    {{ render_string_field(create_profile_form.telephone) }}
+                    {{ render_telephone_field(create_profile_form.telephone, code_field=create_profile_form.telephone_code) }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

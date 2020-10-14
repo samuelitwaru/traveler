@@ -14,6 +14,29 @@
 	</div>
 {% endmacro %}
 
+{% macro render_telephone_field(field, code_field=None) %}
+<div class="form-group">
+	<small>{{field.label.text}}</small>
+	{% if field.errors %}
+		{{ field(class="form-control is-invalid", **kwargs)|safe }}
+		<div class="invalid-feedback">
+			{% for error in field.errors %}
+				{{ error }}
+			{% endfor %}
+		</div>
+	{% else %}
+	{% if code_field %}
+	<div class="input-group">
+		<div class="input-group-prepend">
+          	{{ code_field }}
+        </div>
+        {% endif %}
+		{{ field(class="form-control", **kwargs)|safe }}
+		{% endif %} 
+	</div>
+</div>
+{% endmacro %}
+
 {% macro render_radio_field(field) %}
 	<div class='form-group'>
 		<small>{{field.label.text}}</small>

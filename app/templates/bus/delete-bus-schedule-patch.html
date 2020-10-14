@@ -1,0 +1,18 @@
+{% from 'helpers.html' import render_string_field  %}
+<div id="deleteBusSchedulePatch">
+	<form method="POST" action="{{ url_for('bus.delete_bus_schedule', bus_id=bus.id) }}">
+
+		{{ delete_bus_schedule_form.hidden_tag() }}
+		
+		{{ delete_bus_schedule_form.id }}
+		
+		{{ render_string_field(delete_bus_schedule_form.schedule_cancelled_reason) }}
+
+		<p>Are you sure you want to cancel this schedule?</p>
+		
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            {{delete_bus_schedule_form.submit(class="btn btn-danger")}}
+        </div>
+    </form>
+</div>

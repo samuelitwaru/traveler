@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_restful import Api
 from flask_socketio import SocketIO
+from flask_mail import Mail
+
 
 app = Flask(__name__)
 
@@ -13,6 +15,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 api = Api(app)
 socketio = SocketIO(app)
+mail = Mail(app)
 
 
 # load database models
@@ -23,6 +26,9 @@ from app.setup import *
 
 # load content processors
 from app.WEB.context_processors import *
+
+# load template filters
+from app.WEB import template_filters
 
 # load web socket namespaces
 from app.WEB_SOCKET.default import DefaultNamespace
@@ -67,6 +73,7 @@ api.add_resource(UserAPI, '/bus/api/v1.0/users/<int:id>', endpoint="user")
 # load web app views
 from app.WEB.views.index import index_bp
 from app.WEB.views.auth import auth_bp
+from app.WEB.views.user import user_bp
 from app.WEB.views.company import company_bp
 from app.WEB.views.bus import bus_bp
 from app.WEB.views.status import status_bp
@@ -79,6 +86,7 @@ from app.WEB.views.booking import booking_bp
 
 app.register_blueprint(index_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(user_bp)
 app.register_blueprint(company_bp)
 app.register_blueprint(bus_bp)
 app.register_blueprint(status_bp)

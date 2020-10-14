@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
 from app.models import Profile, User, db
 from app.helpers import send_auth_mail
-from app.utils import get_current_branch, create_user_token
+from app.utils import get_current_branch, create_user_token, join_telephone, split_telephone
 from ..forms import CreateProfileForm, UpdateProfileForm, DeleteProfileForm
 
 
@@ -24,10 +24,11 @@ def create_cashier_profile():
 		first_name = create_profile_form.data.get("first_name")
 		last_name = create_profile_form.data.get("last_name")
 		email = create_profile_form.data.get("email")
+		telephone_code = create_profile_form.data.get("telephone_code")
 		telephone = create_profile_form.data.get("telephone")
 
 		user = User(email=email, username=email)
-		profile = Profile(first_name=first_name, last_name=last_name, telephone=telephone, is_cashier=True)
+		profile = Profile(first_name=first_name, last_name=last_name, telephone=join_telephone(telephone_code, telephone), is_cashier=True)
 		profile.branch = branch
 		profile.user = user
 		db.session.add(user)
@@ -45,6 +46,10 @@ def create_cashier_profile():
 @profile_bp.route("/cashier/<int:profile_id>")
 def get_cashier_profile(profile_id): 
 	cashier = Profile.query.get(profile_id)
+	if cashier:
+		code, telephone = split_telephone(cashier.telephone)
+		cashier.telephone = telephone
+		cashier.telephone_code = code
 	update_profile_form = UpdateProfileForm(obj=cashier)
 	delete_profile_form = DeleteProfileForm(obj=cashier)
 	return render_template("profile/cashier-profile.html", cashier=cashier, update_profile_form=update_profile_form, delete_profile_form=delete_profile_form)
@@ -60,20 +65,44 @@ def update_cashier_profile(profile_id):
 		profile = Profile.query.get(profile_id)
 		if cashier_profile == profile:
 			data = update_profile_form.data
-			first_name = update_profile_form.data.get("first_name")
-			last_name = update_profile_form.data.get("last_name")
-			telephone = update_profile_form.data.get("telephone")		
-			
-			profile.first_name = data.get("first_name")
-			profile.last_name = data.get("last_name")
-			profile.telephone = data.get("telephone")
+			first_name = data.get("first_name")
+			last_name = data.get("last_name")
+			telephone_code = data.get("telephone_code")		
+			telephone = data.get("telephone")		
+			profile.first_name = first_name
+			profile.last_name = last_name
+			profile.telephone = join_telephone(telephone_code, telephone)
 			db.session.commit()
 			flash("Cashier updated", "success")
 		else:
 			flash("An error occured!", "danger")
+	return redirect(request.referrer)
+	
+
+@profile_bp.route("/manager/<int:profile_id>/update", methods=["POST"])
+def update_manager_profile(profile_id): 
+	update_profile_form = UpdateProfileForm()
+	branch = get_current_branch()
+	manager_profile = Profile.query.get(profile_id)
+	if update_profile_form.validate_on_submit():
+		profile_id = update_profile_form.data.get("id")
+		profile = Profile.query.get(profile_id)
+		if manager_profile == profile:
+			data = update_profile_form.data
+			first_name = data.get("first_name")
+			last_name = data.get("last_name")
+			telephone_code = data.get("telephone_code")		
+			telephone = data.get("telephone")		
+			profile.first_name = first_name
+			profile.last_name = last_name
+			profile.telephone = join_telephone(telephone_code, telephone)
+			db.session.commit()
+			flash("Manager updated", "success")
+		else:
+			flash("An error occured!", "danger")
 
 	else:
-		flash(f"{create_profile_form.errors}", "danger")
+		flash(f"{update_profile_form.errors}", "danger")
 
 	return redirect(request.referrer)
 
@@ -89,7 +118,7 @@ def delete_cashier_profile(profile_id):
 		profile = Profile.query.get(profile_id)
 		if cashier_profile == profile:
 			db.session.delete(profile)
-			# db.session.delete(profile.user)
+			db.session.delete(profile.user)
 			db.session.commit()
 			flash("Cashier deleted", "success")
 		else:

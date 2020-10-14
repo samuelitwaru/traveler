@@ -1,0 +1,26 @@
+{% from 'helpers.html' import render_string_field, render_select_field, render_telephone_field %}
+
+<div class="modal fade" id="updateManagerProfileModal" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"><span class="fa fa-user"></span> Update Manager</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{{ url_for('profile.update_manager_profile', profile_id=manager.id) }}">
+                <div class="modal-body">
+                    {{ update_profile_form.hidden_tag() }}
+                    {{ render_string_field(update_profile_form.first_name) }}
+                    {{ render_string_field(update_profile_form.last_name) }}
+                    {{ render_telephone_field(update_profile_form.telephone, code_field=update_profile_form.telephone_code) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    {{update_profile_form.submit(class="btn btn-info")}}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

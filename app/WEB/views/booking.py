@@ -15,16 +15,20 @@ def get_bookings():
 	bookings = Booking.query.filter_by(company_id=company.id)
 	return render_template("booking/bookings.html", bookings=bookings)
 
+
 @booking_bp.route("/<int:bus_id>", methods=["GET"])
 def get_bus_bookings(bus_id):
 	grids = [grid.id for grid in Grid.query.filter_by(bus_id=bus_id).all()]
 	bookings = Booking.query.filter(Booking.grid_id.in_(grids)).all()
-	bus_bookings_patch_template = render_template('booking/bookings-patch.html', bookings=bookings)
+	total_fare = sum([booking.fare for booking in bookings])
+	total_paid = sum([booking.fare for booking in list(filter(lambda booking: booking.paid, bookings))])
+	bus_bookings_patch_template = render_template('booking/bookings-patch.html', bookings=bookings, total_fare=total_fare, total_paid=total_paid)
 	data = {
         "form_templates": {
             "#busBookingsPatch": bus_bookings_patch_template
         }
     };return data
+
 
 @booking_bp.route("/<int:booking_id>", methods=["GET"])
 def get_booking(booking_id):
@@ -67,7 +71,7 @@ def create_booking(grid_id):
 
 	else:
 		create_booking_form = CreateBookingForm(grid=grid)
-		create_booking_patch_template = render_template('booking/create-booking-patch.html', grid=grid, create_booking_form=create_booking_form)
+		create_booking_patch_template = render_template('booking/create-booking-patch.html', grid=grid, create_booking_form=create_booking_form, bus=bus)
 		data = {
 	        "form_templates": {
 	            "#createBookingPatch": create_booking_patch_template

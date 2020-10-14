@@ -2,8 +2,8 @@ import os
 from flask import Blueprint, render_template, url_for, request, redirect, flash, send_from_directory
 from app import app
 from app.models import Company, Bus, Status, Branch, db
-from app.utils import crop_image, save_logo, logos, create_default_status
-from ..forms import CreateCompanyForm, UpdateCompanyForm, CreateBusForm, UpdateBusLayoutForm, CreateStatusForm, CreateBranchForm, CreateProfileForm, DeleteProfileForm
+from app.utils import crop_image, save_logo, logos, create_default_status, split_telephone
+from ..forms import CreateCompanyForm, UpdateCompanyForm, CreateBusForm, UpdateBusLayoutForm, CreateStatusForm, CreateBranchForm, CreateProfileForm, DeleteProfileForm, UpdateProfileForm
 
 
 company_bp = Blueprint('company', __name__, url_prefix='/company')
@@ -102,5 +102,14 @@ def get_company_branch(company_id, branch_id):
     company = Company.query.get(company_id)
     branch = Branch.query.get(branch_id)
     create_profile_form = CreateProfileForm()
-    delete_profile_form = DeleteProfileForm(obj=branch.manager())
-    return render_template("branch/branch.html", branch=branch, company=company, create_profile_form=create_profile_form, delete_profile_form=delete_profile_form)
+    manager = branch.manager()
+    
+    if manager:
+        code, telephone = split_telephone(manager.telephone)
+        manager.telephone = telephone
+        manager.telephone_code = code
+    
+    update_profile_form = UpdateProfileForm(obj=manager)
+    delete_profile_form = DeleteProfileForm(obj=manager)
+    
+    return render_template("branch/branch.html", branch=branch, company=company, create_profile_form=create_profile_form, delete_profile_form=delete_profile_form, update_profile_form=update_profile_form)

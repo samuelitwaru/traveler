@@ -14,8 +14,9 @@
 		            <td>{{loop.index}}</td>
 		            <td>{{booking.booked_grid}}</td>
 		            <td>{{booking.passenger_name}} <small>{{booking.passenger_telephone or ''}}</small></td>
-		            <td>{{booking.fare}} {% if booking.paid %}<span class="fa fa-check"></span>{% endif %}</small></td>
+		            <td>{{booking.fare|currency}} {% if booking.paid %}<span class="fa fa-check"></span>{% endif %}</small></td>
 		            <td>
+		            	<button class="fa fa-print"></button>
 		            	<form class="ajaxForm deleteForm d-inline" method="GET" action="{{ url_for('booking.delete_booking', booking_id=booking.id) }}" data-patch-containers='["#deleteBookingPatch"]' data-progress-container="#deleteBookingPatch">
 	        				<button class="btn btn-link text-danger nav-link p-0 float-right" data-toggle="modal" data-target="#deleteBookingModal" ><span class="fa fa-times"></span></button>
 	        			</form>
@@ -27,6 +28,16 @@
 		        </div>
 		    {% endfor %}
 		</tbody>
+		<tfoot class="text-center">
+			<tr>
+				<td colspan="3">Total Required</td>
+				<td colspan="2">{{total_fare|currency}}</td>
+			</tr>
+			<tr>
+				<td colspan="3">Total Paid</td>
+				<td colspan="2">{{total_paid|currency}}</td>
+			</tr>
+		</tfoot>
 	</table>
 
 	<script type="text/javascript">

@@ -39,7 +39,8 @@ def reset_password():
         user = User.query.filter_by(email=email).first()
         if user:
             create_user_token(user)
-            send_auth_mail(user)
+            db.session.commit()
+            send_auth_mail(user.username, user.token.token)
             flash(f"An email with password reset instructions has been sent to '{email}'. Login to your this email to continue.", "info")
         else:
             flash(f"User with email '{email}' was not found.", "danger")
@@ -55,7 +56,7 @@ def set_token(user_id):
         db.session.delete(token)
     create_user_token(user)
     db.session.commit()
-    send_auth_mail(user)
+    send_auth_mail(user.username, user.token.token)
     flash("Token created.", "success")
     return redirect(request.referrer)
 

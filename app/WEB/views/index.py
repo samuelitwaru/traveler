@@ -2,10 +2,11 @@ from flask import Blueprint, render_template, url_for, request, redirect, flash
 from flask_login import login_user, logout_user, current_user
 from app.utils import authenticate_user
 from ..forms import LoginForm
+from .. guards import check_branch_journeys
 
 index_bp = Blueprint('index', __name__, url_prefix='/')
 
-
+@check_branch_journeys
 @index_bp.route('/')
 def index():
 	user = current_user

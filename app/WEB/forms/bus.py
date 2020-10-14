@@ -3,10 +3,12 @@ import json
 from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import DataRequired
-from wtforms.widgets import HiddenInput, Select
+from wtforms.widgets import HiddenInput, Select, TextArea
+from app import app
 from app.utils import get_current_branch
 from app.helpers import timezone, now
 from app.models import Journey, Status
+
 
 columns_choices = [(i,i) for i in range(3,8)]
 rows_choices = [(i,i) for i in range(5,16)]
@@ -64,10 +66,18 @@ class UpdateBusScheduleForm(FlaskForm):
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.datetime_format = "%B %d %Y, %I:%M %p %z"
+		self.datetime_format = app.config.get("TIME_FORMAT")
 		self.booking_deadline.choices = booking_deadline_choices
 		branch = get_current_branch()
-		self.journey_id.choices = [(journey.id, journey) for journey in Journey.query.filter_by(branch_id=branch.id)]
+		self.journey_id.choices = [
+				(journey.id, journey) for journey in 
+				list(filter(
+					lambda journey: len(journey.pricings) and len(journey.pickups), 
+					Journey.query.filter_by(branch_id=branch.id)
+					)
+				)
+			]
+
 
 
 	def validate_UTC_offset(form, field):
@@ -81,9 +91,9 @@ class UpdateBusScheduleForm(FlaskForm):
 		if utc_departure_time < now():
 			raise ValidationError(f"The departure time {field.data} has alreaady passed.")
 		form.departure_time.data = utc_departure_time
-		
-		# get time now
-		# get time data and convert to utc
-		# check if time_now < time data submited
-			# raise error
-		pass
+
+
+class DeleteBusScheduleForm(FlaskForm):
+    id = IntegerField(validators=[DataRequired()], widget=HiddenInput())
+    schedule_cancelled_reason = StringField("Enter reason for cancelling the schedule", widget=TextArea(), validators=[DataRequired()])
+    submit = SubmitField('Yes, proceed')

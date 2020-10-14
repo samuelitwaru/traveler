@@ -20,10 +20,18 @@
 		</table>
 
 		<table class="table table-bordered">
+			<thead>
+				<th colspan="2">
+					Schedule 
+					{% if bus.departure_time %}
+					<button data-toggle="modal" data-target="#deleteBusScheduleModal" data-patch-containers='["#deleteBusSchedulePatch"]' data-progress-container="#deleteBusSchedulePatch" data-url="{{ url_for('bus.delete_bus_schedule', bus_id=bus.id) }}" class="getRequestTrigger fa fa-times float-right"></button>
+					{% endif %}
+					<button data-toggle="modal" data-target="#updateBusScheduleModal" class="float-right fa fa-clock-o"></button>
+				</th>
+			</thead>
+
 			<tbody>
-				<thead>
-					<th colspan="2">Schedule <button data-toggle="modal" data-target="#updateBusScheduleModal" class="float-right"><span class="fa fa-clock-o"></span></button></th>
-				</thead>
+				{% if bus.departure_time %}
 				<tr>
 					<td>Departure</td><td>{{bus.departure_time}}</td>
 				</tr>
@@ -31,11 +39,20 @@
 					<td>Journey</td><td>{{bus.journey}}</td>
 				</tr>
 				<tr>
+					<td>Booking Countdown</td><td id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></td>
+				</tr>
+				<tr>
 					<td>Broadcasting</td><td>{% if bus.broadcast %}YES{% else %}NO{% endif %}</td>
 				</tr>
+				{% else %}
+				<tr>
+					<td colspan="2" class="text-muted" align="center">Bus not sceduled</td>
+				</tr>
+				{% endif %}
 			</tbody>
 		</table>
 		{% include 'bus/update-bus-schedule-modal.html' %}
+		{% include 'bus/delete-bus-schedule-modal.html' %}
 	</div>
 	<div class="col-md-8">
 		{% include 'bus/bus-booking.html' %}
@@ -43,43 +60,51 @@
 </div>
 
 <script>
-		let socket;
-		$(document).ready(function(){
-			
-			socket = io.connect('http://127.0.0.1:5000/');
+	$().ready((event)=>{
+		setTimeLeft("#bookingCountDown")
+	})
+
+	let socket;
+	$(document).ready(function(){
+		
+		socket = io.connect('{{HOST}}');
+		socket.emit('join', "{{bus}}")
+
+
+		socket.on('disconnect', (data) => {
+			socket = io.connect('{{HOST}}');
 			socket.emit('join', "{{bus}}")
-
-
-			socket.on('disconnect', (data) => {
-				socket = io.connect('http://127.0.0.1:5000/');
-				socket.emit('join', "{{bus}}")
-			})
-
-			
-			socket.on('create_booking_passed', function(grid){
-				data.grids[grid.index] = grid
-				fillGrid()
-				$(".ajaxForm").on('submit', ajaxSubmit)
-				$("#createBookingModal").modal('hide')
-				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
-
-			})
-
-			socket.on('update_booking_passed', function(grid){
-				data.grids[grid.index] = grid
-				fillGrid()
-				$(".ajaxForm").on('submit', ajaxSubmit)
-				$("#updateBookingModal").modal('hide')
-				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
-			})
-
-			socket.on('delete_booking_passed', function(grid){
-				data.grids[grid.index] = grid
-				fillGrid()
-				$(".ajaxForm").on('submit', ajaxSubmit)
-				$("#deleteBookingModal").modal('hide')
-				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
-			})
 		})
-	</script>
+
+		
+		socket.on('create_booking_passed', function(grid){
+			data.grids[grid.index] = grid
+			fillGrid()
+			$(".ajaxForm").on('submit', ajaxSubmit)
+			$("#createBookingModal").modal('hide')
+			loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
+
+		})
+
+		socket.on('create_booking_failed', function(errors){
+			alert(JSON.stringify(errors))
+		})
+
+		socket.on('update_booking_passed', function(grid){
+			data.grids[grid.index] = grid
+			fillGrid()
+			$(".ajaxForm").on('submit', ajaxSubmit)
+			$("#updateBookingModal").modal('hide')
+			loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
+		})
+
+		socket.on('delete_booking_passed', function(grid){
+			data.grids[grid.index] = grid
+			fillGrid()
+			$(".ajaxForm").on('submit', ajaxSubmit)
+			$("#deleteBookingModal").modal('hide')
+			loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
+		})
+	})
+</script>
 {% endblock %}

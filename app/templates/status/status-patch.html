@@ -37,7 +37,7 @@
 					<label class="flex-fill">{{journey.from_}} <span class="text-info">to</span> {{pricing.stop}}</label>
 					
 					<form class="d-inline ajaxForm m-0" method="GET" action="{{ url_for('pricing.delete_pricing', pricing_id=pricing.id) }}" data-patch-containers='["#deletePricingPatch"]' data-progress-container="#deletePricingPatch">	
-						<label class="px-2">{{pricing.price}} </label>
+						<label class="px-2">{{pricing.price|currency}} </label>
 						<button class="btn btn-danger float-right badge badge-danger" data-toggle="modal" data-target="#deletePricingModal">&times;</button>
 					</form>
 				</li>

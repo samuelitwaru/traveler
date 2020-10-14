@@ -3,13 +3,16 @@ from datetime import timedelta
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session
 from app.models import Bus, Company, db
 from app.utils import  get_current_branch, set_bus_layout, change_bus_layout
-from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm
+from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm
+from .. guards import check_branch_journeys
+from ..data import BusSchedule
 
 
 bus_bp = Blueprint('bus', __name__, url_prefix='/bus')
 
 
 @bus_bp.route("/", methods=["GET"])
+@check_branch_journeys
 def get_buses():
 	company = get_current_branch().company
 	buses = Bus.query.filter_by(company_id=company.id)
@@ -20,7 +23,8 @@ def get_buses():
 def get_bus(bus_id):
 	company = get_current_branch().company
 	bus = Bus.query.get(bus_id)
-	update_bus_schedule_form = UpdateBusScheduleForm()
+	bus_obj = bus
+	update_bus_schedule_form = UpdateBusScheduleForm(obj=BusSchedule(bus))
 	update_bus_layout_form = UpdateBusLayoutForm()
 	return render_template("bus/bus.html", bus=bus, update_bus_schedule_form=update_bus_schedule_form, update_bus_layout_form=update_bus_layout_form)
 
@@ -63,7 +67,7 @@ def update_bus_layout(bus_id):
 	return redirect(request.referrer)
 	
 
-@bus_bp.route("/<int:bus_id>/update/schedule", methods=["POST"])
+@bus_bp.route("/<int:bus_id>/schedule/update", methods=["POST"])
 def update_bus_schedule(bus_id):
 	bus = Bus.query.get(bus_id)
 	update_bus_schedule_form = UpdateBusScheduleForm()
@@ -71,7 +75,7 @@ def update_bus_schedule(bus_id):
 	if update_bus_schedule_form.validate_on_submit():
 		journey_id = update_bus_schedule_form.journey_id.data
 		departure_time = update_bus_schedule_form.departure_time.data
-		booking_deadline = departure_time + timedelta(minutes=update_bus_schedule_form.booking_deadline.data)
+		booking_deadline = departure_time - timedelta(minutes=update_bus_schedule_form.booking_deadline.data)
 		broadcast = update_bus_schedule_form.broadcast.data
 		UTC = update_bus_schedule_form.UTC_offset.data
 		bus.journey_id = journey_id
@@ -83,4 +87,31 @@ def update_bus_schedule(bus_id):
 	else:
 		flash(str(update_bus_schedule_form.errors), "danger")
 	return redirect(request.referrer)
+	
+
+@bus_bp.route("/<int:bus_id>/schedule/delete", methods=["POST", "GET"])
+def delete_bus_schedule(bus_id):
+	bus = Bus.query.get(bus_id)
+	delete_bus_schedule_form = DeleteBusScheduleForm(obj=bus)
+	if request.method == "POST":
+		if delete_bus_schedule_form.validate_on_submit():
+			schedule_cancelled_reason = delete_bus_schedule_form.data.get("schedule_cancelled_reason")
+			bus.journey_id = None
+			bus.departure_time = None
+			bus.booking_deadline = None
+			bus.broadcast = None
+			bus.schedule_cancelled_reason = schedule_cancelled_reason
+			db.session.commit()
+			flash("Schedule cancelled.", "success")
+		else:
+			flash(str(delete_bus_schedule_form.errors), "danger")
+		return redirect(request.referrer)
+	else:
+		delete_bus_schedule_patch_template = render_template('bus/delete-bus-schedule-patch.html', delete_bus_schedule_form=delete_bus_schedule_form, bus=bus)
+		
+		data = {
+            "form_templates": {
+                "#deleteBusSchedulePatch": delete_bus_schedule_patch_template
+            }
+        };return data
 	

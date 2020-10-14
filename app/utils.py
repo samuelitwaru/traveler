@@ -1,5 +1,5 @@
 import uuid
-import cv2
+from PIL import Image
 import os
 import json
 import urllib
@@ -21,9 +21,9 @@ logos = UploadSet('logos', IMAGES)
 configure_uploads(app, (logos,))
 
 def crop_image(image_path, crop_path, x,y,w,h):
-	img = cv2.imread(image_path)
-	crop_img = img[int(y):int(y+h), int(x):int(x+w)]
-	cv2.imwrite(crop_path, crop_img)
+	im = Image.open(image_path)
+	im1 = im.crop((x, y, x+w, y+h)) 
+	im1.save(crop_path)
 
 
 def save_logo(logo, x, y, w, h):
@@ -91,7 +91,6 @@ def get_current_branch():
 	return  current_user.profile.branch
 
 
-
 def create_payment(booking):
 	grid = booking.booked_grid
 	bus = grid.bus
@@ -125,5 +124,11 @@ def parse_query_string(query_string):
 	return result
 
 
+def join_telephone(code, telephone):
+	return f"{code}-{telephone}"
+
+
+def split_telephone(telephone):
+	return telephone.split("-")
 
 

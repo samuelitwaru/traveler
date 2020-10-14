@@ -13,7 +13,7 @@ class CreateBookingForm(FlaskForm):
     passenger_name = StringField("Passenger Name", validators=[DataRequired()], default='Sam')
     passenger_telephone = StringField("Passenger Telephone")
     pickup = SelectField("Pickup Station")
-    paid = BooleanField("Paid ?", default=True)
+    paid = BooleanField("Paid ?")
     submit = SubmitField('Book')
 
     def __init__(self, grid=None, *args, **kwargs):

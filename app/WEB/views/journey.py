@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
-from app.models import Journey, db
+from app.models import Journey, Status, Pricing, db
 from app.utils import get_current_branch
 from ..forms import CreateJourneyForm, CreatePickupForm, CreatePricingForm, UpdateJourneyForm
 
@@ -25,6 +25,21 @@ def get_journey(journey_id):
 	update_journey_form = UpdateJourneyForm(obj=journey)
 	return render_template("journey/journey.html", journey=journey, create_pickup_form=create_pickup_form, create_pricing_form=create_pricing_form, statuses=statuses, update_journey_form=update_journey_form)
 
+
+@journey_bp.route("/<int:journey_id>/<int:status_id>/pricings", methods=["GET"])
+def get_journey_pricings(journey_id, status_id):
+	journey = Journey.query.get(journey_id)
+	status = Status.query.get(status_id)
+	branch = get_current_branch()
+	statuses = branch.company.statuses
+	pricings = Pricing.query.filter_by(journey_id=journey.id, status_id=status.id)
+	create_pricing_form = CreatePricingForm()
+	pricings_patch_template = render_template('pricing/pricings-patch.html', pricings=pricings, journey=journey, active_status=status, statuses=statuses, create_pricing_form=create_pricing_form)
+	data = {
+		"form_templates": {
+			"#pricingsPatch": pricings_patch_template
+	    }
+	};return data
 
 @journey_bp.route("/create", methods=["POST"])
 def create_journey():

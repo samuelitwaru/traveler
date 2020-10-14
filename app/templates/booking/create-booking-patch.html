@@ -1,5 +1,6 @@
 {% from 'helpers.html' import render_string_field, render_boolean_field %}
 <div id="createBookingPatch" class="modal-body">
+    {% if not bus.booking_time_expired() %}
     <form class="socketForm" data-event="create_booking" method="POST" id="createBookingForm" action="{{ url_for('booking.create_booking', grid_id=grid.id) }}">
         <div class="modal-body">
                 Seat {{grid.number}}
@@ -23,4 +24,9 @@
     <script type="text/javascript">
         $(".socketForm").on('submit', socketSubmit)
     </script>
+    {% else %}
+        <div class="alert alert-warning text-center shadow-sm">
+            <p>Booking time for this bus has ellapsed</p>
+        </div>
+    {% endif %}
 </div>

@@ -1,4 +1,5 @@
 from .auth import *
+from .user import *
 from .index import *
 from .company import *
 from .bus import *

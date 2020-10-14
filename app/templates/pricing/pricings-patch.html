@@ -1,1 +1,42 @@
-pricings-patch.html
+{% from 'helpers.html' import render_string_field %}
+<div id="pricingsPatch" class="px-2">
+
+	<div class="tab-pane p-2 fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+		<form class="form-row" method="POST" action="{{url_for('pricing.create_pricing', journey_id=journey.id, status_id=active_status.id)}}">
+			{{create_pricing_form.hidden_tag()}}
+			<div class="col-md-4">
+				{{ render_string_field(create_pricing_form.stop) }}
+			</div>	
+			<div class="col-md-4">
+				{{ render_string_field(create_pricing_form.price, type="number") }}
+			</div>
+			<div class="form-group col-md-4">
+				<small>`</small>
+				{{ create_pricing_form.submit(class="btn btn-block btn-info") }}
+			</div>
+		</form>
+	</div>
+
+	
+	<ul id="pricing-list" class="list-group pb-2">
+		{% for pricing in pricings %}
+		<li class="list-group-item d-flex">
+			<label class="flex-fill">{{journey.from_}} <span class="text-info">to</span> {{pricing.stop}}</label>
+
+			<form class="d-inline ajaxForm m-0" method="GET" action="{{ url_for('pricing.delete_pricing', pricing_id=pricing.id) }}" data-patch-containers='["#deletePricingPatch"]' data-progress-container="#deletePricingPatch">	
+				<label class="px-2">{{pricing.price|currency}} </label>
+				<button class="btn btn-sm btn-danger float-right badge badge-danger" data-toggle="modal" data-target="#deletePricingModal">&times;</button>
+			</form>
+		</li>
+		{% else %}
+		<p class="text-muted text-center">There are no pricings for "{{active_status}}" status</p>
+		{% endfor %}
+	</ul>	
+	
+	{% include 'pricing/delete-pricing-modal.html' %}
+
+</div>
+
+<script type="text/javascript">
+	$(".ajaxForm").on('submit', ajaxSubmit)
+</script>

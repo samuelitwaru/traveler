@@ -1,10 +1,23 @@
+{% with active_status=statuses|first %}
 <div class="border">
 	<h5 class="pt-2 px-2">Pricing</h5>
-	{% if statuses|length %}
-		{% with active_status=statuses|first %}
-		{% include 'status/status-patch.html' %}
-		{% endwith %}
-	{% else %}
-			<p class="p-2 text-muted">There are no registered pricing statuses</p>
-	{% endif %}
+	<ul class="nav nav-tabs bg-light pt-2 px-2 bg-white" role="tablist">
+		{% for status in statuses %}
+		<li class="nav-item">
+			<a href="" class="getRequestTrigger nav-link {% if status==active_status %}active{% endif %}" data-toggle="tab" data-progress-container="#pricingsPatch" data-patch-containers='["#pricingsPatch"]' data-url="{{ url_for('journey.get_journey_pricings', journey_id=journey.id, status_id=status.id) }}">{{status}}</a>
+		</li>
+		{% endfor %}
+		
+	</ul>
+
+	<div id="pricingsPatch" class="px-2"></div>
 </div>
+
+
+<script type="text/javascript">
+	$().ready((event)=>{
+		loadUrl("{{url_for('journey.get_journey_pricings', journey_id=journey.id, status_id=active_status.id)}}", "#pricingsPatch", ["#pricingsPatch"])
+
+	})
+</script>
+{% endwith %}

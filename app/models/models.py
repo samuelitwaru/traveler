@@ -100,6 +100,7 @@ class Bus(db.Model):
     rows = db.Column(db.Integer)
     broadcast = db.Column(db.Boolean)
     departure_time = db.Column(db.DateTime)
+    schedule_cancelled_reason = db.Column(db.String(1024))
     booking_deadline = db.Column(db.DateTime)
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
     status_id = db.Column(db.Integer, db.ForeignKey("status.id"))
@@ -116,6 +117,13 @@ class Bus(db.Model):
 
     def seats(self):
         return list(filter(lambda grid:grid.grid_type==1, self.grids))
+
+    def booking_time_expired(self):
+        print(self.booking_deadline.astimezone(timezone), now())
+        if self.booking_deadline.astimezone(timezone) < now():
+            return True
+        return False
+
 
 class Grid(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -185,7 +193,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(64), unique=True)
     password = db.Column(db.String(128))
 
-    profile = db.relationship("Profile", backref=db.backref("user", uselist=False), uselist=False, cascade="delete")
+    profile = db.relationship("Profile", backref="user", cascade="delete", uselist=False)
     token = db.relationship("Token", backref="user", cascade="delete", uselist=False)
 
     def __init__(self, *args, **kwargs):

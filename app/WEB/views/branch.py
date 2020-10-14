@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
 from app.models import Company, Branch, Profile, User, db
 from app.helpers import send_auth_mail
-from app.utils import create_user_token
+from app.utils import create_user_token, join_telephone
 from ..forms import CreateBranchForm, CreateProfileForm, DeleteProfileForm
 
 branch_bp = Blueprint('branch', __name__, url_prefix='/branch')
@@ -39,17 +39,18 @@ def create_branch_manager(branch_id):
 		first_name = create_profile_form.data.get("first_name")
 		last_name = create_profile_form.data.get("last_name")
 		email = create_profile_form.data.get("email")
+		telephone_code = create_profile_form.data.get("telephone_code")
 		telephone = create_profile_form.data.get("telephone")
 
 		user = User(email=email, username=email)
-		profile = Profile(first_name=first_name, last_name=last_name, telephone=telephone, is_manager=True)
+		profile = Profile(first_name=first_name, last_name=last_name, telephone=join_telephone(telephone_code, telephone), is_manager=True)
 		profile.branch = branch
 		profile.user = user
 		db.session.add(user)
 		db.session.add(profile)
 		create_user_token(user)
 		db.session.commit()
-		send_auth_mail(user)
+		send_auth_mail(user.username, user.token.token)
 		flash("Profile created", "success")
 	else:
 		flash(f"{create_profile_form.errors}", "danger")

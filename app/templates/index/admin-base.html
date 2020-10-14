@@ -14,7 +14,7 @@
 			</button>
 
 			<div class="dropdown-menu dropdown-menu-right rounded-0 shadow" align="right">
-				<a href="" class="dropdown-item"><span></span><span class="fa fa-user"></span> Account</a>
+				<a href="{{ url_for('user.update_user_password') }}" class="dropdown-item"><span></span><span class="fa fa-user"></span> Account</a>
 				<div class="dropdown-divider"></div>
 				<a href="{{ url_for('index.logout') }}" class="dropdown-item"><span class="fa fa-power-off"></span> Logout</a>
 			</div>

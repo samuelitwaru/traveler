@@ -32,17 +32,18 @@
 						<td>Email</td><td>{{manager.user.email}}</td>
 					</tr>
 					<tr>
-						<td>Telephone</td><td>{{manager.telephone}}</td>
+						<td>Telephone</td><td>{{manager.telephone_code}} - {{manager.telephone}}</td>
 					</tr>
 					<tr>
 						<td colspan="2" align="right">
-							<button class="btn btn-info">edit</button>
+							<button class="btn btn-info" data-toggle="modal" data-target="#updateManagerProfileModal">edit</button>
 							<button class="btn btn-danger" data-toggle="modal" data-target="#deleteBranchManagerModal">remove</button>
 							<hr>
 							<a href="{{ url_for('auth.set_token', user_id=manager.user.id) }}" class="nav-link"><span class="fa fa-key"> generate token</span></button>
 						</td>
 					</tr>
 					{% include 'profile/delete-branch-manager-modal.html' %}
+					{% include 'branch/update-branch-manager-modal.html' %}
 
 					{% else %}
 					<tr>
