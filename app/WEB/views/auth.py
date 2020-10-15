@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
 from flask_login import login_user, current_user
 from app.utils import authenticate_user, create_user_token
+from werkzeug.security import gen_salt
 from app.helpers import send_auth_mail
 from app.models import Token, User, db
 from ..forms import SetPasswordForm, ResetPasswordForm
@@ -56,7 +57,18 @@ def set_token(user_id):
         db.session.delete(token)
     create_user_token(user)
     db.session.commit()
-    send_auth_mail(user.username, user.token.token)
+    # send_auth_mail(user.username, user.token.token)
     flash("Token created.", "success")
+    return redirect(request.referrer)
+
+
+@auth_bp.route('recovery-password/<int:user_id>/set')
+def set_recovery_password(user_id):
+    user = User.query.get(user_id)
+    create_user_token(user)
+    recovery_password = gen_salt(10) 
+    user.recovery_password = recovery_password
+    db.session.commit()
+    flash(f"Recovery password set to '{recovery_password}'", "success")
     return redirect(request.referrer)
 

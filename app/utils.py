@@ -46,6 +46,7 @@ def authenticate_user(username, password):
 	if user and user.password and check_password_hash(user.password, password):
 		return user
 	return None
+	
 
 
 def create_user_token(user, token_period=3600):

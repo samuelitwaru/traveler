@@ -35,7 +35,7 @@ def create_cashier_profile():
 		db.session.add(profile)
 		create_user_token(user)
 		db.session.commit()
-		send_auth_mail(user)
+		# send_auth_mail(user)
 		flash("Cashier created", "success")
 	else:
 		flash(f"{create_profile_form.errors}", "danger")

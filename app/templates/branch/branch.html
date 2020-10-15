@@ -39,7 +39,8 @@
 							<button class="btn btn-info" data-toggle="modal" data-target="#updateManagerProfileModal">edit</button>
 							<button class="btn btn-danger" data-toggle="modal" data-target="#deleteBranchManagerModal">remove</button>
 							<hr>
-							<a href="{{ url_for('auth.set_token', user_id=manager.user.id) }}" class="nav-link"><span class="fa fa-key"> generate token</span></button>
+							<a href="{{ url_for('auth.set_token', user_id=manager.user.id) }}" class="nav-link"><span class="fa fa-key"> generate token</span></a>
+							<a href="{{ url_for('auth.set_recovery_password', user_id=manager.user.id) }}" class="nav-link text-danger"><span class="fa fa-key"> generate recovery password</span></a>
 						</td>
 					</tr>
 					{% include 'profile/delete-branch-manager-modal.html' %}

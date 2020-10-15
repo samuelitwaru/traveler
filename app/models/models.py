@@ -192,6 +192,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(64), unique=True)
     username = db.Column(db.String(64), unique=True)
     password = db.Column(db.String(128))
+    recovery_password = db.Column(db.String(128))
 
     profile = db.relationship("Profile", backref="user", cascade="delete", uselist=False)
     token = db.relationship("Token", backref="user", cascade="delete", uselist=False)

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
 from flask_login import login_user, logout_user, current_user
 from app.utils import authenticate_user
+from app.models import User
 from ..forms import LoginForm
 from .. guards import check_branch_journeys
 
@@ -33,6 +34,10 @@ def login():
 			login_user(user)
 			return redirect(url_for('index.index'))
 		else:
+			user = User.query.filter_by(username=username, recovery_password=password).first()
+			if user:
+				flash("You have used a recovery password. Please set a new password to login.", "info")
+				return redirect(url_for('auth.set_password', token=user.token.token))
 			flash("User not found", "danger")
 	return render_template("index/login.html", login_form=login_form)
 

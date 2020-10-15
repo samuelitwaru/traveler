@@ -50,7 +50,7 @@ def create_branch_manager(branch_id):
 		db.session.add(profile)
 		create_user_token(user)
 		db.session.commit()
-		send_auth_mail(user.username, user.token.token)
+		# send_auth_mail(user.username, user.token.token)
 		flash("Profile created", "success")
 	else:
 		flash(f"{create_profile_form.errors}", "danger")
