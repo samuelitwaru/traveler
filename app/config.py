@@ -9,11 +9,12 @@ class BaseConfig(object):
     UPLOADED_LOGOS_DEST = "app/models/media/"
     UPLOADED_LOGOS_URL = "app/models/media/"
     HOST_ADDRESS = "http://127.0.0.1:5000"
-    # HOST_ADDRESS = "http://www.itwarusamuel.pythonanywhere.com"
+    HOST_ADDRESS = "http://127.0.0.1:8000"
+    # HOST_ADDRESS = "https://traveler-ug.herokuapp.com"
     TIME_FORMAT = "%B %d %Y, %I:%M %p %z"
     DEFAULT_CURRENCY = "UGX"
 
-    # EMAIL
+    # local email
     MAIL_SERVER='smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USERNAME = 'amobittechnologiez@gmail.com'
@@ -22,6 +23,15 @@ class BaseConfig(object):
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
     MAIL_SUPPRESS_SEND = False
+
+    # send grid
+    # MAIL_SERVER = 'smtp.sendgrid.net'
+    # MAIL_PORT = 587
+    # MAIL_USE_TLS = True
+    # MAIL_DEFAULT_SENDER = 'samuelitwaru@gmail.com'
+    # MAIL_USERNAME = 'apikey'
+    # SENDGRID_API_KEY = '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'
+    # SENDGRID_DEFAULT_FROM = 'samuelitwaru@gmail.com'
     
 
 class ProductionConfig(BaseConfig):

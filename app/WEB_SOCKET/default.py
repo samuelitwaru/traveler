@@ -30,7 +30,7 @@ class DefaultNamespace(Namespace):
         grid_id = form_data.get("grid_id")
         grid = Grid.query.get(grid_id)
         bus = grid.bus
-        if not bus.booking_time_expired:
+        if not bus.booking_time_expired():
             create_booking_form = CreateBookingForm(data=form_data, grid=grid)
             if create_booking_form.validate():
             	# create booking

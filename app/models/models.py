@@ -120,9 +120,9 @@ class Bus(db.Model):
 
     def booking_time_expired(self):
         print(self.booking_deadline.astimezone(timezone), now())
-        if self.booking_deadline.astimezone(timezone) < now():
-            return True
-        return False
+        if self.booking_deadline.astimezone(timezone) > now():
+            return False
+        return True
 
 
 class Grid(db.Model):

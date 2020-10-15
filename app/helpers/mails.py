@@ -7,7 +7,7 @@ def send_auth_mail(email, token):
 	print(">>>>", email, token)
 	msg = Message(
 		"Authentication", 
-		# sender='samuelitwaru@gmail.com', 
+		sender='samuelitwaru@gmail.com', 
 		recipients=[email]
 	)
 	msg.html = render_template('email/authentication.html', token=token)
