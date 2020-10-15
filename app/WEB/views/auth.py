@@ -9,7 +9,7 @@ from ..forms import SetPasswordForm, ResetPasswordForm
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-@auth_bp.redirectoute('password/set/<token>', methods=["POST", "GET"])
+@auth_bp.route('password/set/<token>', methods=["POST", "GET"])
 def set_password(token):
     token = Token.query.filter_by(token=token).first()
     if not token or token.is_expired():
