@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, render_template, url_for, request, redirect, flash, send_from_directory
 from app import app
 from app.models import Company, Bus, Status, Branch, db
-from app.utils import crop_image, save_logo, logos, create_default_status, split_telephone
+from app.utils import save_logo, logos, create_default_status, split_telephone
 from ..forms import CreateCompanyForm, UpdateCompanyForm, CreateBusForm, UpdateBusLayoutForm, CreateStatusForm, CreateBranchForm, CreateProfileForm, DeleteProfileForm, UpdateProfileForm
 
 

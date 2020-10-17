@@ -12,9 +12,10 @@
 				<button class="btn btn-danger m-1" data-toggle="modal" data-target="#deleteCashierProfileModal"><span class="fa fa-trash"></span></button>
 
 				<button class="btn btn-info m-1" data-toggle="modal" data-target="#updateCashierProfileModal"><span class="fa fa-pencil"></span></button>
-				<hr>
-				<a href="{{ url_for('auth.set_token', user_id=cashier.user.id) }}" class="nav-link"><span class="fa fa-key"> generate token</span></a>
 			</div>
+			<hr>
+				<a href="{{ url_for('auth.set_token', user_id=cashier.user.id) }}" class="nav-link"><span class="fa fa-key"> generate token</span></a>
+				<a href="{{ url_for('auth.set_recovery_password', user_id=cashier.user.id) }}" class="nav-link text-danger"><span class="fa fa-key"> generate recovery password</span></a>
 		</div>
 	</div>
 

@@ -153,3 +153,43 @@ var ajaxMultipartSubmitForm = function(event){
 }
 
 $(".ajaxMultipartForm").on('submit', ajaxMultipartSubmitForm);
+
+printTicket = function(event) {
+    data = event.dataset
+    bus = data.bus
+    seat = data.seat
+    passenger = data.passenger
+    pickup = data.pickup
+    stop = data.stop
+    fare = data.fare
+    from = data.from
+    to = data.to
+    html = `
+    <table class="table-bordered">
+        <tboby>
+            <tr>
+                <td>Bus</td><td>${bus}</td>
+            </tr>
+            <tr>
+                <td>Seat</td><td>${seat}</td>
+            </tr>
+            <tr>
+                <td>Passenger</td><td>${passenger}</td>
+            </tr>
+            <tr>
+                <td>From</td><td>${from}</td>
+            </tr>
+            <tr>
+                <td>Stop</td><td>${stop}</td>
+            </tr>
+            <tr>
+                <td>Fare</td><td>${fare}</td>
+            </tr>
+        </tbody>
+    </table>
+    `
+    var originalContents = document.body.innerHTML;
+    document.body.innerHTML = html
+    window.print()
+    document.body.innerHTML = originalContents;
+}

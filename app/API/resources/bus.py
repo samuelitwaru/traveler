@@ -1,55 +1,64 @@
+import datetime
 from flask import request
-from flask_restful import Resource, marshal_with
+from flask_restful import Resource, marshal_with, reqparse, inputs
 from ..fields import Fields
 from app.models.models import Bus, db
+from ..parser import get_buses_parser
 
 bus_fields = Fields().bus_fields()
 
+
 class BusListAPI(Resource):
 
+    def __init__(self):
+        self.get_buses_parser = reqparse.RequestParser()
+        self.get_buses_parser.add_argument('departure_time', type=inputs.datetime_from_iso8601, help='Invalid depature_date', location="args")
+        self.get_buses_parser.add_argument('company_id', type=int, help='Invalid company_id', location="args")
+        self.get_buses_parser.add_argument('from', type=str, help='Invalid from', location="args")
+        self.get_buses_parser.add_argument('to', type=str, help='Invalid to', location="args")
+
     @marshal_with(bus_fields)
-    def get(self,from_place, to_place, dateTime):
+    def get(self):
+        args = get_buses_parser.parse_args()
+        print(args)
+        departure_time = args.get("departure_time")
+        company_id = args.get("company_id")
+        from_ = args.get("from")
+        to = args.get("to")
+        buses = Bus.query.all()
         try:
-            from_place = str.capitalize(from_place)
-            to_place = str.capitalize(to_place)
             buses = Bus.query.filter_by(
-                departure_time = datetime.datetime.strptime(
-                    dateTime, 
-                    '%d-%m-%Y %I:%M %p'
-                )
+                departure_time = departure_time
             ).all()
+
             p_buses = []
             if not buses:
                 buses = Bus.query.filter(
                     (
-                        Bus.departure_time >= datetime.datetime.strptime(
-                            dateTime, '%d-%m-%Y %I:%M %p'
-                        ) - datetime.timedelta(minutes=60)
+                        Bus.departure_time >= departure_time - datetime.timedelta(days=1)
                     )&(
-                        Bus.departure_time <= datetime.datetime.strptime(
-                            dateTime, '%d-%m-%Y %I:%M %p'
-                        ) + datetime.timedelta(minutes=60)
+                        Bus.departure_time <= departure_time + datetime.timedelta(days=1)
                     )
                 ).all()
             
             if buses:
                 p_buses = list(
                     filter(
-                        lambda bus:bus.journey._from == from_place and bus.journey.to == to_place, 
+                        lambda bus:bus.journey.from_ == from_ and bus.journey.to == to, 
                         buses
                     )
                 )
                 if not p_buses:
                     p_buses = list(
                         filter(
-                            lambda bus:bus.journey._from == from_place and any(p.name == to_place for p in bus.journey.pickups), 
+                            lambda bus:bus.journey.from_ == from_ and any(p.name == to for p in bus.journey.pickups), 
                             buses
                         )
                     )
                     
             return p_buses
-        except:
-            #abort
+        except Exception as e:
+            print(e)
             return []
 
 ##    @marshal_with(bus_fields)

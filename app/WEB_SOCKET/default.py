@@ -41,9 +41,7 @@ class DefaultNamespace(Namespace):
             	pickup = create_booking_form.pickup.data
             	paid = create_booking_form.paid.data
             	pricing = Pricing.query.get(pricing_id)
-            	fare = pricing.price
-
-            	booking = Booking(passenger_name=passenger_name, passenger_telephone=passenger_telephone, pickup=pickup, fare=fare, paid=paid, grid_id=grid_id, pricing_id=pricing_id)
+            	fare = pricing.price;stop = pricing.stop;booking = Booking(passenger_name=passenger_name, passenger_telephone=passenger_telephone, pickup=pickup, fare=fare, stop=stop, paid=paid, grid_id=grid_id, pricing_id=pricing_id)
             	db.session.add(booking)
             	grid.booking = booking
             	create_payment(booking)

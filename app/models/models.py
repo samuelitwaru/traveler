@@ -119,7 +119,6 @@ class Bus(db.Model):
         return list(filter(lambda grid:grid.grid_type==1, self.grids))
 
     def booking_time_expired(self):
-        print(self.booking_deadline.astimezone(timezone), now())
         if self.booking_deadline.astimezone(timezone) > now():
             return False
         return True
@@ -149,6 +148,7 @@ class Booking(db.Model):
     passenger_name = db.Column(db.String(128), nullable=False)
     passenger_telephone = db.Column(db.String(16))
     pickup = db.Column(db.String(64), nullable=False)
+    stop = db.Column(db.String(64), nullable=False)
     fare = db.Column(db.Integer, nullable=False)
     paid = db.Column(db.Boolean, nullable=False)
     grid_id = db.Column(db.Integer, db.ForeignKey("grid.id"), nullable=False)

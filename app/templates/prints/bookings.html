@@ -1,0 +1,46 @@
+{% extends 'prints/print-base.html' %}
+
+{% include 'prints/print-header.html' %}
+
+{% block content %}
+<hr>
+Bus: {{bus}}
+<div id="busBookingsPatch">
+	<table class="table table-bordered">
+		<thead>
+			<th>No</th>
+			<th>Seat</th>
+			<th>Passenger</th>
+			<th>Pickup</th>
+			<th>Stop</th>
+			<th>Payment</th>
+		</thead>
+		<tbody>
+		    {% for booking in bookings %}
+		        <tr>
+		            <td>{{loop.index}}</td>
+		            <td>{{booking.booked_grid}}</td>
+		            <td>{{booking.passenger_name}} <small>{{booking.passenger_telephone or ''}}</small></td>
+		            <td>{{booking.pickup}}</td>
+		            <td>{{booking.stop}}</td>
+		            <td>{{booking.fare|currency}} {% if booking.paid %}(PAID){% endif %}</small></td>
+		        </tr>
+		    {% else %}
+		        <div class="container" align="center">
+		            <p class="display-5 text-muted p-2">No Bookings!</p>
+		        </div>
+		    {% endfor %}
+		</tbody>
+		<tfoot class="text-center">
+			<tr>
+				<td colspan="5">Total Required</td>
+				<td>{{total_fare|currency}}</td>
+			</tr>
+			<tr>
+				<td colspan="5">Total Paid</td>
+				<td>{{total_paid|currency}}</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+{% endblock %}

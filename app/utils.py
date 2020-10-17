@@ -22,7 +22,8 @@ configure_uploads(app, (logos,))
 
 def crop_image(image_path, crop_path, x,y,w,h):
 	im = Image.open(image_path)
-	im1 = im.crop((x, y, x+w, y+h)) 
+	im1 = im.crop((x, y, x+w, y+h))
+	im1 = im1.resize(size=(200,200)) 
 	im1.save(crop_path)
 
 
@@ -123,6 +124,10 @@ def parse_query_string(query_string):
 		if isinstance(v, list) and len(v) == 1:
 			result[k] = v[0]
 	return result
+
+
+def parse_json_string(json_string):
+	return json.loads(json_string)
 
 
 def join_telephone(code, telephone):

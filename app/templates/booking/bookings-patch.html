@@ -1,3 +1,4 @@
+
 <div id="busBookingsPatch">
 	
 	<table class="table table-sm table-responsive-sm border">
@@ -6,7 +7,7 @@
 			<th>Seat</th>
 			<th>Passenger</th>
 			<th>Payment</th>
-			<th></th>
+			<th><a target="_blank" href="{{url_for('booking.print_bookings', bus_id=bus.id)}}" class="fa fa-print">  Full Sheet</a></th>
 		</thead>
 		<tbody>
 		    {% for booking in bookings %}
@@ -16,7 +17,7 @@
 		            <td>{{booking.passenger_name}} <small>{{booking.passenger_telephone or ''}}</small></td>
 		            <td>{{booking.fare|currency}} {% if booking.paid %}<span class="fa fa-check"></span>{% endif %}</small></td>
 		            <td>
-		            	<button class="fa fa-print"></button>
+		            	<button class="fa fa-print" data-bus="{{bus}}" data-seat="{{booking.booked_grid}}" data-passenger="{{booking.passenger_name}}" data-from="{{booking.pickup}}" data-stop="{{booking.stop}}" data-fare="{{booking.fare|currency}}" onclick="printTicket(this)"></button>
 		            	<form class="ajaxForm deleteForm d-inline" method="GET" action="{{ url_for('booking.delete_booking', booking_id=booking.id) }}" data-patch-containers='["#deleteBookingPatch"]' data-progress-container="#deleteBookingPatch">
 	        				<button class="btn btn-link text-danger nav-link p-0 float-right" data-toggle="modal" data-target="#deleteBookingModal" ><span class="fa fa-times"></span></button>
 	        			</form>

@@ -1,6 +1,7 @@
 import json
-from flask import Blueprint, render_template, url_for, request, redirect, flash, session
-from app.models import Grid, Pricing, Passenger, Booking, db
+from weasyprint import HTML, CSS
+from flask import Blueprint, render_template, url_for, request, redirect, flash, session, make_response
+from app.models import Grid, Pricing, Passenger, Booking, Bus, db
 from app.utils import  get_current_branch
 from ..forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm
 from .payment import create_payment
@@ -18,11 +19,12 @@ def get_bookings():
 
 @booking_bp.route("/<int:bus_id>", methods=["GET"])
 def get_bus_bookings(bus_id):
+	bus = Bus.query.get(bus_id)
 	grids = [grid.id for grid in Grid.query.filter_by(bus_id=bus_id).all()]
 	bookings = Booking.query.filter(Booking.grid_id.in_(grids)).all()
 	total_fare = sum([booking.fare for booking in bookings])
 	total_paid = sum([booking.fare for booking in list(filter(lambda booking: booking.paid, bookings))])
-	bus_bookings_patch_template = render_template('booking/bookings-patch.html', bookings=bookings, total_fare=total_fare, total_paid=total_paid)
+	bus_bookings_patch_template = render_template('booking/bookings-patch.html', bookings=bookings, bus=bus, total_fare=total_fare, total_paid=total_paid)
 	data = {
         "form_templates": {
             "#busBookingsPatch": bus_bookings_patch_template
@@ -56,8 +58,9 @@ def create_booking(grid_id):
 			paid = create_booking_form.paid.data
 			pricing = Pricing.query.get(pricing_id)
 			fare = pricing.price
+			stop = pricing.stop
 
-			booking = Booking(passenger_name=passenger_name, passenger_telephone=passenger_telephone, pickup=pickup, fare=fare, paid=paid, grid_id=grid_id, pricing_id=pricing_id)
+			booking = Booking(passenger_name=passenger_name, passenger_telephone=passenger_telephone, pickup=pickup, stop=stop, fare=fare, paid=paid, grid_id=grid_id, pricing_id=pricing_id)
 			db.session.add(booking)
 			grid.booking = booking
 			create_payment(booking)
@@ -66,7 +69,6 @@ def create_booking(grid_id):
 		else:
 			flash(str(create_booking_form.errors), "danger")
 		
-		print("creating in POST")
 		return redirect(request.referrer)
 
 	else:
@@ -123,3 +125,20 @@ def delete_booking(booking_id):
                 "#deleteBookingPatch": delete_booking_patch_template
             }
         };return data
+
+
+@booking_bp.route('<int:bus_id>/print', methods=["GET"])
+def print_bookings(bus_id):
+	bus = Bus.query.get(bus_id)
+	grids = [grid.id for grid in Grid.query.filter_by(bus_id=bus_id).all()]
+	bookings = Booking.query.filter(Booking.grid_id.in_(grids)).all()
+	total_fare = sum([booking.fare for booking in bookings])
+	total_paid = sum([booking.fare for booking in list(filter(lambda booking: booking.paid, bookings))])
+	bus_bookings_patch_template = render_template('prints/bookings.html', bookings=bookings, total_fare=total_fare, total_paid=total_paid, bus=bus)
+
+	pdf_file = HTML(string=bus_bookings_patch_template).write_pdf()
+
+	response = make_response(pdf_file)
+	response.headers.set('Content-Disposition', 'attachment', filename='booking.pdf')
+	response.headers.set('Content-Type', 'application/pdf')
+	return response

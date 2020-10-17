@@ -23,8 +23,11 @@ def delete_and_create_db():
 	os.system('rm -rf migrations; rm app/models/database.db; flask db init; flask db migrate -m "First migration"; flask db upgrade')
 
 def delete_and_create_DB():
-        os.system('rm -rf migrations; bash drop_db.sh root bratz123 traveler;')
-        db.create_all()
+    os.system('rm -rf migrations; bash drop_db.sh root bratz123 traveler;')
+    db.create_all()
+
+def delete_and_create_media():
+	os.system('rm -rf app/models/media; mkdir app/models/media')
         
 def reset():
 	delete_and_create_db()

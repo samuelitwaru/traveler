@@ -8,13 +8,19 @@ def init_admin(first_name, last_name, email, password):
 	db.session.add(user)
 	db.session.add(profile)
 	db.session.commit()
+
+
+def delete_and_create_media():
+	os.system('rm -rf app/models/media; mkdir app/models/media')
 	
 
 def delete_and_create_db():
 	os.system('rm -rf migrations; rm app/models/database.db; flask db init; flask db migrate -m "First migration"; flask db upgrade')
 	db.create_all()
+
         
 def reset():
-	delete_and_create_db()
-	init_admin("Sam", "It", "samit@gmail.com", "123")
+        delete_and_create_media()
+        delete_and_create_db()
+        init_admin("Sam", "It", "samit@gmail.com", "123")
 
