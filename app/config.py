@@ -9,9 +9,9 @@ class BaseConfig(object):
     UPLOADED_LOGOS_DEST = "app/models/media/"
     UPLOADED_LOGOS_URL = "app/models/media/"
     HOST_ADDRESS = "http://127.0.0.1:5000"
-    # HOST_ADDRESS = "http://192.168.1.117:5000"
+    HOST_ADDRESS = "http://192.168.1.117:8000"
     # HOST_ADDRESS = "http://127.0.0.1:8000"
-    HOST_ADDRESS = "https://traveler-ug.herokuapp.com"
+    # HOST_ADDRESS = "https://traveler-ug.herokuapp.com"
     TIME_FORMAT = "%B %d %Y, %I:%M %p %z"
     DEFAULT_CURRENCY = "UGX"
 
