@@ -2,10 +2,10 @@
 
 {% block content %}
 <div class="row p-2 m-0">
-	<div class="col-md-4">
-		<h4><span class="fa fa-bus"></span> {{bus.number}}</h4>
-		<hr>
-		<table class="table table-bordered">
+	<div class="col-md-3">
+		<!-- <h4><span class="fa fa-bus"></span> {{bus.number}}</h4> -->
+		<!-- <hr> -->
+		<table class="table table-bordered table-sm">
 			<tbody>
 				<tr>
 					<td>Columns</td><td>{{bus.columns}}</td>
@@ -54,7 +54,7 @@
 		{% include 'bus/update-bus-schedule-modal.html' %}
 		{% include 'bus/delete-bus-schedule-modal.html' %}
 	</div>
-	<div class="col-md-8">
+	<div class="col-md-9">
 		{% include 'bus/bus-booking.html' %}
 	</div>
 </div>

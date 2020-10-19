@@ -84,7 +84,7 @@ def get_company_bus(company_id, bus_id):
 @company_bp.route("/<int:company_id>/statuses", methods=["GET"])
 def get_company_statuses(company_id):
     company = Company.query.get(company_id)
-    statuses = Status.query.filter_by(company_id=company_id)
+    statuses = Status.query.filter_by(company_id=company_id).all()
     create_status_form = CreateStatusForm(company=company)
     return render_template("status/statuses.html", statuses=statuses, company=company, create_status_form=create_status_form)
 
@@ -92,7 +92,7 @@ def get_company_statuses(company_id):
 @company_bp.route("/<int:company_id>/branches", methods=["GET"])
 def get_company_branches(company_id):
     company = Company.query.get(company_id)
-    branches = Branch.query.filter_by(company_id=company_id)
+    branches = Branch.query.filter_by(company_id=company_id).all()
     create_branch_form = CreateBranchForm()
     return render_template("branch/branches.html", branches=branches, company=company, create_branch_form=create_branch_form)
 

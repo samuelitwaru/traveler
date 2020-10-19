@@ -57,7 +57,7 @@ def set_token(user_id):
         db.session.delete(token)
     create_user_token(user)
     db.session.commit()
-    # send_auth_mail(user.username, user.token.token)
+    send_auth_mail(user.username, user.token.token)
     flash("Token created.", "success")
     return redirect(request.referrer)
 

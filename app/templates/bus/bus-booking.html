@@ -1,17 +1,14 @@
 <script src="/static/js/muuri.min.js"></script>
 
-<h4 class="flex-fill">Bookings </h4>
-
-<hr>
-
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-5">
+		<h4 align="center"><span class="fa fa-bus"></span> {{bus.number}}</h4>
 		<div align="center">
 			<div id="grid" class="grid border"></div>
 		</div>
 		<hr>
 	</div>
-	<div class="col-md-6">
+	<div class="col-md-7">
 		<div class="collapse">
 			<form id="getBusBookingsForm" class="ajaxForm d-inline p-1 collapse" method="GET" action="{{ url_for('booking.get_bus_bookings', bus_id=bus.id) }}" data-patch-containers='["#busBookingsPatch"]' data-progress-container="#busBookingsPatch"></form> 
 		</div>

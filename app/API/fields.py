@@ -73,6 +73,7 @@ class Fields:
 			"journey": fields.Nested(self.journey_fields_min()),
 		}
 
+
 	def pricing_fields_min(self):
 		return { 
 			"id": fields.Integer,
@@ -155,6 +156,7 @@ class Fields:
 			"booking": fields.Nested(self.booking_fields_min()),
 		}
 
+
 	def grid_fields_min(self):
 		return { 
 			"id": fields.Integer,
@@ -162,7 +164,6 @@ class Fields:
 			"grid_type": fields.Integer,
 			"number": fields.String,
 			"label": fields.String,
-			"booking": fields.Nested(self.booking_fields_min()),
 		}
 
 
@@ -175,7 +176,7 @@ class Fields:
 			"pickup": fields.String,
 			"fare": fields.Integer,
 			"paid": fields.Boolean,
-			"grid": fields.Nested(self.grid_fields_min()),
+			"booked_grid": fields.Nested(self.grid_fields_min()),
 			"pricing": fields.Nested(self.pricing_fields_min()),
 			"payment": fields.Nested(self.payment_fields_min()),
 			"payment": fields.Nested(self.payment_fields_min()),

@@ -41,6 +41,7 @@ socketio.on_namespace(DesktopNamespace('/desktop'))
 
 # load api resources
 from app.API.resources.bus import BusAPI, BusListAPI
+from app.API.resources.grid import GridAPI, GridListAPI
 from app.API.resources.booking import BookingAPI, BookingListAPI
 from app.API.resources.journey import JourneyAPI, JourneyListAPI
 from app.API.resources.payment import PaymentAPI, PaymentListAPI
@@ -48,8 +49,12 @@ from app.API.resources.passenger import PassengerAPI, PassengerListAPI
 from app.API.resources.profile import ProfileAPI, ProfileListAPI
 from app.API.resources.user import UserAPI, UserListAPI
 
+
 api.add_resource(BusListAPI, '/bus/api/v1.0/buses', endpoint="buses")
 api.add_resource(BusAPI, '/bus/api/v1.0/buses/<int:id>', endpoint="bus")
+
+api.add_resource(GridListAPI, '/bus/api/v1.0/grids', endpoint="grids")
+api.add_resource(GridAPI, '/bus/api/v1.0/grids/<int:id>', endpoint="grid")
 
 api.add_resource(BookingListAPI, '/bus/api/v1.0/bookings', endpoint="bookings")
 api.add_resource(BookingAPI, '/bus/api/v1.0/bookings/<int:id>', endpoint="booking")

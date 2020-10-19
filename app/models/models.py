@@ -29,6 +29,7 @@ class Branch(db.Model):
 
     journeys = db.relationship("Journey", backref="branch")
     members = db.relationship("Profile", backref="branch")
+    buses = db.relationship("Bus", backref="branch")
 
     def __init__(self, name, location, company):
         self.name = name
@@ -98,10 +99,13 @@ class Bus(db.Model):
     number = db.Column(db.String(16))
     columns = db.Column(db.Integer)
     rows = db.Column(db.Integer)
+    
     broadcast = db.Column(db.Boolean)
     departure_time = db.Column(db.DateTime)
     schedule_cancelled_reason = db.Column(db.String(1024))
     booking_deadline = db.Column(db.DateTime)
+    branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
+    
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
     status_id = db.Column(db.Integer, db.ForeignKey("status.id"))
     journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))
@@ -133,7 +137,7 @@ class Grid(db.Model):
     booking_id = db.Column(db.Integer, db.ForeignKey("booking.id")) # current_booking
     bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"), nullable=False)
 
-    bookings = db.relationship("Booking", backref="grid", foreign_keys=booking_id)
+    bookings = db.relationship("Booking", backref="grid", foreign_keys=booking_id, uselist=True)
     booking = db.relationship("Booking", backref=db.backref("booked_grid", uselist=False), foreign_keys=booking_id)
 
     def __str__(self):
@@ -219,6 +223,7 @@ class Profile(db.Model):
     is_admin = db.Column(db.Boolean())
     is_manager = db.Column(db.Boolean())
     is_cashier = db.Column(db.Boolean())
+    is_passenger = db.Column(db.Boolean())
     branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
 

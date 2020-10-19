@@ -1,16 +1,28 @@
 from flask import request
-from flask_restful import Resource, marshal_with
-from app.models.models import Booking, Grid, db
+from flask_restful import Resource, marshal_with, reqparse
+from app.models.models import Booking, Grid, Bus, db
 from app import DefaultNamespace
 from ..fields import Fields
 
 booking_fields = Fields().booking_fields()
 
 class BookingListAPI(Resource):
+    get_bookings_parser = reqparse.RequestParser()
+
+    def __init__(self):
+        self.get_bookings_parser.add_argument('bus_id', type=int, help='Invalid bus_id', location="args")
 
     @marshal_with(booking_fields)
     def get(self):
-        bookings = Booking.query.all()
+        args = self.get_bookings_parser.parse_args()
+        bus_id = args.get("bus_id")
+        if bus_id:
+            bus = Bus.query.get(bus_id)
+            grids = [grid.id for grid in Grid.query.filter_by(bus_id=bus_id).all()]
+            bookings = Booking.query.filter(Booking.grid_id.in_(grids)).all()
+        else:
+            bookings = Booking.query.all()
+        
         return bookings
 
     @marshal_with(booking_fields)

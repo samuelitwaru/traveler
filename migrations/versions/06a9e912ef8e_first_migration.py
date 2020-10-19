@@ -1,8 +1,8 @@
 """First migration
 
-Revision ID: c9c516cca62b
+Revision ID: 06a9e912ef8e
 Revises: 
-Create Date: 2020-10-16 06:13:21.878398
+Create Date: 2020-10-18 06:27:30.246256
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c9c516cca62b'
+revision = '06a9e912ef8e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -51,9 +51,11 @@ def upgrade():
     sa.Column('departure_time', sa.DateTime(), nullable=True),
     sa.Column('schedule_cancelled_reason', sa.String(length=1024), nullable=True),
     sa.Column('booking_deadline', sa.DateTime(), nullable=True),
+    sa.Column('branch_id', sa.Integer(), nullable=True),
     sa.Column('company_id', sa.Integer(), nullable=True),
     sa.Column('status_id', sa.Integer(), nullable=True),
     sa.Column('journey_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['branch_id'], ['branch.id'], ),
     sa.ForeignKeyConstraint(['company_id'], ['company.id'], ),
     sa.ForeignKeyConstraint(['journey_id'], ['journey.id'], ),
     sa.ForeignKeyConstraint(['status_id'], ['status.id'], ),
@@ -148,6 +150,7 @@ def upgrade():
     sa.Column('is_admin', sa.Boolean(), nullable=True),
     sa.Column('is_manager', sa.Boolean(), nullable=True),
     sa.Column('is_cashier', sa.Boolean(), nullable=True),
+    sa.Column('is_passenger', sa.Boolean(), nullable=True),
     sa.Column('branch_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['branch_id'], ['branch.id'], ),

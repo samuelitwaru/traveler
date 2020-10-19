@@ -3,16 +3,14 @@
 	
 	<table class="table table-sm table-responsive-sm border">
 		<thead>
-			<th>No</th>
 			<th>Seat</th>
 			<th>Passenger</th>
 			<th>Payment</th>
-			<th><a target="_blank" href="{{url_for('booking.print_bookings', bus_id=bus.id)}}" class="fa fa-print">  Full Sheet</a></th>
+			<th><a target="_blank" href="{{url_for('booking.print_bookings', bus_id=bus.id)}}" class="fa fa-download"></a></th>
 		</thead>
 		<tbody>
 		    {% for booking in bookings %}
 		        <tr>
-		            <td>{{loop.index}}</td>
 		            <td>{{booking.booked_grid}}</td>
 		            <td>{{booking.passenger_name}} <small>{{booking.passenger_telephone or ''}}</small></td>
 		            <td>{{booking.fare|currency}} {% if booking.paid %}<span class="fa fa-check"></span>{% endif %}</small></td>
@@ -29,14 +27,16 @@
 		        </div>
 		    {% endfor %}
 		</tbody>
-		<tfoot class="text-center">
+		<tfoot class="text-center table-info">
 			<tr>
-				<td colspan="3">Total Required</td>
-				<td colspan="2">{{total_fare|currency}}</td>
+				<td colspan="2">Total Required</td>
+				<td colspan="1">{{total_fare|currency}}</td>
+				<td colspan="1"></td>
 			</tr>
 			<tr>
-				<td colspan="3">Total Paid</td>
-				<td colspan="2">{{total_paid|currency}}</td>
+				<td colspan="2">Total Paid</td>
+				<td colspan="1">{{total_paid|currency}}</td>
+				<td colspan="1"></td>
 			</tr>
 		</tfoot>
 	</table>

@@ -58,13 +58,16 @@ def create_user_token(user, token_period=3600):
 	token.user = user
 	db.session.add(token)
 
+
 def create_default_status(company):
 	status = Status(name="Ordinary", default=True, company=company)
 	db.session.add(status)
 
+
 def set_bus_layout(bus, columns, rows):
 	count = columns * rows
 	db.session.add_all([ Grid(index=i, grid_type=0, bus=bus) for i in range(count) ])
+
 
 def change_bus_layout(bus, layout):
 	new_grid_ids = []

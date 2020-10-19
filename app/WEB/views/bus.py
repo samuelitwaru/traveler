@@ -82,6 +82,7 @@ def update_bus_schedule(bus_id):
 		bus.departure_time = departure_time
 		bus.booking_deadline = booking_deadline
 		bus.broadcast = broadcast
+		bus.branch = get_current_branch()
 		db.session.commit()
 		flash("Bus scheduled.", "success")
 	else:
