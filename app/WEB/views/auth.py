@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, logout_user
 from app.utils import authenticate_user, create_user_token
 from werkzeug.security import gen_salt
 from app.helpers import send_auth_mail
@@ -24,6 +24,7 @@ def set_password(token):
         user.set_password(password)
         db.session.delete(token)
         db.session.commit()
+        logout_user()
         flash("Password set. Login with your new password.", "success")
         return redirect(url_for("index.index"))
 
