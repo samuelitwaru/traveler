@@ -1,4 +1,4 @@
-{% from 'helpers.html' import render_string_field, render_boolean_field %}
+{% from 'helpers.html' import render_string_field %}
 <div id="deleteBookingPatch" class="modal-body">
     <form class="socketForm" data-event="delete_booking" method="POST" id="createBookingForm" action="{{ url_for('booking.delete_booking', booking_id=booking.id) }}">
         <div class="modal-body">

@@ -10,7 +10,7 @@ from app.models import Pricing
 class CreateBookingForm(FlaskForm):
     grid_id = IntegerField(validators=[DataRequired()], widget=HiddenInput())
     pricing_id = SelectField("Select Fare", validators=[DataRequired()], coerce=int)
-    passenger_name = StringField("Passenger Name", validators=[DataRequired()], default='Sam')
+    passenger_name = StringField("Passenger Name", validators=[DataRequired()])
     passenger_telephone = StringField("Passenger Telephone")
     pickup = SelectField("Pickup Station")
     paid = BooleanField("Paid ?")
@@ -30,7 +30,7 @@ class UpdateBookingForm(FlaskForm):
     id = IntegerField(validators=[DataRequired()], widget=HiddenInput())
     grid_id = IntegerField(validators=[DataRequired()], widget=HiddenInput())
     pricing_id = SelectField("Select Fare", validators=[DataRequired()], coerce=int)
-    passenger_name = StringField("Passenger Name", validators=[DataRequired()], default='Sam')
+    passenger_name = StringField("Passenger Name", validators=[DataRequired()])
     passenger_telephone = StringField("Passenger Telephone")
     pickup = SelectField("Pickup Station")
     paid = BooleanField("Paid ?", id="paid_for_update")

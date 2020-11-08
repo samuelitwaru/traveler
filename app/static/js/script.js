@@ -118,9 +118,13 @@ var socketSubmit = function(event){
     socket.emit(event, form_data);
 }
 
-$(".ajaxForm").on('submit', ajaxSubmit)
-$(".socketForm").on('submit', socketSubmit)
-$(".getRequestTrigger").on('click', ajaxGetSubmit)
+loadTriggers = function(){
+    $(".ajaxForm").on('submit', ajaxSubmit)
+    $(".socketForm").on('submit', socketSubmit)
+    $(".getRequestTrigger").on('click', ajaxGetSubmit)    
+}
+
+loadTriggers()
 
 var ajaxMultipartSubmitForm = function(event){
     event.preventDefault(); //prevent default action
@@ -192,4 +196,5 @@ printTicket = function(event) {
     document.body.innerHTML = html
     window.print()
     document.body.innerHTML = originalContents;
+    loadTriggers()
 }

@@ -15,6 +15,7 @@ def company():
 		branch = current_user.profile.branch
 		if branch:
 			return {
+				"profile": current_user.profile,
 				"branch": branch,
 				"company": branch.company,
 			}

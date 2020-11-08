@@ -1,4 +1,4 @@
-{% from 'helpers.html' import render_string_field  %}
+{% from 'helpers.html' import render_string_field, render_boolean_field  %}
 <div id="deleteBusSchedulePatch">
 	<form method="POST" action="{{ url_for('bus.delete_bus_schedule', bus_id=bus.id) }}">
 
@@ -7,6 +7,8 @@
 		{{ delete_bus_schedule_form.id }}
 		
 		{{ render_string_field(delete_bus_schedule_form.schedule_cancelled_reason) }}
+		
+		{{ render_boolean_field(delete_bus_schedule_form.delete_bookings) }}
 
 		<p>Are you sure you want to cancel this schedule?</p>
 		

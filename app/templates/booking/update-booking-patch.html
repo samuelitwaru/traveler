@@ -1,19 +1,20 @@
 {% from 'helpers.html' import render_string_field, render_boolean_field %}
+{% if bus.journey %}
 <div id="updateBookingPatch" class="modal-body">
+    {% if not bus.booking_time_expired() %}
     <form class="socketForm" data-event="update_booking" method="POST" id="createBookingForm" action="{{ url_for('booking.update_booking', booking_id=booking.id) }}">
         <div class="modal-body">
-                Seat {{grid.number}}
-                <hr>
-                {{ update_booking_form.csrf_token }}
-                {{ update_booking_form.id }}
+            Seat {{grid.number}}
+            <hr>
+            {{ update_booking_form.csrf_token }}
+            {{ update_booking_form.id }}
 
-                {{ update_booking_form.grid_id(value=grid.id) }}
-                {{ render_string_field(update_booking_form.passenger_name) }}
-                {{ render_string_field(update_booking_form.passenger_telephone) }}
-                {{ render_string_field(update_booking_form.pricing_id) }}
-                {{ render_string_field(update_booking_form.pickup) }}
-                {{ render_boolean_field(update_booking_form.paid) }}
-
+            {{ update_booking_form.grid_id(value=grid.id) }}
+            {{ render_string_field(update_booking_form.passenger_name) }}
+            {{ render_string_field(update_booking_form.passenger_telephone) }}
+            {{ render_string_field(update_booking_form.pricing_id) }}
+            {{ render_string_field(update_booking_form.pickup) }}
+            {{ render_boolean_field(update_booking_form.paid) }}
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -24,4 +25,17 @@
     <script type="text/javascript">
         $(".socketForm").on('submit', socketSubmit)
     </script>
+    {% else %}
+        <div class="alert alert-warning text-center shadow-sm">
+            <p class="m-2">Booking time for this bus has ellapsed</p>
+        </div>
+    {% endif %}
 </div>
+{% else %}
+<div class="modal-body text-center">
+    <div class="alert alert-warning shadow-sm">
+        <p class="m-2">Bus not yet scheduled!</p>
+    </div>
+    <p>Please schedule bus to start booking.</p>
+</div>
+{% endif %}

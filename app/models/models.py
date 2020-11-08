@@ -104,6 +104,7 @@ class Bus(db.Model):
     departure_time = db.Column(db.DateTime)
     schedule_cancelled_reason = db.Column(db.String(1024))
     booking_deadline = db.Column(db.DateTime)
+    free_bus_time = db.Column(db.DateTime)
     branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
     
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))

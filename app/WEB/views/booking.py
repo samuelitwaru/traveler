@@ -45,7 +45,6 @@ def get_booking(booking_id):
 @booking_bp.route("/create/<int:grid_id>", methods=["GET", "POST"])
 def create_booking(grid_id):
 	grid = Grid.query.get(grid_id)
-	bus = grid.bus
 	if request.method == "POST":
 		create_booking_form = CreateBookingForm(grid=grid)
 		if create_booking_form.validate_on_submit():
@@ -72,8 +71,13 @@ def create_booking(grid_id):
 		return redirect(request.referrer)
 
 	else:
-		create_booking_form = CreateBookingForm(grid=grid)
-		create_booking_patch_template = render_template('booking/create-booking-patch.html', grid=grid, create_booking_form=create_booking_form, bus=bus)
+		bus = grid.bus
+		if bus.journey:
+			create_booking_form = CreateBookingForm(grid=grid)
+			create_booking_patch_template = render_template('booking/create-booking-patch.html', grid=grid, create_booking_form=create_booking_form, bus=bus)
+		else:
+			create_booking_patch_template = render_template('booking/create-booking-patch.html', bus=bus)
+
 		data = {
 	        "form_templates": {
 	            "#createBookingPatch": create_booking_patch_template
@@ -94,8 +98,13 @@ def update_booking(booking_id):
 			flash(str(update_booking_form.errors), "danger")
 		return redirect(request.referrer)
 	else:
-		update_booking_form = UpdateBookingForm(obj=booking, grid=grid)
-		update_booking_patch_template = render_template('booking/update-booking-patch.html', update_booking_form=update_booking_form, booking=booking, grid=grid)
+		bus = grid.bus
+		if bus.journey:
+			update_booking_form = UpdateBookingForm(obj=booking, grid=grid)
+			update_booking_patch_template = render_template('booking/update-booking-patch.html', update_booking_form=update_booking_form, booking=booking, grid=grid, bus=bus)
+		else:
+			update_booking_patch_template = render_template('booking/update-booking-patch.html', bus=bus)
+
 		data = {
             "form_templates": {
                 "#updateBookingPatch": update_booking_patch_template

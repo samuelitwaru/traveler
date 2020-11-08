@@ -42,7 +42,6 @@ class MobileNamespace(Namespace):
             db.session.commit()
             room = grid.bus.number
             emit("create_booking_passed", grid.grid_dict(), room=room, broadcast=True)
-        
         else:
             emit("create_booking_failed", create_booking_form.errors, broadcast=False)
 

@@ -1,7 +1,7 @@
 import json
 from datetime import timedelta
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session
-from app.models import Bus, Company, db
+from app.models import Bus, Company, Grid, Booking, db
 from app.utils import  get_current_branch, set_bus_layout, change_bus_layout
 from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm
 from .. guards import check_branch_journeys
@@ -14,16 +14,17 @@ bus_bp = Blueprint('bus', __name__, url_prefix='/bus')
 @bus_bp.route("/", methods=["GET"])
 @check_branch_journeys
 def get_buses():
-	company = get_current_branch().company
-	buses = Bus.query.filter_by(company_id=company.id)
-	return render_template("bus/buses.html", buses=buses)
+	branch = get_current_branch()
+	company = branch.company
+	free_buses = Bus.query.filter_by(company_id=company.id, branch_id=None)
+	scheduled_buses = Bus.query.filter_by(branch_id=branch.id)
+	return render_template("bus/buses.html", free_buses=free_buses, scheduled_buses=scheduled_buses)
 
 
 @bus_bp.route("/<int:bus_id>", methods=["GET"])
 def get_bus(bus_id):
 	company = get_current_branch().company
 	bus = Bus.query.get(bus_id)
-	bus_obj = bus
 	update_bus_schedule_form = UpdateBusScheduleForm(obj=BusSchedule(bus))
 	update_bus_layout_form = UpdateBusLayoutForm()
 	return render_template("bus/bus.html", bus=bus, update_bus_schedule_form=update_bus_schedule_form, update_bus_layout_form=update_bus_layout_form)
@@ -76,11 +77,13 @@ def update_bus_schedule(bus_id):
 		journey_id = update_bus_schedule_form.journey_id.data
 		departure_time = update_bus_schedule_form.departure_time.data
 		booking_deadline = departure_time - timedelta(minutes=update_bus_schedule_form.booking_deadline.data)
+		free_bus_time = departure_time + timedelta(minutes=update_bus_schedule_form.free_bus_time.data)
 		broadcast = update_bus_schedule_form.broadcast.data
 		UTC = update_bus_schedule_form.UTC_offset.data
 		bus.journey_id = journey_id
 		bus.departure_time = departure_time
 		bus.booking_deadline = booking_deadline
+		bus.free_bus_time = free_bus_time
 		bus.broadcast = broadcast
 		bus.branch = get_current_branch()
 		db.session.commit()
@@ -97,11 +100,20 @@ def delete_bus_schedule(bus_id):
 	if request.method == "POST":
 		if delete_bus_schedule_form.validate_on_submit():
 			schedule_cancelled_reason = delete_bus_schedule_form.data.get("schedule_cancelled_reason")
+			delete_bookings = delete_bus_schedule_form.data.get("delete_bookings")
 			bus.journey_id = None
 			bus.departure_time = None
 			bus.booking_deadline = None
+			bus.free_bus_time = None
 			bus.broadcast = None
+			bus.branch = None
 			bus.schedule_cancelled_reason = schedule_cancelled_reason
+
+			if delete_bookings:
+				# delete all bus bookings
+				grids = [grid.id for grid in Grid.query.filter_by(bus_id=bus_id).all()]
+				bookings = Booking.query.filter(Booking.grid_id.in_(grids)).delete(synchronize_session=False)
+			
 			db.session.commit()
 			flash("Schedule cancelled.", "success")
 		else:

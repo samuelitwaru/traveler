@@ -83,6 +83,7 @@ class DefaultNamespace(Namespace):
 
     def on_delete_booking(self, query_string):
         form_data = parse_query_string(query_string)
+        print(">>>", form_data)
         delete_booking_form = DeleteBookingForm(data=form_data)
         booking = Booking.query.get(form_data["id"])
         grid = booking.booked_grid

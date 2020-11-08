@@ -4,28 +4,62 @@
 
 {% block content %}
 	<div class="container-fluid p-0">
+		<div class="row m-0">
+			<div class="col-md-6">
+				<h5 class="p-2 m-0">Scheduled</h5>
+			    <table class="table table-responsive-sm border">
+			        <tbody>
+			            {% for bus in scheduled_buses %} 
+			                <tr>
+			                    <td>
+			                    	<span class="fa fa-bus fa-3x"></span>
+			                    </td>
+			                    
+			                    <td class="border m-auto">
+			                        <p>{{bus.number}}</p>
+			                        <small>{{bus.journey}}</small> 
+			                        <hr>
+			                        <small>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</small>
+			                        <hr>
+			                        <small>Passenger Seats: {{bus.seats()|length}} </small>
+			                    </td>
+			                    
+			                    <td><a href="{{ url_for('bus.get_bus', bus_id=bus.id) }}" class='btn btn-info'><span class="fa fa-check-square"></span> Book</a></td>
+			                </tr>
+			            {% else %}
+			                <div class="container" align="center">
+			                    <p class="display-5 text-muted p-2">No Scheduled Buses!</p>
+			                </div>
+			            {% endfor %}
+			        </tbody>
+			    </table>
+			</div>
 
-	    <table class="table table-responsive-sm border">
-	        <tbody>
-	            {% for bus in buses %} 
-	                <tr>
-	                    <td>
-	                    	<span class="fa fa-bus fa-3x"></span>
-	                    </td>
-	                    
-	                    <td class="border m-auto">
-	                        <p>{{bus.number}}</p>
-	                        <small>Passenger Seats: {{bus.seats()|length}} </small>
-	                    </td>
-	                    
-	                    <td><a href="{{ url_for('bus.get_bus', bus_id=bus.id) }}" class='btn btn-info'>Details</a></td>
-	                </tr>
-	            {% else %}
-	                <div class="container" align="center">
-	                    <p class="display-5 text-muted p-2">No Buses!</p>
-	                </div>
-	            {% endfor %}
-	        </tbody>
-	    </table>
+			<div class="col-md-6">
+				<h5 class="p-2 m-0">Free</h5>
+				<table class="table table-responsive-sm border">
+			        <tbody>
+			            {% for bus in free_buses %} 
+			                <tr>
+			                    <td>
+			                    	<span class="fa fa-bus fa-3x"></span>
+			                    </td>
+			                    
+			                    <td class="border m-auto">
+			                        <p>{{bus.number}}</p>
+			                        <small>Passenger Seats: {{bus.seats()|length}} </small>
+			                    </td>
+			                    
+			                    <td><a href="{{ url_for('bus.get_bus', bus_id=bus.id) }}" class='btn btn-warning'><span class="fa fa-clock-o"></span> Schedule</a></td>
+			                </tr>
+			            {% else %}
+			                <div class="container" align="center">
+			                    <p class="display-5 text-muted p-2">No Free Buses!</p>
+			                </div>
+			            {% endfor %}
+			        </tbody>
+			    </table>
+			</div>
+		</div>
 	</div>
 {% endblock %}

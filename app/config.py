@@ -11,7 +11,7 @@ class BaseConfig(object):
     HOST_ADDRESS = "http://127.0.0.1:5000"
     # HOST_ADDRESS = "http://192.168.1.117:8000"
     # HOST_ADDRESS = "http://127.0.0.1:8000"
-    HOST_ADDRESS = "https://traveler-ug.herokuapp.com"
+    # HOST_ADDRESS = "https://traveler-ug.herokuapp.com"
     TIME_FORMAT = "%B %d %Y, %I:%M %p %z"
     DEFAULT_CURRENCY = "UGX"
 
@@ -40,6 +40,7 @@ class ProductionConfig(BaseConfig):
     """Production specific config"""
     DEBUG = False
     TESTING = False
+    HOST_ADDRESS = "https://traveler-ug.herokuapp.com"
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://samuelitwaru:password@localhost/traveler'  # TODO => MYSQL
     SQLALCHEMY_DATABASE_URI = 'sqlite:///models/database.db'
 
@@ -48,6 +49,7 @@ class DevelopmentConfig(BaseConfig):
     """Development environment specific config"""
     DEBUG = True
     MAIL_DEBUG = True
+    HOST_ADDRESS = "http://127.0.0.1:5000"
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:bratz123@localhost/traveler'  # TODO => MYSQL
     SQLALCHEMY_DATABASE_URI = 'sqlite:///models/database.db'
 

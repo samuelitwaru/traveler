@@ -9,7 +9,7 @@ from flask_mail import Mail
 
 app = Flask(__name__)
 
-app.config.from_object(config.DevelopmentConfig)
+app.config.from_object(config.ProductionConfig)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -88,6 +88,7 @@ from app.WEB.views.journey import journey_bp
 from app.WEB.views.pickup import pickup_bp
 from app.WEB.views.pricing import pricing_bp
 from app.WEB.views.booking import booking_bp
+
 
 app.register_blueprint(index_bp)
 app.register_blueprint(auth_bp)
