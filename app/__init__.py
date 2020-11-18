@@ -9,7 +9,7 @@ from flask_mail import Mail
 
 app = Flask(__name__)
 
-app.config.from_object(config.DevelopmentConfig)
+app.config.from_object(config.ProductionConfig)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
