@@ -1,0 +1,17 @@
+{% extends 'index/manager-base.html' %}
+
+{% include 'index/header.html' %}
+
+{% block body %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-4">
+			{% include 'booking/company-buses-mini.html' %}	
+		</div>
+
+		<div class="col-md-8">
+			{% include 'booking/company-bookings.html' %}
+		</div>
+	</div>
+</div>
+{% endblock %}

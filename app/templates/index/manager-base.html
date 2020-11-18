@@ -47,6 +47,9 @@
 				<li class="nav-item">
 					<a class="nav-link {% block cashiers_active %}{% endblock %}" href="{{url_for('profile.get_cashier_profiles')}}">Cashiers</a>
 				</li>
+				<li class="nav-item">
+					<a class="nav-link {% block bookings_history_active %}{% endblock %}" href="{{url_for('booking.get_company_bookings')}}">Booking History</a>
+				</li>
 				{% endif %}
 			</ul>
 		</nav>

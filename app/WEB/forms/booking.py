@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 import json
 from flask_wtf import FlaskForm
 from wtforms import *
@@ -5,6 +6,7 @@ from wtforms.validators import DataRequired
 from wtforms.widgets import HiddenInput, Select
 from app.utils import get_current_branch
 from app.models import Pricing
+from app.helpers import now
 
 
 class CreateBookingForm(FlaskForm):
@@ -18,12 +20,13 @@ class CreateBookingForm(FlaskForm):
 
     def __init__(self, grid=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        bus = grid.bus
-        journey = bus.journey
-        pricings = journey.pricings
-        pickups = journey.pickups
-        self.pricing_id.choices = [(pricing.id, pricing) for pricing in pricings]
-        self.pickup.choices = [(pickup.name, pickup.name) for pickup in pickups]
+        if grid:
+            bus = grid.bus
+            journey = bus.journey
+            pricings = journey.pricings
+            pickups = journey.pickups
+            self.pricing_id.choices = [(pricing.id, pricing) for pricing in pricings]
+            self.pickup.choices = [(pickup.name, pickup.name) for pickup in pickups]
 
 
 class UpdateBookingForm(FlaskForm):
@@ -52,3 +55,35 @@ class DeleteBookingForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+
+class FilterBookingsForm(FlaskForm):
+    created_on_gte = StringField("From (Date)", default=(now()-timedelta(2)).strftime("%B %d %Y"))
+    created_on_lte = StringField("To (Date)", default=(now()+timedelta(2)).strftime("%B %d %Y"))
+    bus_id = SelectField("Bus", coerce=int)
+    submit = SubmitField('Filter')
+
+    def __init__(self, bus_id_choices=[], *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.bus_id.choices = [(0, "All")] + bus_id_choices
+        self.datetime_format = "%B %d %Y"
+        self.created_on_gte.default = "Jan 1 2000"
+        self.created_on_lte.default = "Dec 31 3000"
+
+    def validate_created_on_gte(form, field):
+        created_on_gte = field.data
+        if created_on_gte:
+            created_on_gte = datetime.strptime(f"{created_on_gte}", form.datetime_format)
+        
+        created_on_lte = form.created_on_lte.data
+        if created_on_lte:
+            created_on_lte = datetime.strptime(f"{created_on_lte}", form.datetime_format)
+
+        
+        if (created_on_gte and created_on_lte) and created_on_gte > created_on_lte:
+            raise ValidationError(f"'From' date should be before the 'To' date.")
+
+
+
+        form.created_on_gte.data = created_on_gte
+        form.created_on_lte.data = created_on_lte

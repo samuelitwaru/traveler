@@ -2,8 +2,8 @@ import os
 from flask import Blueprint, render_template, url_for, request, redirect, flash, send_from_directory
 from app import app
 from app.models import Company, Bus, Status, Branch, db
-from app.utils import save_logo, logos, create_default_status, split_telephone
-from ..forms import CreateCompanyForm, UpdateCompanyForm, CreateBusForm, UpdateBusLayoutForm, CreateStatusForm, CreateBranchForm, CreateProfileForm, DeleteProfileForm, UpdateProfileForm
+from app.utils import save_logo, logos, create_default_status, split_telephone, get_current_branch
+from ..forms import CreateCompanyForm, UpdateCompanyForm, CreateBusForm, UpdateBusLayoutForm, CreateStatusForm, CreateBranchForm, CreateProfileForm, DeleteProfileForm, UpdateProfileForm, DeleteBusForm
 
 
 company_bp = Blueprint('company', __name__, url_prefix='/company')
@@ -78,7 +78,8 @@ def get_company_bus(company_id, bus_id):
     company = Company.query.get(company_id)
     bus = Bus.query.get(bus_id)
     update_bus_layout_form = UpdateBusLayoutForm(obj=bus)
-    return render_template("bus/company-bus.html", bus=bus, company=company, update_bus_layout_form=update_bus_layout_form)
+    delete_bus_form = DeleteBusForm(obj=bus)
+    return render_template("bus/company-bus.html", bus=bus, company=company, update_bus_layout_form=update_bus_layout_form, delete_bus_form=delete_bus_form)
 
 
 @company_bp.route("/<int:company_id>/statuses", methods=["GET"])
@@ -95,6 +96,13 @@ def get_company_branches(company_id):
     branches = Branch.query.filter_by(company_id=company_id).all()
     create_branch_form = CreateBranchForm()
     return render_template("branch/branches.html", branches=branches, company=company, create_branch_form=create_branch_form)
+
+
+@company_bp.route("/bookings", methods=["GET"])
+def get_company_bookings(bus_id):
+    company = get_current_branch().company
+    return render_template("company/company-dashboard.html", bookings=[])
+
 
 
 @company_bp.route("/<int:company_id>/branches/<int:branch_id>", methods=["GET"])

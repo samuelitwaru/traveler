@@ -3,29 +3,16 @@
 {% block content %}
 <div class="row p-2 m-0">
 	<div class="col-md-3">
-		<table class="table table-bordered table-sm">
-			<tbody>
-				<tr>
-					<td>Columns</td><td>{{bus.columns}}</td>
-				</tr>
-				<tr>
-					<td>Rows</td><td>{{bus.rows}}</td>
-				</tr>
-				<tr>
-					<td>Status</td><td>{{bus.status}}</td>
-				</tr>
-			</tbody>
-		</table>
 
-		<table class="table table-bordered">
+		<table class="table table-sm table-striped">
 			<thead>
-				<th colspan="2">
+				<th colspan="2" class="p-2 border-top-0">
 					Schedule
 					{% if profile.is_manager %}
 						{% if bus.departure_time %}
-						<button data-toggle="modal" data-target="#deleteBusScheduleModal" data-patch-containers='["#deleteBusSchedulePatch"]' data-progress-container="#deleteBusSchedulePatch" data-url="{{ url_for('bus.delete_bus_schedule', bus_id=bus.id) }}" class="getRequestTrigger fa fa-times float-right"></button>
+						<button data-toggle="modal" data-target="#deleteBusScheduleModal" data-patch-containers='["#deleteBusSchedulePatch"]' data-progress-container="#deleteBusSchedulePatch" data-url="{{ url_for('bus.delete_bus_schedule', bus_id=bus.id) }}" class="getRequestTrigger fa fa-times float-right btn bg-white text-danger"></button>
 						{% endif %}
-						<button data-toggle="modal" data-target="#updateBusScheduleModal" class="float-right fa fa-clock-o"></button>
+						<button data-toggle="modal" data-target="#updateBusScheduleModal" class="float-right fa fa-clock-o btn bg-white text-primary"></button>
 					{% endif %}
 				</th>
 			</thead>
@@ -33,24 +20,49 @@
 			<tbody>
 				{% if bus.departure_time %}
 				<tr>
-					<td>Departure</td><td>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</td>
+					<td colspan="2">
+						<small>Departure</small>
+						<p>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}<p>
+					</td>
 				</tr>
+
 				<tr>
-					<td>Journey</td><td>{{bus.journey}}</td>
+					<td colspan="2">
+						<small>Journey</small>
+						<p>{{bus.journey}}<p>
+					</td>
 				</tr>
+
 				<tr>
-					<td>Booking Countdown</td><td id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></td>
+					<td colspan="2">
+						<small>Broadcasting</small>
+						<p>{% if bus.broadcast %}YES{% else %}NO{% endif %}<p>
+					</td>
+				</tr>				
+
+				<tr>
+					<td colspan="2">
+						<small>Booking Countdown</small>
+						<p id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></p>
+					</td>
 				</tr>
-				<tr>
-					<td>Broadcasting</td><td>{% if bus.broadcast %}YES{% else %}NO{% endif %}</td>
+
+				<tr class="p-2" align="center">
+					<td colspan="2"><a href="{{ url_for('bus.free_bus', bus_id=bus.id) }}" class="btn btn-warning">Free Bus</a></td>
 				</tr>
 				{% else %}
+				
+				{% if profile.is_manager %}
 				<tr>
 					<td colspan="2" class="text-muted" align="center">Bus not scheduled</td>
 				</tr>
 				{% endif %}
+
+				{% endif %}
 			</tbody>
 		</table>
+
+
 		{% include 'bus/update-bus-schedule-modal.html' %}
 		{% include 'bus/delete-bus-schedule-modal.html' %}
 	</div>
@@ -100,7 +112,6 @@
 
 		socket.on('delete_booking_passed', function(grid){
 			data.grids[grid.index] = grid
-			console.log(grid)
 			fillGrid()
 			$(".ajaxForm").on('submit', ajaxSubmit)
 			$("#deleteBookingModal").modal('hide')

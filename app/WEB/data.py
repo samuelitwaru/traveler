@@ -12,3 +12,12 @@ class BusSchedule:
 				self.booking_deadline = (bus.departure_time-bus.booking_deadline).seconds//60
 			if bus.free_bus_time:
 				self.free_bus_time = (bus.free_bus_time-bus.departure_time).seconds//60
+
+
+
+user_categories = {
+	"admin": 1,
+	"manager": 2,
+	"cashier":3,
+	"passenger": 4,
+}

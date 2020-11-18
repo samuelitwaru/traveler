@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import *
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email, EqualTo
 from wtforms.widgets import HiddenInput, Select
 from app.models import User, Profile
 
@@ -61,3 +61,17 @@ class DeleteProfileForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
     	super().__init__(*args, **kwargs)
+
+
+class SignupForm(FlaskForm):
+    first_name = StringField("First Name", validators=[DataRequired()])
+    last_name = StringField("Last Name", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), unique_create_email])
+    telephone_code = SelectField(choices=telephone_code_choices)
+    telephone = StringField("Telephone", validators=[DataRequired(), validate_telephone, unique_create_telephone])
+    password = PasswordField("Password", validators=[DataRequired()])
+    confirm_password = PasswordField("Confirm password", validators=[DataRequired(), EqualTo("password")])
+    submit = SubmitField('Save')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

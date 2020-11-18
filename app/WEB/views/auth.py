@@ -26,7 +26,7 @@ def set_password(token):
         db.session.commit()
         logout_user()
         flash("Password set. Login with your new password.", "success")
-        return redirect(url_for("index.index"))
+        return redirect(url_for("index.login"))
 
     
     context = {"target_user":user, "set_password_form": set_password_form}

@@ -1,10 +1,10 @@
 import json
-from flask import request
 from flask_socketio import emit, send, join_room, leave_room, rooms, Namespace
+from flask_login import current_user
 from app import socketio
 from app.models import Booking, Grid, Pricing, Connection, db
 from app.helpers import now
-from app.utils import create_payment, update_payment, parse_query_string
+from app.utils import create_payment, update_payment, parse_query_string, get_current_branch
 from app.WEB.forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm
 
 
@@ -33,22 +33,34 @@ class DefaultNamespace(Namespace):
         if not bus.booking_time_expired():
             create_booking_form = CreateBookingForm(data=form_data, grid=grid)
             if create_booking_form.validate():
-            	# create booking
-            	grid_id = create_booking_form.grid_id.data; print(create_booking_form.data)
-            	pricing_id = create_booking_form.pricing_id.data
-            	passenger_name = create_booking_form.passenger_name.data
-            	passenger_telephone = create_booking_form.passenger_telephone.data
-            	pickup = create_booking_form.pickup.data
-            	paid = create_booking_form.paid.data
-            	pricing = Pricing.query.get(pricing_id)
-            	fare = pricing.price;stop = pricing.stop;booking = Booking(passenger_name=passenger_name, passenger_telephone=passenger_telephone, pickup=pickup, fare=fare, stop=stop, paid=paid, grid_id=grid_id, pricing_id=pricing_id)
-            	db.session.add(booking)
-            	grid.booking = booking
-            	create_payment(booking)
+                # create booking
+                grid_id = create_booking_form.grid_id.data;
+                pricing_id = create_booking_form.pricing_id.data
+                passenger_name = create_booking_form.passenger_name.data
+                passenger_telephone = create_booking_form.passenger_telephone.data
+                pickup = create_booking_form.pickup.data
+                paid = create_booking_form.paid.data
+                pricing = Pricing.query.get(pricing_id)
+                branch = bus.branch
+                user = current_user
+                if not user.is_authenticated:
+                    user = None
+
+                fare = pricing.price;
+                stop = pricing.stop;
+                booking = Booking(
+                    passenger_name=passenger_name, passenger_telephone=passenger_telephone, seat_number=grid.number, pickup=pickup, 
+                    fare=fare, stop=stop, paid=paid, grid_id=grid_id, pricing_id=pricing_id, branch=branch, 
+                    bus=bus, created_by=user.id
+                )
+
+                db.session.add(booking)
+                grid.booking = booking
             	
-            	db.session.commit()
-            	room = grid.bus.number
-            	emit("create_booking_passed", grid.grid_dict(), room=room, broadcast=True)
+                create_payment(booking)
+                db.session.commit()
+                room = grid.bus.number
+                emit("create_booking_passed", grid.grid_dict(), room=room, broadcast=True)
             else:
                 emit("create_booking_failed", create_booking_form.errors, broadcast=False)
         else:
@@ -83,7 +95,6 @@ class DefaultNamespace(Namespace):
 
     def on_delete_booking(self, query_string):
         form_data = parse_query_string(query_string)
-        print(">>>", form_data)
         delete_booking_form = DeleteBookingForm(data=form_data)
         booking = Booking.query.get(form_data["id"])
         grid = booking.booked_grid

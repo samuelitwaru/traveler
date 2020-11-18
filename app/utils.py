@@ -4,7 +4,8 @@ import os
 import json
 import urllib
 import time
-from datetime import timedelta 
+from datetime import timedelta
+import datetime
 import uuid
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from werkzeug.security import check_password_hash
@@ -12,7 +13,7 @@ import flask_sqlalchemy
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_login import current_user
 from app import app
-from .models import Company, Status, Grid, User, Token, Payment, db
+from .models import Company, Status, Grid, User, Token, Payment, Bus, Journey, db
 from .helpers import now
 
 
@@ -92,6 +93,47 @@ def change_bus_layout(bus, layout):
 	grids_to_delete.delete(synchronize_session=False)
 
 
+def find_buses(from_=None, to=None, departure_time=None, company_id=None):
+	journeys_query = Journey.query
+	if from_:
+	    journeys_query = journeys_query.filter(Journey.from_==from_)
+	if to:
+	    journeys_query = journeys_query.filter(Journey.to==to)
+
+	journeys = journeys_query.all()
+	buses_query = Bus.query.filter(Bus.journey_id.in_([journey.id for journey in journeys]), Bus.booking_deadline > now())
+	if departure_time:
+	    departure_time_range = datetime.timedelta(hours=2)
+	    departure_time_upper_limit = departure_time + departure_time_range
+	    departure_time_lower_limit = departure_time - departure_time_range
+	    buses_query = buses_query.filter(
+	        (Bus.departure_time > departure_time_lower_limit) & 
+	        (Bus.departure_time < departure_time_upper_limit)
+	    )
+	if company_id:
+	    buses_query = buses_query.filter_by(company_id=company_id)
+
+	return buses_query.all()
+
+
+def set_bus_free(bus):
+	# unschedule bus
+	unschedule_bus(bus)
+	# update bus grid.booking_ids to None
+	bus_grids_query = Grid.query.filter_by(bus_id=bus.id)
+	bus_grids_query.update({"booking_id": None})
+
+
+def unschedule_bus(bus):
+	bus.journey_id = None
+	bus.departure_time = None
+	bus.booking_deadline = None
+	bus.free_bus_time = None
+	bus.broadcast = None
+	bus.branch = None
+	return bus
+
+
 def get_current_branch():
 	return  current_user.profile.branch
 
@@ -141,3 +183,11 @@ def split_telephone(telephone):
 	return telephone.split("-")
 
 
+def prezeros(number, length):
+	if isinstance(number, int):
+		nstr = str(number)
+		nlen = len(nstr)
+		if len(nstr) < length:
+			return ('0'*(length - nlen)) + nstr
+		return nstr
+	raise ValueError("(number) argument must be Integer.")

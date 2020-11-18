@@ -2,13 +2,32 @@ import json
 from datetime import timedelta
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session
 from app.models import Bus, Company, Grid, Booking, db
-from app.utils import  get_current_branch, set_bus_layout, change_bus_layout
-from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm
+from app.utils import  get_current_branch, set_bus_layout, change_bus_layout, find_buses, set_bus_free
+from app import app
+from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm, SearchBusesForm, DeleteBusForm
 from .. guards import check_branch_journeys
 from ..data import BusSchedule
 
 
 bus_bp = Blueprint('bus', __name__, url_prefix='/bus')
+
+
+@bus_bp.route("/search", methods=["GET"])
+def search_buses():
+	search_buses_form = SearchBusesForm(request.args)
+	if search_buses_form.validate():
+		data = search_buses_form.data
+		from_ = data.get("from_")
+		to = data.get("to")
+		departure_time = data.get("departure_time")
+		buses = find_buses(from_=from_, to=to, departure_time=departure_time)
+		# change departure time format to that compatible with form widget
+		if departure_time:
+			search_buses_form.departure_time.data = departure_time.strftime(app.config.get("TIME_FORMAT"))
+			
+		return render_template('index/search-buses-results.html', buses=buses, search_buses_form=search_buses_form)
+	else:
+		return render_template('index/search-buses-results.html', buses=[], search_buses_form=search_buses_form)
 
 
 @bus_bp.route("/", methods=["GET"])
@@ -66,6 +85,22 @@ def update_bus_layout(bus_id):
 	else:
 		flash(str(update_bus_layout_form.errors), "danger")
 	return redirect(request.referrer)
+
+
+@bus_bp.route("/<int:bus_id>/delete", methods=["POST"])
+def delete_bus(bus_id):
+	bus = Bus.query.get(bus_id)
+	company = bus.company
+	delete_bus_form = DeleteBusForm()
+	if delete_bus_form.validate():
+		db.session.delete(bus)
+		db.session.commit()
+		flash("Bus deleted.", "success")
+		return redirect(url_for('company.get_company_buses', company_id=company.id))
+	flash(f"{delete_bus_form.errors}", "danger")
+	print(delete_bus_form.errors)
+	return redirect(request.referrer)
+
 	
 
 @bus_bp.route("/<int:bus_id>/schedule/update", methods=["POST"])
@@ -128,3 +163,16 @@ def delete_bus_schedule(bus_id):
             }
         };return data
 	
+
+@bus_bp.route("/<int:bus_id>/free", methods=["GET"])
+def free_bus(bus_id):
+	bus = Bus.query.filter_by(id=bus_id).first()
+	if bus:
+		set_bus_free(bus)
+		db.session.commit()
+		flash("Bus freed.", "success")
+	else:
+		flash("Bus not found.", "danger")
+	return redirect(request.referrer)
+
+

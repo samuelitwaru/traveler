@@ -1,27 +1,58 @@
 import json
 from weasyprint import HTML, CSS
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session, make_response
+import flask_sqlalchemy
 from app.models import Grid, Pricing, Passenger, Booking, Bus, db
 from app.utils import  get_current_branch
-from ..forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm
+from ..forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm, FilterBookingsForm
 from .payment import create_payment
-
 
 booking_bp = Blueprint('booking', __name__, url_prefix='/booking')
 
 
 @booking_bp.route("/", methods=["GET"])
-def get_bookings():
+def get_company_bookings():
 	company = get_current_branch().company
-	bookings = Booking.query.filter_by(company_id=company.id)
-	return render_template("booking/bookings.html", bookings=bookings)
+	
+	buses_query = Bus.query.filter_by(company_id=company.id)
+	
+	bus_id_choices = [(bus.id, bus) for bus in buses_query.all()]
+	
+	filter_bookings_form = FilterBookingsForm(formdata=request.args, bus_id_choices=bus_id_choices)
+	
+	bookings_query = Booking.query
+	
+	bus_id = None
+	created_on_gte = None
+	created_on_lte = None
+
+	if request.args:
+		if filter_bookings_form.validate():
+			data = filter_bookings_form.data
+			created_on_gte = filter_bookings_form.created_on_gte.data
+			created_on_lte = filter_bookings_form.created_on_lte.data
+			bus_id = filter_bookings_form.bus_id.data
+			if bus_id:
+				bookings_query = bookings_query.filter_by(bus_id=bus_id)
+
+	if created_on_gte:
+		bookings_query = bookings_query.filter(Booking.created_at>=created_on_gte)
+	if created_on_lte:
+		bookings_query = bookings_query.filter(Booking.created_at<=created_on_lte)
+
+	bookings = bookings_query.all()
+
+	filter_bookings_form.created_on_gte.data = request.args.get("created_on_gte")
+	filter_bookings_form.created_on_lte.data = request.args.get("created_on_lte")
+	
+	return render_template("booking/booking-history.html", bookings=bookings, filter_bookings_form=filter_bookings_form)
 
 
 @booking_bp.route("/<int:bus_id>", methods=["GET"])
 def get_bus_bookings(bus_id):
 	bus = Bus.query.get(bus_id)
-	grids = [grid.id for grid in Grid.query.filter_by(bus_id=bus_id).all()]
-	bookings = Booking.query.filter(Booking.grid_id.in_(grids)).all()
+	grids = [grid for grid in Grid.query.filter_by(bus_id=bus_id).filter(Grid.booking_id!=None).all()]
+	bookings  = [grid.booking for grid in grids]
 	total_fare = sum([booking.fare for booking in bookings])
 	total_paid = sum([booking.fare for booking in list(filter(lambda booking: booking.paid, bookings))])
 	bus_bookings_patch_template = render_template('booking/bookings-patch.html', bookings=bookings, bus=bus, total_fare=total_fare, total_paid=total_paid)

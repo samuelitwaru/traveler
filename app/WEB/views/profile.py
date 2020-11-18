@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, url_for, request, redirect, flash
 from app.models import Profile, User, db
 from app.helpers import send_auth_mail
 from app.utils import get_current_branch, create_user_token, join_telephone, split_telephone
-from ..forms import CreateProfileForm, UpdateProfileForm, DeleteProfileForm
+from ..forms import CreateProfileForm, UpdateProfileForm, DeleteProfileForm, SignupForm
 
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
@@ -127,6 +127,33 @@ def delete_cashier_profile(profile_id):
 		flash(f"{delete_profile_form.errors}", "danger")
 
 	return redirect(url_for('profile.get_cashier_profiles'))
+
+
+
+@profile_bp.route("/passenger/create", methods=["POST"])
+def create_passenger_profile(): 
+	signup_form = SignupForm()
+	if signup_form.validate_on_submit():
+		first_name = signup_form.data.get("first_name")
+		last_name = signup_form.data.get("last_name")
+		email = signup_form.data.get("email")
+		telephone_code = signup_form.data.get("telephone_code")
+		telephone = signup_form.data.get("telephone")
+		password = signup_form.data.get("password")
+
+		user = User(email=email, password=password, username=email)
+		profile = Profile(first_name=first_name, last_name=last_name, telephone=join_telephone(telephone_code, telephone), is_passenger=True)
+		profile.user = user
+		db.session.add(user)
+		db.session.add(profile)
+		create_user_token(user)
+		db.session.commit()
+		send_auth_mail(user.username, user.token.token)
+		flash("Registration was successful", "success")
+	else:
+		flash(f"{signup_form.errors}", "danger")
+
+	return redirect(request.referrer)
 
 
 

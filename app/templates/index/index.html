@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+	{% include 'index/header.html' %}
+
+	<div class="row">
+		<div class="col-md-7">
+			{% include 'index/search-buses-form.html' %}
+		</div>
+		
+		<div class="col-md-5">
+			{% include 'index/signup-form.html' %}
+		</div>
+	</div>
+</div>
+{% endblock %}

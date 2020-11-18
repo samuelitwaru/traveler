@@ -4,7 +4,7 @@
 <hr>
 
 <form class="-flex" method="POST" action="{{ url_for('bus.update_bus_layout', bus_id=bus.id) }}">
-	{{ update_bus_layout_form.hidden_tag() }}
+	{{ update_bus_layout_form.csrf_token }}
 	<small>Exisiting</small>
 	<select id="layout-selector" onchange="">
 		<option>A</option>

@@ -1,9 +1,11 @@
 from jinja2 import filters
 from app import app
+from datetime import datetime
 
 
 def datetimeformat(value, format='%H:%M / %d-%m-%Y'):
-	return value.strftime(format)
+	if isinstance(value, datetime):
+		return value.strftime(format)
 
 
 def currency(value):

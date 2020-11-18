@@ -2,9 +2,16 @@ import json
 from random import choice
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
+from flask_sqlalchemy import Model
+from sqlalchemy import Column, DateTime
 from app import db
 from app.helpers import timezone, now
+
+
+class TimestampedModel(Model):
+    created_at = Column(DateTime, default=now())
+    updated_at = Column(DateTime)
 
 
 # admin - CRUD
@@ -30,6 +37,7 @@ class Branch(db.Model):
     journeys = db.relationship("Journey", backref="branch")
     members = db.relationship("Profile", backref="branch")
     buses = db.relationship("Bus", backref="branch")
+    bookings = db.relationship("Booking", backref="branch")
 
     def __init__(self, name, location, company):
         self.name = name
@@ -111,7 +119,8 @@ class Bus(db.Model):
     status_id = db.Column(db.Integer, db.ForeignKey("status.id"))
     journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))
 
-    grids = db.relationship("Grid", backref="bus")
+    grids = db.relationship("Grid", backref="bus", cascade="delete")
+    bookings = db.relationship("Booking", backref="bus")
 
     def __str__(self):
         return self.number
@@ -136,9 +145,9 @@ class Grid(db.Model):
     number = db.Column(db.String(3))
     label = db.Column(db.String(32))
     booking_id = db.Column(db.Integer, db.ForeignKey("booking.id")) # current_booking
-    bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"), nullable=False)
+    bus_id = db.Column(db.Integer, db.ForeignKey("bus.id", ondelete='CASCADE'), nullable=False)
 
-    bookings = db.relationship("Booking", backref="grid", foreign_keys=booking_id, uselist=True)
+    bookings = db.relationship("Booking", backref="grid", foreign_keys=booking_id, uselist=True, lazy='dynamic')
     booking = db.relationship("Booking", backref=db.backref("booked_grid", uselist=False), foreign_keys=booking_id)
 
     def __str__(self):
@@ -148,14 +157,21 @@ class Grid(db.Model):
         return {"id":self.id, "index":self.index, "grid_type":self.grid_type, "number":self.number, "label":self.label, "booking_id":self.booking_id,"booked":bool(self.booking)}
 
 
-class Booking(db.Model):
+class Booking(db.Model, TimestampedModel):
     id = db.Column(db.Integer, primary_key=True)
     passenger_name = db.Column(db.String(128), nullable=False)
     passenger_telephone = db.Column(db.String(16))
+    seat_number = db.Column(db.String(3))
     pickup = db.Column(db.String(64), nullable=False)
     stop = db.Column(db.String(64), nullable=False)
     fare = db.Column(db.Integer, nullable=False)
     paid = db.Column(db.Boolean, nullable=False)
+
+    branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"), nullable=False)
+    bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+
     grid_id = db.Column(db.Integer, db.ForeignKey("grid.id"), nullable=False)
     pricing_id = db.Column(db.Integer, db.ForeignKey("pricing.id"), nullable=False)
     payment_id = db.Column(db.Integer, db.ForeignKey("payment.id"))
@@ -198,9 +214,11 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(64), unique=True)
     password = db.Column(db.String(128))
     recovery_password = db.Column(db.String(128))
+    is_active = db.Column(db.Boolean, default=True)
 
     profile = db.relationship("Profile", backref="user", cascade="delete", uselist=False)
     token = db.relationship("Token", backref="user", cascade="delete", uselist=False)
+    bookings_created = db.relationship("Booking", backref="creator")
 
     def __init__(self, *args, **kwargs):
         self.email = kwargs.get("email")

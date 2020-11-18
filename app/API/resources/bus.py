@@ -1,7 +1,7 @@
-import datetime
 from flask import request
 import flask_sqlalchemy
 from flask_restful import Resource, marshal_with, reqparse, inputs
+from app.utils import find_buses
 from ..fields import Fields
 from app.models.models import Bus, Journey, db
 
@@ -25,30 +25,9 @@ class BusListAPI(Resource):
         company_id = args.get("company_id")
         from_ = args.get("from")
         to = args.get("to")
-        
-        journeys_query = Journey.query
-        if from_:
-            journeys_query = journeys_query.filter(Journey.from_==from_)
-        if to:
-            journeys_query = journeys_query.filter(Journey.to==to)
 
-        journeys = journeys_query.all()
-        buses_query = Bus.query
-        if journeys:
-            buses_query = Bus.query.filter(Bus.journey_id.in_([journey.id for journey in journeys]))
-        if departure_time:
-            departure_time_range = datetime.timedelta(hours=2)
-            departure_time_upper_limit = departure_time + departure_time_range
-            departure_time_lower_limit = departure_time - departure_time_range
-            buses_query = buses_query.filter(
-                (Bus.departure_time > departure_time_lower_limit) & 
-                (Bus.departure_time < departure_time_upper_limit)
-            )
-        if company_id:
-            buses_query = buses_query.filter_by(company_id=company_id)
-
-        return buses_query.all()
-
+        buses = find_buses(from_=from_, to=to, departure_time=departure_time, company_id=company_id)
+        return buses
 
 class BusAPI(Resource):
 

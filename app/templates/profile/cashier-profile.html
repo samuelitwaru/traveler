@@ -1,23 +1,29 @@
 {% extends 'index/manager-base.html' %}
 
 {% block content %}
+	{% with user=cashier.user %}
 	<div class="card mt-2 login-content" style="width: 18rem;">
 		<div class="card-body p-2">
 			<h1 class="fa fa-user fa-5x"></h1>
 			<h4>{{cashier.display_name()}}</h4>
 			<p class="m-0">{{cashier.telephone_code}}-{{cashier.telephone}}</p>
-			<small>{{cashier.user.email}}</small>
+			<small>{{user.email}}</small>
+			{% if user.is_active %}<label class="badge-success">Active</label>{% else %}<lalel class="badge-danger">Inactive</label>{% endif %}
 			<hr>
 			<div class="d-flex flex-row-reverse">
+				
 				<button class="btn btn-danger m-1" data-toggle="modal" data-target="#deleteCashierProfileModal"><span class="fa fa-trash"></span></button>
 
 				<button class="btn btn-info m-1" data-toggle="modal" data-target="#updateCashierProfileModal"><span class="fa fa-pencil"></span></button>
+
+				<a href="{{ url_for('user.update_user_active_status', user_id=user.id) }}" class="btn btn-warning m-1">{% if user.is_active %}Deactivate{% else %}Activate{% endif %}</a>
 			</div>
 			<hr>
 				<a href="{{ url_for('auth.set_token', user_id=cashier.user.id) }}" class="nav-link"><span class="fa fa-key"> generate token</span></a>
 				<a href="{{ url_for('auth.set_recovery_password', user_id=cashier.user.id) }}" class="nav-link text-danger"><span class="fa fa-key"> generate recovery password</span></a>
 		</div>
 	</div>
+	{% endwith %}
 
 	{% include 'profile/delete-cashier-profile-modal.html' %}
 	{% include 'profile/update-cashier-profile-modal.html' %}

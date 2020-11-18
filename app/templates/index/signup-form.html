@@ -1,0 +1,36 @@
+{% from 'helpers.html' import render_string_field, render_telephone_field %}
+<div class="login-content shadow">
+	<div class="">
+		<div class="card-header bg-dark">
+			<h3 class="text-info text-center"><span class="text-light">Trav</span><span>eler</span></h3>
+			<p class="text-light text-center">Signup</p>
+		</div>
+		<div class="border">
+			<div class="text-center">
+				{% for category, message in get_flashed_messages(with_categories=true) %}
+					<div class="alert alert-{{category}} alert-dismissable">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+						{{ message }}
+					</div>
+				{% endfor %}
+			</div>
+			<form method="POST" action="{{ url_for('profile.create_passenger_profile') }}">
+				<div class="card-body bg-white">
+					{{ signup_form.csrf_token }}
+					{{ render_string_field(signup_form.first_name) }}
+					{{ render_string_field(signup_form.last_name) }}
+					{{ render_string_field(signup_form.email) }}
+					{{ render_telephone_field(signup_form.telephone, code_field=signup_form.telephone_code) }}
+					{{ render_string_field(signup_form.password) }}
+					{{ render_string_field(signup_form.confirm_password) }}
+
+				    <div align="center" class="border-0">
+						<button class="btn btn-info">Signup	 <span class="fa fa-sign-in"></span></button>
+						<hr> or
+						<a href="{{ url_for('index.login') }}" class="nav-link">Login</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

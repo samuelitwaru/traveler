@@ -7,7 +7,7 @@ from wtforms.widgets import HiddenInput, Select, TextArea
 from app import app
 from app.utils import get_current_branch
 from app.helpers import timezone, now
-from app.models import Journey, Status
+from app.models import Journey, Status, Bus
 
 
 columns_choices = [(i,i) for i in range(3,8)]
@@ -23,8 +23,39 @@ free_bus_time_choices = [
 ]
 
 
+def unique_create_number(form, field):
+    if Bus.query.filter_by(number=field.data).first():
+        raise ValidationError(f"Bus with number '{field.data}' already exists.")
+
+def unique_update_number(form, field):
+    if Bus.query.filter(Bus.id!=form.id.data).filter_by(number=field.data).first():
+        raise ValidationError(f"Bus with number '{field.data}' already exists.")
+
+
+class SearchBusesForm(FlaskForm):
+	UTC_offset = StringField(widget=HiddenInput())
+	from_ = StringField("Departing From?", validators=[])
+	to = StringField("Going To?", validators=[])
+	departure_time = StringField("When?", validators=[])
+	submit = SubmitField('Find Bus')
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.datetime_format = app.config.get("TIME_FORMAT")
+
+	def validate_departure_time(form, field):
+		departure_time = field.data
+		if departure_time:
+			UTC_offset = form.UTC_offset.data
+			departure_time = datetime.strptime(f"{departure_time} {UTC_offset}", form.datetime_format)
+			departure_time_as_tz = departure_time.astimezone(timezone)
+			if departure_time_as_tz < now():
+				raise ValidationError(f"The departure time {field.data} has already passed.")
+			form.departure_time.data = departure_time_as_tz
+
+
 class CreateBusForm(FlaskForm):
-    number = StringField("Bus number", validators=[DataRequired()])
+    number = StringField("Bus number", validators=[DataRequired(), unique_create_number])
     status_id = SelectField("Bus status", validators=[DataRequired()], coerce=int)
     columns = SelectField("Seat columns", validators=[DataRequired()], coerce=int)
     rows = SelectField("Seat rows", validators=[DataRequired()], coerce=int)
@@ -36,6 +67,14 @@ class CreateBusForm(FlaskForm):
     	self.columns.choices = columns_choices
     	self.rows.choices = rows_choices
     	self.status_id.choices = [(status.id, status) for status in Status.query.filter_by(company_id=self.company.id)]
+
+
+class DeleteBusForm(FlaskForm):
+    id = IntegerField(validators=[DataRequired()], widget=HiddenInput())
+    submit = SubmitField('Delete')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class UpdateBusLayoutForm(FlaskForm):
@@ -92,10 +131,10 @@ class UpdateBusScheduleForm(FlaskForm):
 		departure_time = field.data
 		UTC_offset = form.UTC_offset.data
 		departure_time = datetime.strptime(f"{departure_time} {UTC_offset}", form.datetime_format)
-		utc_departure_time = departure_time.astimezone(timezone)
-		if utc_departure_time < now():
-			raise ValidationError(f"The departure time {field.data} has alreaady passed.")
-		form.departure_time.data = utc_departure_time
+		departure_time_as_tz = departure_time.astimezone(timezone)
+		if departure_time_as_tz < now():
+			raise ValidationError(f"The departure time {field.data} has already passed.")
+		form.departure_time.data = departure_time_as_tz
 
 
 class DeleteBusScheduleForm(FlaskForm):
