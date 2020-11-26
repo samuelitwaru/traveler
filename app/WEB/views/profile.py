@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
+from flask_login import current_user
 from app.models import Profile, User, db
 from app.helpers import send_auth_mail
-from app.utils import get_current_branch, create_user_token, join_telephone, split_telephone
-from ..forms import CreateProfileForm, UpdateProfileForm, DeleteProfileForm, SignupForm
+from app.utils import get_current_branch, create_user_token, join_telephone, split_telephone, update_profile_email_and_telephone
+from ..forms import CreateProfileForm, UpdateProfileForm, DeleteProfileForm, SignupForm, SearchBusesForm, UpdateUserPasswordForm
 
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
@@ -27,8 +28,8 @@ def create_cashier_profile():
 		telephone_code = create_profile_form.data.get("telephone_code")
 		telephone = create_profile_form.data.get("telephone")
 
-		user = User(email=email, username=email)
-		profile = Profile(first_name=first_name, last_name=last_name, telephone=join_telephone(telephone_code, telephone), is_cashier=True)
+		user = User(username=email)
+		profile = Profile(first_name=first_name, last_name=last_name, telephone=join_telephone(telephone_code, telephone), email=email, is_cashier=True)
 		profile.branch = branch
 		profile.user = user
 		db.session.add(user)
@@ -55,6 +56,7 @@ def get_cashier_profile(profile_id):
 	return render_template("profile/cashier-profile.html", cashier=cashier, update_profile_form=update_profile_form, delete_profile_form=delete_profile_form)
 
 
+
 @profile_bp.route("/cashier/<int:profile_id>/update", methods=["POST"])
 def update_cashier_profile(profile_id): 
 	update_profile_form = UpdateProfileForm()
@@ -67,15 +69,21 @@ def update_cashier_profile(profile_id):
 			data = update_profile_form.data
 			first_name = data.get("first_name")
 			last_name = data.get("last_name")
+			email = data.get("email")
 			telephone_code = data.get("telephone_code")		
 			telephone = data.get("telephone")		
 			profile.first_name = first_name
 			profile.last_name = last_name
-			profile.telephone = join_telephone(telephone_code, telephone)
+			new_email = email
+			new_telephone = join_telephone(telephone_code, telephone)
+			update_profile_email_and_telephone(profile, new_email, new_telephone)
 			db.session.commit()
 			flash("Cashier updated", "success")
 		else:
 			flash("An error occured!", "danger")
+	else:
+		flash(f"{update_profile_form.errors}", "danger")
+
 	return redirect(request.referrer)
 	
 
@@ -91,11 +99,14 @@ def update_manager_profile(profile_id):
 			data = update_profile_form.data
 			first_name = data.get("first_name")
 			last_name = data.get("last_name")
+			email = data.get("email")
 			telephone_code = data.get("telephone_code")		
 			telephone = data.get("telephone")		
 			profile.first_name = first_name
 			profile.last_name = last_name
-			profile.telephone = join_telephone(telephone_code, telephone)
+			new_email = email
+			new_telephone = join_telephone(telephone_code, telephone)
+			update_profile_email_and_telephone(profile, new_email, new_telephone)
 			db.session.commit()
 			flash("Manager updated", "success")
 		else:
@@ -141,19 +152,49 @@ def create_passenger_profile():
 		telephone = signup_form.data.get("telephone")
 		password = signup_form.data.get("password")
 
-		user = User(email=email, password=password, username=email)
-		profile = Profile(first_name=first_name, last_name=last_name, telephone=join_telephone(telephone_code, telephone), is_passenger=True)
+		user = User(password=password, username=email)
+		profile = Profile(first_name=first_name, last_name=last_name, telephone=join_telephone(telephone_code, telephone), email=email, is_passenger=True)
 		profile.user = user
 		db.session.add(user)
 		db.session.add(profile)
 		create_user_token(user)
 		db.session.commit()
 		send_auth_mail(user.username, user.token.token)
-		flash("Registration was successful", "success")
+		flash("Registration was successful. Login here.", "success")
+		return redirect(url_for('index.login'))
+
 	else:
 		flash(f"{signup_form.errors}", "danger")
+		search_buses_form = SearchBusesForm()
+		return render_template('index/index.html', search_buses_form=search_buses_form, signup_form=signup_form)
 
-	return redirect(request.referrer)
 
 
+@profile_bp.route("/passenger", methods=["GET", "POST"])
+def update_profile():
+	user = current_user
+	profile = user.profile
+	
+	if profile:
+		code, telephone = split_telephone(profile.telephone)
+		profile.telephone = telephone
+		profile.telephone_code = code
 
+	update_profile_form = UpdateProfileForm(obj=user.profile)
+	update_user_password_form = UpdateUserPasswordForm(current_user=user)
+	if update_profile_form.validate_on_submit():
+		data = update_profile_form.data
+		first_name = data.get("first_name")
+		last_name = data.get("last_name")
+		email = data.get("email")
+		telephone_code = data.get("telephone_code")		
+		telephone = data.get("telephone")		
+		profile.first_name = first_name
+		profile.last_name = last_name
+		new_email = email
+		new_telephone = join_telephone(telephone_code, telephone)
+		update_profile_email_and_telephone(profile, new_email, new_telephone)
+		db.session.commit()
+		flash("Profile updated.", "success")
+		
+	return render_template('profile/passenger-profile.html', update_user_password_form=update_user_password_form, update_profile_form=update_profile_form)

@@ -210,7 +210,6 @@ class Passenger(db.Model):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64), unique=True)
     username = db.Column(db.String(64), unique=True)
     password = db.Column(db.String(128))
     recovery_password = db.Column(db.String(128))
@@ -238,7 +237,11 @@ class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)     
     first_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
+    email = db.Column(db.String(64), unique=True)
     telephone = db.Column(db.String(16))
+    email_valid = db.Column(db.Boolean, default=False)
+    telephone_valid = db.Column(db.Boolean, default=False)
+    credit = db.Column(db.Float, default=0.0)
     is_admin = db.Column(db.Boolean())
     is_manager = db.Column(db.Boolean())
     is_cashier = db.Column(db.Boolean())

@@ -3,8 +3,8 @@ from app import db
 from app.models import User, Profile
 
 def init_admin(first_name, last_name, email, password):
-	user = User(username=email, password=password, email=email)
-	profile = Profile(first_name=first_name, last_name=last_name, user=user, is_admin=True)
+	user = User(username=email, password=password)
+	profile = Profile(first_name=first_name, last_name=last_name, user=user, email=email, is_admin=True)
 	db.session.add(user)
 	db.session.add(profile)
 	db.session.commit()

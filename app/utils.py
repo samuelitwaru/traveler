@@ -159,6 +159,15 @@ def update_payment(booking):
 	payment.passenger_telephone = booking.passenger_telephone
 
 
+def update_profile_email_and_telephone(profile, new_email, new_telephone):
+	if profile.email != new_email:
+		profile.email = new_email
+		profile.email_valid = False
+	if profile.telephone != new_telephone:
+		profile.telephone = new_telephone
+		profile.telephone_valid = False
+
+
 def generate_reference():
 	return str(uuid.uuid4())
 

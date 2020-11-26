@@ -1,0 +1,19 @@
+{% from 'helpers.html' import render_string_field, render_telephone_field %}
+
+<div class="login-content">
+	<form class="d-inline" method="POST" action="">
+		<h4 class="text-center">Update Profile</h4>
+    	<hr>
+	    <div class="modal-body">
+	        {{update_profile_form.hidden_tag()}}
+	        {{ render_string_field(update_profile_form.first_name) }}
+	        {{ render_string_field(update_profile_form.last_name) }}
+	        {{ render_string_field(update_profile_form.email) }}
+	        {{ render_telephone_field(update_profile_form.telephone, code_field=update_profile_form.telephone_code) }}
+	        {{update_profile_form.id}}
+	    	<div align="center">
+	    		{{update_profile_form.submit(class="btn btn-info")}}
+	    	</div>
+	    </div>
+	</form>
+</div>

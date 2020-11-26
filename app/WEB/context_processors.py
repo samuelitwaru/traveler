@@ -11,16 +11,14 @@ def application():
 
 @app.context_processor
 def company():
+	context = dict()
 	if current_user.is_authenticated:
+		context["profile"] = current_user.profile
 		branch = current_user.profile.branch
 		if branch:
-			return {
-				"profile": current_user.profile,
-				"branch": branch,
-				"company": branch.company,
-			}
-
-	return {}
+			context["branch"] = branch
+			context["company"] = branch.company
+	return context
 
 
 

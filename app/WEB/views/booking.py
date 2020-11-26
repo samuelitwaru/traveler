@@ -1,10 +1,11 @@
 import json
 from weasyprint import HTML, CSS
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session, make_response
+from flask_login import current_user
 import flask_sqlalchemy
 from app.models import Grid, Pricing, Passenger, Booking, Bus, db
 from app.utils import  get_current_branch
-from ..forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm, FilterBookingsForm
+from ..forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm, FilterBookingsForm, SearchBusesForm
 from .payment import create_payment
 
 booking_bp = Blueprint('booking', __name__, url_prefix='/booking')
@@ -61,6 +62,15 @@ def get_bus_bookings(bus_id):
             "#busBookingsPatch": bus_bookings_patch_template
         }
     };return data
+
+
+@booking_bp.route("/passenger", methods=["GET"])
+def get_passenger_bookings():
+	passenger = current_user
+	bookings = Booking.query.filter_by(created_by=passenger.id).all()
+	search_buses_form = SearchBusesForm()
+
+	return render_template('booking/passenger-bookings.html', search_buses_form=search_buses_form, bookings=bookings)
 
 
 @booking_bp.route("/<int:booking_id>", methods=["GET"])

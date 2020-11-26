@@ -1,0 +1,36 @@
+{% extends 'index/passenger-base.html' %}
+
+{% block bookings_active %}active{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">
+				{% include 'index/search-buses-form.html' %}
+			</div>
+			<div class="col-md-8">
+				<div class="pre-scrollable" style="max-height: 450px;">
+					<h5 class="p-2 m-0 text-center">My Bookings</h5>
+					<table class="table table-sm table-responsive-md">
+						<tbody>
+							{% for booking in bookings %}
+								<tr>
+									<td>{{booking.created_at|datetimeformat('%a, %d %b %Y %r')}}</td>
+									<td><span class="fa fa-bus"></span> {{booking.bus}}</td>
+									<td>{{booking.branch}} branch</td>
+									<td>{{booking.creator}}</td>
+									<td>Seat {{booking.seat_number}}</td>
+									<td>{{booking.fare|currency}} {% if booking.paid %}<span class="fa fa-check"></span>{% endif %}</td>
+								</tr>
+							{% else %}
+					            <div class="container" align="center">
+					                <p class="display-5 text-muted p-2">No Bookings Available!</p>
+					            </div>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

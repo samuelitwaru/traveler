@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block body %}
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-light bg-light d-flex">
+			<strong class="navbar-brand flex-fill">Trav<span class="text-info">eler</span></strong>
+			
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+				
+			<div class="collapse navbar-collapse" id="navbarText">
+					<ul class="nav nav-pills mr-auto">
+						<li class="nav-item active">
+							<a class="nav-link {% block buses_active %}{% endblock %}" href="{{ url_for('bus.search_buses') }}">Buses</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% block bookings_active %}{% endblock %}" href="{{ url_for('booking.get_passenger_bookings') }}">My Bookings</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% block credit_active %}{% endblock %}" href="">My Credit <span class="p-1 border rounded badge-white">{{profile.credit}}</span></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% block profile_active %}{% endblock %}" href="{{ url_for('profile.update_profile') }}">My Profile</a>
+						</li>
+					</ul>
+
+					<span class="navbar-text">
+						<a class="nav-link text-danger" href="{{ url_for('index.logout') }}">Logout</a>
+				    </span>
+			</div>
+		</nav>
+
+		<div>
+			{% for category, message in get_flashed_messages(with_categories=true) %}
+				<div class="alert alert-{{category}} alert-dismissable">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					{{ message }}
+				</div>
+			{% endfor %}
+		</div>
+
+		{% block content %}
+		{% endblock %}
+	</body>
+{% endblock %}

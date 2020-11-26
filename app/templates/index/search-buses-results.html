@@ -11,33 +11,7 @@
 		</div>
 
 		<div class="col-md-7">
-			<h5 class="p-2 m-0">Available Buses</h5>
-			<table class="table table-responsive-sm border">
-			    <tbody>
-			        {% for bus in buses %} 
-			            <tr>
-			                <td>
-			                	<span class="fa fa-bus fa-3x"></span>
-			                </td>
-			                
-			                <td class="border m-auto">
-			                    <p>{{bus.number}}</p>
-			                    <small>{{bus.journey}}</small> 
-			                    <hr>
-			                    <small>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</small>
-			                    <hr>
-			                    <small>Passenger Seats: {{bus.seats()|length}} </small>
-			                </td>
-			                
-			                <td><a href="{{ url_for('bus.get_bus', bus_id=bus.id) }}" class='btn btn-info'><span class="fa fa-check-square"></span> Book</a></td>
-			            </tr>
-			        {% else %}
-			            <div class="container" align="center">
-			                <p class="display-5 text-muted p-2">No Buses Available!</p>
-			            </div>
-			        {% endfor %}
-			    </tbody>
-			</table>
+			{% include 'index/available-buses.html' %}
 		</div>
 	</div>	
 </div>

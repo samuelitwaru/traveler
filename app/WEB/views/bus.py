@@ -1,6 +1,7 @@
 import json
 from datetime import timedelta
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session
+from flask_login import current_user
 from app.models import Bus, Company, Grid, Booking, db
 from app.utils import  get_current_branch, set_bus_layout, change_bus_layout, find_buses, set_bus_free
 from app import app
@@ -15,6 +16,7 @@ bus_bp = Blueprint('bus', __name__, url_prefix='/bus')
 @bus_bp.route("/search", methods=["GET"])
 def search_buses():
 	search_buses_form = SearchBusesForm(request.args)
+	buses = []
 	if search_buses_form.validate():
 		data = search_buses_form.data
 		from_ = data.get("from_")
@@ -24,10 +26,11 @@ def search_buses():
 		# change departure time format to that compatible with form widget
 		if departure_time:
 			search_buses_form.departure_time.data = departure_time.strftime(app.config.get("TIME_FORMAT"))
-			
-		return render_template('index/search-buses-results.html', buses=buses, search_buses_form=search_buses_form)
-	else:
-		return render_template('index/search-buses-results.html', buses=[], search_buses_form=search_buses_form)
+	
+	template = "index/search-buses-results.html"
+	if current_user.is_authenticated:
+		template = "bus/passenger-buses.html"
+	return render_template(template, buses=buses, search_buses_form=search_buses_form)
 
 
 @bus_bp.route("/", methods=["GET"])

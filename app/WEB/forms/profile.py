@@ -8,7 +8,12 @@ telephone_code_choices = [("256", "+256")]
 
 # validators
 def unique_create_email(form, field):
-    if User.query.filter_by(email=field.data).first():
+    if User.query.filter_by(username=field.data).first():
+        raise ValidationError(f"A user with email '{field.data}' already exists.")
+
+# validators
+def unique_update_email(form, field):
+    if User.query.filter(User.id!=form.id.data).filter_by(username=field.data).first():
         raise ValidationError(f"A user with email '{field.data}' already exists.")
 
 def unique_create_telephone(form, field):
@@ -41,6 +46,7 @@ class UpdateProfileForm(FlaskForm):
     id = IntegerField(validators=[DataRequired()], widget=HiddenInput())
     first_name = StringField("First Name", validators=[DataRequired()])
     last_name = StringField("Last Name", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), unique_update_email])
     telephone_code = SelectField(choices=telephone_code_choices)
     telephone = StringField("Telephone", validators=[DataRequired(), validate_telephone, unique_update_telephone])
     submit = SubmitField('Save')

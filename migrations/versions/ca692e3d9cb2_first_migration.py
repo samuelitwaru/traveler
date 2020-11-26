@@ -1,8 +1,8 @@
 """First migration
 
-Revision ID: 1dcb2c883f54
+Revision ID: ca692e3d9cb2
 Revises: 
-Create Date: 2020-11-18 16:48:49.290501
+Create Date: 2020-11-26 05:25:38.424700
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1dcb2c883f54'
+revision = 'ca692e3d9cb2'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -156,7 +156,11 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('first_name', sa.String(length=64), nullable=True),
     sa.Column('last_name', sa.String(length=64), nullable=True),
+    sa.Column('email', sa.String(length=64), nullable=True),
     sa.Column('telephone', sa.String(length=16), nullable=True),
+    sa.Column('email_valid', sa.Boolean(), nullable=True),
+    sa.Column('telephone_valid', sa.Boolean(), nullable=True),
+    sa.Column('credit', sa.Float(), nullable=True),
     sa.Column('is_admin', sa.Boolean(), nullable=True),
     sa.Column('is_manager', sa.Boolean(), nullable=True),
     sa.Column('is_cashier', sa.Boolean(), nullable=True),
@@ -165,7 +169,8 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['branch_id'], ['branch.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email')
     )
     op.create_table('status',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -185,13 +190,11 @@ def upgrade():
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('email', sa.String(length=64), nullable=True),
     sa.Column('username', sa.String(length=64), nullable=True),
     sa.Column('password', sa.String(length=128), nullable=True),
     sa.Column('recovery_password', sa.String(length=128), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
     )
     # ### end Alembic commands ###

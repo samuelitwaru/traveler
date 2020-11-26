@@ -42,8 +42,8 @@ def create_branch_manager(branch_id):
 		telephone_code = create_profile_form.data.get("telephone_code")
 		telephone = create_profile_form.data.get("telephone")
 
-		user = User(email=email, username=email)
-		profile = Profile(first_name=first_name, last_name=last_name, telephone=join_telephone(telephone_code, telephone), is_manager=True)
+		user = User(username=email)
+		profile = Profile(first_name=first_name, last_name=last_name, telephone=join_telephone(telephone_code, telephone), email=email, is_manager=True)
 		profile.branch = branch
 		profile.user = user
 		db.session.add(user)
