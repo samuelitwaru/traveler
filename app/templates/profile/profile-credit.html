@@ -1,0 +1,69 @@
+{% extends 'index/passenger-base.html' %}
+{% from 'helpers.html' import render_string_field, render_telephone_field %}
+
+{% block credit_active %}active{% endblock %}
+
+{% block content %}
+	<div class="container">
+		
+		<ul class="nav nav-tabs border-primary pt-2 justify-content-center" id="myTab" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active" id="home-tab" data-toggle="tab" href="#mtn" role="tab" aria-controls="home" aria-selected="true">
+					<img height="50", src="{{ url_for('static', filename='img/mtn-mobile-money.jpg') }}" />
+					MTN Mobile Money
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="home-tab" data-toggle="tab" href="#airtel" role="tab" aria-controls="home" aria-selected="true">
+					<img height="50", src="{{ url_for('static', filename='img/airtel-money.png') }}" />
+					Airtel Money
+				</a>
+			</li>
+		</ul>
+
+		<div class="tab-content border border-top-0" id="myTabContent">
+			<div class="tab-pane fade show active" id="mtn" role="tabpanel" aria-labelledby="mtn-tab">
+				<div class="row">
+					<div class="col-md-5 p-4">
+						<h1>Make an instant deposit using USSD.</h1>
+						<hr>
+						<ol>
+							<li>Dial <strong>*165#</strong>.</li>
+							<li>Select option <strong>3. Momopay</strong>.</li>
+							<li>Enter our merchant code <strong>******</strong>.</li>
+							<li>Enter your <strong>PIN</strong>.</li>
+						</ol>
+					</div>
+					OR
+					<div class="col-md-5 p-4">
+						<h1>Make an instant deposit directly.</h1>
+						<hr>
+						<ol>
+							<li>Make sure the number you are going to use is <strong>registered</strong> on MTN Mobile Money and you know the <strong>PIN</strong> to the mobile money account.</li>
+							<li>Enter the <strong>MTN number</strong> you are going to use.</li>
+							<li>Enter the <strong>amount between {{5000|currency}} - {{500000|currency}}</strong> you wish to deposit.</li>
+							<li>Click the Deposit button to make the transaction.</li>
+						</ol>
+						{% include 'profile/update-profile-credit-patch.html' %}
+					</div>
+				</div>
+			</div>
+
+			<div class="tab-pane fade" id="airtel" role="tabpanel" aria-labelledby="airtel-tab">
+				<div class="row">
+					<div class="col-md-5 p-4">
+						<h1>Make an instant deposit using USSD.</h1>
+						<hr>
+						<ol>
+							<li>Dial <strong>*165#</strong>.</li>
+							<li>Select option <strong>9. Make Payments</strong>.</li>
+							<li>Enter our merchant code <strong>******</strong>.</li>
+							<li>Enter your <strong>PIN</strong>.</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+{% endblock %}

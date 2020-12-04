@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, url_for, request, redirect, flash
 from flask_login import current_user
 from app.models import Profile, User, db
 from app.helpers import send_auth_mail
-from app.utils import get_current_branch, create_user_token, join_telephone, split_telephone, update_profile_email_and_telephone
-from ..forms import CreateProfileForm, UpdateProfileForm, DeleteProfileForm, SignupForm, SearchBusesForm, UpdateUserPasswordForm
+from app.utils import get_current_branch, create_user_token, join_telephone, split_telephone, update_profile_email_and_telephone, process_momo_pay
+from ..forms import CreateProfileForm, UpdateProfileForm, DeleteProfileForm, SignupForm, SearchBusesForm, UpdateUserPasswordForm, UpdateProfileCreditForm
 
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
@@ -198,3 +198,39 @@ def update_profile():
 		flash("Profile updated.", "success")
 		
 	return render_template('profile/passenger-profile.html', update_user_password_form=update_user_password_form, update_profile_form=update_profile_form)
+
+
+@profile_bp.route("/credit", methods=["POST", "GET"])
+def get_profile_credit():
+	user = current_user
+	profile = user.profile
+	update_profile_credit_form = UpdateProfileCreditForm(profile=profile)
+	if request.method == "POST":
+		if update_profile_credit_form.validate_on_submit():
+			# get info
+			data = update_profile_credit_form.data
+			telephone_code = data.get("telephone_code")		
+			telephone = data.get("telephone")
+			amount = data.get("amount")
+			telephone = join_telephone(telephone_code, telephone, joiner="")
+			success = process_momo_pay(telephone, amount)
+			update_profile_credit_process_patch_template = render_template('profile/update-profile-credit-process-patch.html', success=success)
+			data = {
+				"form_templates": {
+					"#updateProfileCreditFormPatch": update_profile_credit_process_patch_template
+				}
+			}
+			
+		else:
+			update_profile_credit_patch_template = render_template('profile/update-profile-credit-patch.html', update_profile_credit_form=update_profile_credit_form)
+			data = {
+				"form_templates": {
+					"#updateProfileCreditFormPatch": update_profile_credit_patch_template
+				}
+			}
+
+		print(data)
+		return data
+		
+	
+	return render_template('profile/profile-credit.html', update_profile_credit_form=update_profile_credit_form)

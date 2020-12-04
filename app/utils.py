@@ -184,12 +184,12 @@ def parse_json_string(json_string):
 	return json.loads(json_string)
 
 
-def join_telephone(code, telephone):
-	return f"{code}-{telephone}"
+def join_telephone(code, telephone, joiner="-"):
+	return f"{code}{joiner}{telephone}"
 
 
-def split_telephone(telephone):
-	return telephone.split("-")
+def split_telephone(telephone, splitter="-"):
+	return telephone.split(splitter)
 
 
 def prezeros(number, length):
@@ -200,3 +200,7 @@ def prezeros(number, length):
 			return ('0'*(length - nlen)) + nstr
 		return nstr
 	raise ValueError("(number) argument must be Integer.")
+
+
+def process_momo_pay(telephone, amount):
+	return False

@@ -81,3 +81,24 @@ class SignupForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+
+
+class UpdateProfileCreditForm(FlaskForm):
+    id = IntegerField(validators=[DataRequired()], widget=HiddenInput())
+    telephone_code = SelectField(choices=telephone_code_choices)
+    telephone = StringField("Telephone", validators=[DataRequired(), validate_telephone, unique_update_telephone])
+    amount = IntegerField(validators=[DataRequired()])
+    submit = SubmitField('Deposit')
+
+    def __init__(self, profile=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.profile = profile
+        if self.profile:
+            self.id.data = self.profile.id
+
+    def validate_telephone(form, field):
+        telephone_code = form.data.get("telephone_code")
+        telephone = field.data
+        if not (telephone_code and telephone):
+            raise ValidationError(f"Invalid Telephone.")

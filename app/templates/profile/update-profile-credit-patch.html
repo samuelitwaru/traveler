@@ -1,0 +1,13 @@
+<div id="updateProfileCreditFormPatch">
+	<form class="ajaxForm" data-patch-containers='["#updateProfileCreditFormPatch"]' data-progress-container="#updateProfileCreditFormPatch" method="POST" action="{{ url_for('profile.get_profile_credit') }}">
+		<div class="card-body bg-white">
+			{{ update_profile_credit_form.csrf_token }}
+			{{ update_profile_credit_form.id }}
+			{{ render_telephone_field(update_profile_credit_form.telephone, code_field=update_profile_credit_form.telephone_code) }}
+			{{ render_string_field(update_profile_credit_form.amount) }}
+		    <div align="center" class="border-0">
+				<button class="btn btn-primary btn-block">Deposit</button>
+			</div>
+		</div>
+	</form>
+</div>

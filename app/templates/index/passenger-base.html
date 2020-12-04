@@ -18,7 +18,7 @@
 							<a class="nav-link {% block bookings_active %}{% endblock %}" href="{{ url_for('booking.get_passenger_bookings') }}">My Bookings</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link {% block credit_active %}{% endblock %}" href="">My Credit <span class="p-1 border rounded badge-white">{{profile.credit}}</span></a>
+							<a class="nav-link {% block credit_active %}{% endblock %}" href="{{url_for('profile.get_profile_credit')}}">My Credit <span class="p-1 border rounded badge-white">{{profile.credit}}</span></a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link {% block profile_active %}{% endblock %}" href="{{ url_for('profile.update_profile') }}">My Profile</a>

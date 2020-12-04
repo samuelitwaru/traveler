@@ -21,3 +21,30 @@ user_categories = {
 	"cashier":3,
 	"passenger": 4,
 }
+
+
+location_graph = {
+	"continents": [
+		{
+			"Africa" : {
+
+			}
+		}
+	],
+
+	"countries": [
+		{
+			"UG": {
+				"name": "Uganda",
+				"nodes": { 
+					"a" : ["d"],
+					"b" : ["c"],
+					"c" : ["b", "c", "d", "e"],
+					"d" : ["a", "c"],
+					"e" : ["c"],
+					"f" : []
+		        }
+			}
+		}
+	],
+}
