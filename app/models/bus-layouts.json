@@ -1,5 +1,21 @@
 {
-	"A": [],
+	"A": [
+		{"index": 0, "grid_type": 1, "number": 1, "label": null, "booking_id": null, "booked": false}, 
+		{"index": 1, "grid_type": 1, "number": 2, "label": null, "booking_id": null, "booked": false}, 
+		{"index": 2, "grid_type": 0, "number": null, "label": null, "booking_id": null, "booked": false},
+		{"index": 3, "grid_type": 1, "number": 3, "label": null, "booking_id": null, "booked": false}, 
+		{"index": 4, "grid_type": 1, "number": 4, "label": null, "booking_id": null, "booked": false}, 
+		{"index": 5, "grid_type": 1, "number": 5, "label": null, "booking_id": null, "booked": false}, 
+		{"index": 6, "grid_type": 1, "number": 6, "label": null, "booking_id": null, "booked": false}, 
+		{"index": 7, "grid_type": 1, "number": 7, "label": null, "booking_id": null, "booked": false}, 
+		{"index": 8, "grid_type": 1, "number": 8, "label": null, "booking_id": null, "booked": false}, 
+		{"index": 9, "grid_type": 1, "number": 9, "label": null, "booking_id": null, "booked": false}, 
+		{"index": 10, "grid_type": 1, "number": 10, "label": null, "booking_id": null, "booked": false},
+		{"index": 11, "grid_type": 1, "number": 11, "label": null, "booking_id": null, "booked": false},
+		{"index": 12, "grid_type": 1, "number": 12, "label": null, "booking_id": null, "booked": false},
+		{"index": 13, "grid_type": 1, "number": 13, "label": null, "booking_id": null, "booked": false},
+		{"index": 14, "grid_type": 1, "number": 14, "label": null, "booking_id": null, "booked": false}
+	],
 	"B": [],
 	"C": []
 }

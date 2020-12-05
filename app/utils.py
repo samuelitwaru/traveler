@@ -69,6 +69,12 @@ def set_bus_layout(bus, columns, rows):
 	count = columns * rows
 	db.session.add_all([ Grid(index=i, grid_type=0, bus=bus) for i in range(count) ])
 
+def set_bus_grids_from_layout(bus, layout):
+	index = 0
+	for item in layout:
+		grid = Grid(index=index, grid_type=item["grid_type"], number=item["number"], label=item["label"], bus=bus)
+		db.session.add(grid)
+	db.session.commit()
 
 def change_bus_layout(bus, layout):
 	new_grid_ids = []

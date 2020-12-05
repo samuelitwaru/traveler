@@ -1,9 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'index/home-base.html' %}
 {% from 'helpers.html' import render_string_field %}
 
-{% block body %}
+{% block nav_options %}
+	<a href="{{ url_for('index.index') }}" class="nav-link"><small>Home</small></a>
+{% endblock %}
+
+{% block content %}
 	<div class="container">
-		{% include'index/header.html' %}
 		{% include 'index/login-form.html' %}
 	</div>
 {% endblock %}

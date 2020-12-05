@@ -2,13 +2,13 @@
 
 {% block content %}
 	<div class="container-fluid p-0">
-	    <div class="bg-info p-2 shadow fixed d-flex">
+	    <div class="bg-light p-2 shadow fixed d-flex">
 	        <div class="flex-fill m-auto">
-	            <h4 class="text-light">Companies</h4>
+	            <h4>Registered Companies</h4>
 	        </div>
 
 	        <div align="right">
-	            <a class="btn btn-outline-light" href="{{ url_for('company.create_company') }}"><span class="fa fa-plus"></span> New Company</a>
+	            <a class="btn btn-outline-dark" href="{{ url_for('company.create_company') }}"><span class="fa fa-plus"></span> New Company</a>
 	        </div>
 	    </div>
 
@@ -31,7 +31,7 @@
 	                <div class="container" align="center">
 	                    <label class="display-4 text-muted">No Companies!</label>
 	                    <hr>
-	                    <a class="btn btn-primary" href="{{ url_for('company.create_company') }}"><span class="fa fa-plus"></span> New Company</a>
+	                    <a class="btn btn-outline-dark" href="{{ url_for('company.create_company') }}"><span class="fa fa-plus"></span> New Company</a>
 	                </div>
 	            {% endfor %}
 	        </tbody>

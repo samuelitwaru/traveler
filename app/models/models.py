@@ -39,11 +39,6 @@ class Branch(db.Model):
     buses = db.relationship("Bus", backref="branch")
     bookings = db.relationship("Booking", backref="branch")
 
-    def __init__(self, name, location, company):
-        self.name = name
-        self.location = location
-        company.branches.append(self)
-
     def __str__(self):
         return self.name
 

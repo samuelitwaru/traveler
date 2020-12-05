@@ -16,17 +16,19 @@ bus_bp = Blueprint('bus', __name__, url_prefix='/bus')
 @bus_bp.route("/search", methods=["GET"])
 def search_buses():
 	search_buses_form = SearchBusesForm(request.args)
-	buses = []
+	from_ = None
+	to = None
+	departure_time = None
 	if search_buses_form.validate():
 		data = search_buses_form.data
 		from_ = data.get("from_")
 		to = data.get("to")
 		departure_time = data.get("departure_time")
-		buses = find_buses(from_=from_, to=to, departure_time=departure_time)
-		# change departure time format to that compatible with form widget
-		if departure_time:
-			search_buses_form.departure_time.data = departure_time.strftime(app.config.get("TIME_FORMAT"))
-	
+		
+	buses = find_buses(from_=from_, to=to, departure_time=departure_time)
+	# change departure time format to that compatible with form widget
+	if departure_time:
+		search_buses_form.departure_time.data = departure_time.strftime(app.config.get("TIME_FORMAT"))
 	template = "index/search-buses-results.html"
 	if current_user.is_authenticated:
 		template = "bus/passenger-buses.html"

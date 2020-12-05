@@ -22,7 +22,7 @@ def create_branch(company_id):
 		# create branch
 		name = create_branch_form.name.data
 		location = create_branch_form.location.data
-		branch = Branch(name, location, company)
+		branch = Branch(name=name, location=location, company=company)
 		db.session.commit()
 		flash("Branch created.", "success")
 		return redirect(url_for('company.get_company_branch', company_id=company.id, branch_id=branch.id))

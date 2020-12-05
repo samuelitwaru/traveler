@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+	<div class="nav navbar py-3">
+		<strong>Trav<span class="text-info">eler</span></strong>
+
+		{% block nav_options %}
+			<a href="{{ url_for('index.login') }}" class="nav-link"><small>Login</small></a>
+		{% endblock %}
+	</div>
+	<hr class="m-0">
+
+	{% block content %}
+
+	{% endblock %}
+</div>
+{% endblock %}
