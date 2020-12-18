@@ -16,7 +16,7 @@
                     <small>Passenger Seats: {{bus.seats()|length}} </small>
                 </td>
                 
-                <td><a href="{{ url_for('bus.get_bus', bus_id=bus.id) }}" class='btn btn-info'><span class="fa fa-check-square"></span> Book</a></td>
+                <td><a href="{{url_for('bus.get_passenger_bus', bus_id=bus.id)}}" class='btn btn-outline-info'><span class="fa fa-check-square"></span> Book</a></td>
             </tr>
         {% else %}
             <div class="container" align="center">

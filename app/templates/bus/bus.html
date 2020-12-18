@@ -91,6 +91,7 @@
 		
 		socket.on('create_booking_passed', function(grid){
 			data.grids[grid.index] = grid
+			// console.log(grid)
 			fillGrid()
 			$(".ajaxForm").on('submit', ajaxSubmit)
 			$("#createBookingModal").modal('hide')

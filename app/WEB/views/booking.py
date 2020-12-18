@@ -5,8 +5,10 @@ from flask_login import current_user
 import flask_sqlalchemy
 from app.models import Grid, Pricing, Passenger, Booking, Bus, db
 from app.utils import  get_current_branch
-from ..forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm, FilterBookingsForm, SearchBusesForm
+from ..forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm, FilterBookingsForm, SearchBusesForm, CreatePassengerBookingForm
+from ..data import CreatePassengerBookingFormData
 from .payment import create_payment
+
 
 booking_bp = Blueprint('booking', __name__, url_prefix='/booking')
 
@@ -124,6 +126,25 @@ def create_booking(grid_id):
 	            "#createBookingPatch": create_booking_patch_template
 	        }
 	    };return data
+
+
+@booking_bp.route("/create/<int:grid_id>/passenger", methods=["GET", "POST"])
+def create_passenger_booking(grid_id):
+	grid = Grid.query.get(grid_id)
+	bus = grid.bus
+	create_passenger_booking_form_data = None
+	if current_user.is_authenticated:
+		passenger = current_user.profile
+		create_passenger_booking_form_data = CreatePassengerBookingFormData(passenger)
+	
+	create_passenger_booking_form = CreatePassengerBookingForm(obj=create_passenger_booking_form_data, grid=grid)
+	create_passenger_booking_patch_template = render_template('booking/create-passenger-booking-form.html', grid=grid, create_passenger_booking_form=create_passenger_booking_form, bus=bus)
+	
+	data = {
+        "form_templates": {
+            "#createPassengerBookingPatch": create_passenger_booking_patch_template
+        }
+    };return data
 
 
 @booking_bp.route("/<int:booking_id>/update", methods=["GET", "POST"])

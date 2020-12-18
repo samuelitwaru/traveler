@@ -8,6 +8,15 @@ from app.utils import get_current_branch
 from app.models import Pricing
 from app.helpers import now
 
+telephone_code_choices = [("256", "+256")]
+
+
+def validate_telephone(form, field):
+    telephone_code = form.data.get("telephone_code")
+    telephone = field.data
+    if not (telephone_code and telephone):
+        raise ValidationError(f"Invalid Telephone.")
+
 
 class CreateBookingForm(FlaskForm):
     grid_id = IntegerField(validators=[DataRequired()], widget=HiddenInput())
@@ -17,6 +26,26 @@ class CreateBookingForm(FlaskForm):
     pickup = SelectField("Pickup Station")
     paid = BooleanField("Paid ?")
     submit = SubmitField('Book')
+
+    def __init__(self, grid=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if grid:
+            bus = grid.bus
+            journey = bus.journey
+            pricings = journey.pricings
+            pickups = journey.pickups
+            self.pricing_id.choices = [(pricing.id, pricing) for pricing in pricings]
+            self.pickup.choices = [(pickup.name, pickup.name) for pickup in pickups]
+
+
+class CreatePassengerBookingForm(FlaskForm):
+    grid_id = IntegerField(validators=[DataRequired()], widget=HiddenInput())
+    passenger_id = IntegerField(validators=[], widget=HiddenInput())
+    passenger_name = StringField("Your Name", validators=[DataRequired()])
+    pricing_id = SelectField("Select Fare", validators=[DataRequired()], coerce=int)
+    telephone_code = SelectField(choices=telephone_code_choices)
+    passenger_telephone = StringField("Your Telephone Number", validators=[DataRequired(), validate_telephone])
+    pickup = SelectField("Pickup Station")
 
     def __init__(self, grid=None, *args, **kwargs):
         super().__init__(*args, **kwargs)

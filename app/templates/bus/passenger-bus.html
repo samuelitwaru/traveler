@@ -1,0 +1,142 @@
+{% if current_user.is_authenticated %}
+	{% extends 'index/passenger-base.html' %}
+{% else %}
+	{% extends 'index/home-base.html' %}
+{% endif %}
+
+{% block buses_active %}active{% endblock %}
+
+{% block content %}
+	<script src="/static/js/muuri.min.js"></script>
+	<div class="container">
+		<h1 class="text-center pt-2">Book Now. Fast to pay takes the seat!</h1>
+		<hr>
+		<div class="row">
+			<div class="col-md-6">
+				<!-- <h4 align="center"><span class="fa fa-bus"></span> {{bus.number}} ({{bus.status}})</h4>
+				<hr> -->
+				<div align="center">
+					<p>Select a Seat</p>
+					<div id="grid" class="grid border"></div>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<div id="createPassengerBookingPatch">
+					{% include 'booking/create-passenger-booking-form.html' %}
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+		let grid;
+		let gridItemClasses = ['space', 'passenger', 'reserved'];
+		let data = {
+			cols: Number("{{bus.columns}}"),
+			rows: Number("{{bus.rows}}"),
+			autoSeatNumbering: true,
+			numberReservedSeats: true,
+			grids: {{ bus.grids_dict() }},
+			selected: [],
+			selectedSeat: null
+		}
+
+		// data: Initialize Muuri grid
+		initGrid = function(){
+			grid = new Muuri('.grid', {
+				dragEnabled: false,
+				layoutOnResize: false
+			});
+		}
+
+		// select a seat
+		selectSeat = function(target) {
+			data.selectedSeat = target.dataset.index
+		}
+
+		// interface: arrange grid items in the grid box
+		fillGrid = function(){
+			// empty selected list
+			data.selected = []
+
+			// remove all child elements from the grid box
+			$('#grid').html('');
+
+			// calculate and set the width of the grid box
+			gridWidth = (data.cols*40) + (data.cols*2)
+			$('#grid').width(gridWidth)
+
+			// append grid items into grid box
+			for (var i=0; i < data.grids.length; i++) {
+				grid = data.grids[i];
+				widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><div data-index="${grid.index}" id="${grid.index}" class="item-content">${Boolean(grid.number) ? grid.number : ''}</div></div>`
+
+				if (grid.grid_type == 1) {
+					if (grid.booked) {
+						updateBookingUrl = `/booking/${grid.booking_id}/update` 
+						widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button class="w-100 btn-dark" id="${grid.index}" data-index="${grid.index}" data-toggle="modal" onclick="alert('Already Booked!')">${Boolean(grid.number) ? grid.number : ''}</button></div>`
+					}else{
+						createPassengerBookingUrl = `/booking/create/${grid.id}/passenger`
+						widget = `<form class="ajaxForm item ${gridItemClasses[grid.grid_type]}" data-patch-containers='["#createPassengerBookingPatch"]' data-progress-container="#createPassengerBookingPatch" method="GET" action="${createPassengerBookingUrl}"><button class="w-100" id="${grid.index}" data-index="${grid.index}" onclick="selectSeat(this)">${Boolean(grid.number) ? grid.number : ''}</button></form>`
+
+					}
+				}
+				
+				$('#grid').append(widget)	
+			}
+
+			// initialize Muuri grid
+			initGrid();	
+
+		}
+
+		fillGrid()
+
+		let socket;
+
+		$(document).ready(function() {
+			$("#getBusBookingsForm").submit()
+
+			socket = io.connect('{{HOST}}');
+			socket.emit('join', "{{bus}}")
+
+
+			socket.on('disconnect', (data) => {
+				socket = io.connect('{{HOST}}');
+				socket.emit('join', "{{bus}}")
+			})
+
+			
+			socket.on('create_booking_passed', function(grid){
+				data.grids[grid.index] = grid
+				fillGrid()
+				$(".ajaxForm").on('submit', ajaxSubmit)
+				$("#createBookingModal").modal('hide')
+				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
+
+			})
+
+			socket.on('create_booking_failed', function(errors){
+				alert(JSON.stringify(errors))
+			})
+
+			socket.on('update_booking_passed', function(grid){
+				data.grids[grid.index] = grid
+				fillGrid()
+				$(".ajaxForm").on('submit', ajaxSubmit)
+				$("#updateBookingModal").modal('hide')
+				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
+			})
+
+			socket.on('delete_booking_passed', function(grid){
+				data.grids[grid.index] = grid
+				fillGrid()
+				$(".ajaxForm").on('submit', ajaxSubmit)
+				$("#deleteBookingModal").modal('hide')
+				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
+			})
+		});
+	</script>
+{% endblock %}

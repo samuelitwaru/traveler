@@ -70,9 +70,12 @@ var ajaxSubmit = function(event){
     var patchContainers = JSON.parse($(this)[0].dataset.patchContainers)
 
     $(progressContainer).html(`
-        <div class="spinner-border text-info" role="status" align="center">
-            <span class="sr-only">Loading...</span>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-info text-center" role="status" align="center">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
+        <p class="text-center">Please wait...</p>
     `)
 
     $.ajax({
@@ -97,9 +100,12 @@ var ajaxGetSubmit = function(event){
 
 var loadUrl = function(url, progressContainer, patchContainers){
     $(progressContainer).html(`
-        <div class="spinner-border text-info" role="status" align="center">
-            <span class="sr-only">Loading...</span>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-info" role="status" align="center">
+                <span class="sr-only">Loading...</span>
+            </div>
         </div>
+        <p class="text-center">Please wait...</p>
     `)
     $.get(url, function(response) {
         for (var i = 0; i < patchContainers.length; i++) {
@@ -136,9 +142,12 @@ var ajaxMultipartSubmitForm = function(event){
     var patchContainers = JSON.parse($(this)[0].dataset.patchContainers)
             
     $(progressContainer).html(`
+        <div class="d-flex justify-content-center">
             <div class="spinner-border text-info" role="status" align="center">
                 <span class="sr-only">Loading...</span>
             </div>
+        </div>
+        <p class="text-center">Please wait...</p>
     `)
 
     $.ajax({

@@ -1,5 +1,5 @@
 from app import app
-
+from app.utils import split_telephone
 
 class BusSchedule:
 	
@@ -12,6 +12,17 @@ class BusSchedule:
 				self.booking_deadline = (bus.departure_time-bus.booking_deadline).seconds//60
 			if bus.free_bus_time:
 				self.free_bus_time = (bus.free_bus_time-bus.departure_time).seconds//60
+
+
+class CreatePassengerBookingFormData:
+
+	def __init__(self, passenger):
+		if passenger:
+			self.passenger_name = passenger.display_name()
+			code, telephone = split_telephone(passenger.telephone)
+			self.telephone_code = code
+			self.passenger_telephone = telephone
+
 
 
 

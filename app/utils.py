@@ -74,6 +74,7 @@ def set_bus_grids_from_layout(bus, layout):
 	for item in layout:
 		grid = Grid(index=index, grid_type=item["grid_type"], number=item["number"], label=item["label"], bus=bus)
 		db.session.add(grid)
+		index += 1
 	db.session.commit()
 
 def change_bus_layout(bus, layout):

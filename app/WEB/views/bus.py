@@ -5,7 +5,7 @@ from flask_login import current_user
 from app.models import Bus, Company, Grid, Booking, db
 from app.utils import  get_current_branch, set_bus_layout, change_bus_layout, find_buses, set_bus_free
 from app import app
-from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm, SearchBusesForm, DeleteBusForm
+from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm, SearchBusesForm, DeleteBusForm, CreatePassengerBookingForm
 from .. guards import check_branch_journeys
 from ..data import BusSchedule
 
@@ -53,6 +53,11 @@ def get_bus(bus_id):
 	update_bus_layout_form = UpdateBusLayoutForm()
 	return render_template("bus/bus.html", bus=bus, update_bus_schedule_form=update_bus_schedule_form, update_bus_layout_form=update_bus_layout_form)
 
+
+@bus_bp.route("/<int:bus_id>/passenger", methods=["GET"])
+def get_passenger_bus(bus_id):
+	bus = Bus.query.get(bus_id)
+	return render_template("bus/passenger-bus.html", bus=bus)
 
 
 @bus_bp.route("/create/<int:company_id>", methods=["POST"])
