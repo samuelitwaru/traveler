@@ -1,28 +1,17 @@
 {% from 'helpers.html' import render_string_field, render_telephone_field %}
-<div id="createPassengerBookingPatch">
-	{% if create_passenger_booking_form %}
-	<form class="socketForm" data-event="create_booking" method="POST" id="createPassengerBookingForm">
+<div id="createPassengerBookingForm">
+	<form action="{{ url_for('payment.create_payment_checkout', bus_id=bus.id) }}" method="POST" id="createPassengerBookingForm">
         <div>
-    		Selected <label class="form-control">Seat {{grid}}</label>
-
             {{ create_passenger_booking_form.csrf_token }}
 
-            {{ create_passenger_booking_form.grid_id }}
-            {{ create_passenger_booking_form.passenger_id }}
+            {{ render_string_field(create_passenger_booking_form.grid_id) }}
             {{ render_string_field(create_passenger_booking_form.passenger_name) }}
             {{ render_telephone_field(create_passenger_booking_form.passenger_telephone, code_field=create_passenger_booking_form.telephone_code) }}
             {{ render_string_field(create_passenger_booking_form.pricing_id) }}
             {{ render_string_field(create_passenger_booking_form.pickup) }}
         </div>
         <div>
-        	<h3>Checkout<h3>
-        	<button class="btn btn-block btn-primary">Visa</button>
-        	<button class="btn btn-block btn-warning">MTN Mobile Money</button>
-        	<button class="btn btn-block btn-danger">Airtel Money</button>
+        	<button class="btn btn-block btn-primary">Checkout</button>
         </div>
     </form>
-
-    {% else %}
-    	<p class="text-center text-muted display-1">Select a seat to book</p>
-    {% endif %}
 </div>

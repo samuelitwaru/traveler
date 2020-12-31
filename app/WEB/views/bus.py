@@ -7,7 +7,7 @@ from app.utils import  get_current_branch, set_bus_layout, change_bus_layout, fi
 from app import app
 from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm, SearchBusesForm, DeleteBusForm, CreatePassengerBookingForm
 from .. guards import check_branch_journeys
-from ..data import BusSchedule
+from ..data import BusSchedule, CreatePassengerBookingFormData
 
 
 bus_bp = Blueprint('bus', __name__, url_prefix='/bus')
@@ -57,7 +57,13 @@ def get_bus(bus_id):
 @bus_bp.route("/<int:bus_id>/passenger", methods=["GET"])
 def get_passenger_bus(bus_id):
 	bus = Bus.query.get(bus_id)
-	return render_template("bus/passenger-bus.html", bus=bus)
+	create_passenger_booking_form_data = None
+	if current_user.is_authenticated:
+		passenger = current_user.profile
+		create_passenger_booking_form_data = CreatePassengerBookingFormData(passenger)
+	
+	create_passenger_booking_form = CreatePassengerBookingForm(obj=create_passenger_booking_form_data, bus=bus)
+	return render_template("bus/passenger-bus.html", bus=bus, create_passenger_booking_form=create_passenger_booking_form)
 
 
 @bus_bp.route("/create/<int:company_id>", methods=["POST"])

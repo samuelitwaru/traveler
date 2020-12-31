@@ -13,11 +13,21 @@
 		<hr>
 		<div class="row">
 			<div class="col-md-6">
-				<!-- <h4 align="center"><span class="fa fa-bus"></span> {{bus.number}} ({{bus.status}})</h4>
-				<hr> -->
-				<div align="center">
-					<p>Select a Seat</p>
-					<div id="grid" class="grid border"></div>
+				<div class="row" align="center">
+					<div class="col">
+						<h3 class="form-control bg-light">{{ bus.number }}</h3>
+						<div>
+							<img class="img-fluid rounded" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=bus.company.logo)}}" />
+						</div>
+						<label>{{bus.company}}</label>
+						<p>{{bus.journey}}</p>
+						<p>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</p>
+						<p id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></p>
+					</div>
+					<div class="col">
+						<p>Select a Seat</p>
+						<div id="grid" class="grid border"></div>
+					</div>
 				</div>
 			</div>
 
@@ -36,11 +46,8 @@
 		let data = {
 			cols: Number("{{bus.columns}}"),
 			rows: Number("{{bus.rows}}"),
-			autoSeatNumbering: true,
-			numberReservedSeats: true,
 			grids: {{ bus.grids_dict() }},
-			selected: [],
-			selectedSeat: null
+			selected: null,
 		}
 
 		// data: Initialize Muuri grid
@@ -52,15 +59,20 @@
 		}
 
 		// select a seat
-		selectSeat = function(target) {
-			data.selectedSeat = target.dataset.index
+		selectGrid = function(gridId) {
+			data.selected = gridId
+			// aler(gridId)
+			fillGrid()
+			// seat = data.grids[seatIndex]
+			$('#grid_id').val(gridId);
 		}
+
+		$('#grid_id').on("change", (event) => {
+			selectGrid(event.target.value)
+		})
 
 		// interface: arrange grid items in the grid box
 		fillGrid = function(){
-			// empty selected list
-			data.selected = []
-
 			// remove all child elements from the grid box
 			$('#grid').html('');
 
@@ -74,13 +86,14 @@
 				widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><div data-index="${grid.index}" id="${grid.index}" class="item-content">${Boolean(grid.number) ? grid.number : ''}</div></div>`
 
 				if (grid.grid_type == 1) {
-					if (grid.booked) {
-						updateBookingUrl = `/booking/${grid.booking_id}/update` 
-						widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button class="w-100 btn-dark" id="${grid.index}" data-index="${grid.index}" data-toggle="modal" onclick="alert('Already Booked!')">${Boolean(grid.number) ? grid.number : ''}</button></div>`
-					}else{
-						createPassengerBookingUrl = `/booking/create/${grid.id}/passenger`
-						widget = `<form class="ajaxForm item ${gridItemClasses[grid.grid_type]}" data-patch-containers='["#createPassengerBookingPatch"]' data-progress-container="#createPassengerBookingPatch" method="GET" action="${createPassengerBookingUrl}"><button class="w-100" id="${grid.index}" data-index="${grid.index}" onclick="selectSeat(this)">${Boolean(grid.number) ? grid.number : ''}</button></form>`
-
+					if(grid.booked){
+						widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content bg-dark" onclick="alert('Aleady booked!')">${Boolean(grid.number) ? grid.number : ''}</button</div>`
+					}
+					else {
+						widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content" onclick="selectGrid(${grid.id})">${Boolean(grid.number) ? grid.number : ''}</button</div>`
+						if (grid.id == data.selected) {
+							widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content bg-success">${Boolean(grid.number) ? grid.number : ''}</button</div>`
+						}
 					}
 				}
 				
@@ -93,10 +106,11 @@
 		}
 
 		fillGrid()
-
 		let socket;
 
 		$(document).ready(function() {
+			setTimeLeft("#bookingCountDown")
+
 			$("#getBusBookingsForm").submit()
 
 			socket = io.connect('{{HOST}}');

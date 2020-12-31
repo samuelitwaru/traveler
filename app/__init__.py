@@ -5,18 +5,25 @@ from flask_migrate import Migrate
 from flask_restful import Api
 from flask_socketio import SocketIO
 from flask_mail import Mail
+from rave_python import Rave
 
 
 app = Flask(__name__)
 
-app.config.from_object(config.DevelopmentConfig)
 app.config.from_object(config.ProductionConfig)
+app.config.from_object(config.DevelopmentConfig)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 api = Api(app)
 socketio = SocketIO(app)
 mail = Mail(app)
+
+# initialize rave
+rave = Rave(app.config.get("RAVE_PUBLIC_KEY"), 
+	app.config.get("RAVE_SECRET_KEY"),
+	production=True,
+	usingEnv=True) 
 
 
 # load database models
@@ -46,7 +53,7 @@ from app.API.resources.grid import GridAPI, GridListAPI
 from app.API.resources.booking import BookingAPI, BookingListAPI
 from app.API.resources.journey import JourneyAPI, JourneyListAPI
 from app.API.resources.payment import PaymentAPI, PaymentListAPI
-from app.API.resources.passenger import PassengerAPI, PassengerListAPI
+# from app.API.resources.passenger import PassengerAPI, PassengerListAPI
 from app.API.resources.profile import ProfileAPI, ProfileListAPI
 from app.API.resources.user import UserAPI, UserListAPI
 
@@ -66,8 +73,8 @@ api.add_resource(JourneyAPI, '/bus/api/v1.0/journeys/<int:id>', endpoint="journe
 api.add_resource(PaymentListAPI, '/bus/api/v1.0/payments', endpoint="payments")
 api.add_resource(PaymentAPI, '/bus/api/v1.0/payments/<int:id>', endpoint="payment")
 
-api.add_resource(PassengerListAPI, '/bus/api/v1.0/passengers', endpoint="passengers")
-api.add_resource(PassengerAPI, '/bus/api/v1.0/passengers/<int:id>', endpoint="passenger")
+# api.add_resource(PassengerListAPI, '/bus/api/v1.0/passengers', endpoint="passengers")
+# api.add_resource(PassengerAPI, '/bus/api/v1.0/passengers/<int:id>', endpoint="passenger")
 
 api.add_resource(ProfileListAPI, '/bus/api/v1.0/profiles', endpoint="profiles")
 api.add_resource(ProfileAPI, '/bus/api/v1.0/profiles/<int:id>', endpoint="profile")
@@ -89,6 +96,7 @@ from app.WEB.views.journey import journey_bp
 from app.WEB.views.pickup import pickup_bp
 from app.WEB.views.pricing import pricing_bp
 from app.WEB.views.booking import booking_bp
+from app.WEB.views.payment import payment_bp
 
 
 app.register_blueprint(index_bp)
@@ -103,3 +111,4 @@ app.register_blueprint(journey_bp)
 app.register_blueprint(pickup_bp)
 app.register_blueprint(pricing_bp)
 app.register_blueprint(booking_bp)
+app.register_blueprint(payment_bp)

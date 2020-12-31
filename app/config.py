@@ -25,6 +25,11 @@ class BaseConfig(object):
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
     MAIL_SUPPRESS_SEND = False
+    RAVE_PUBLIC_KEY = os.getenv("RAVE_PUBLIC_KEY")
+    RAVE_SECRET_KEY = os.getenv("RAVE_SECRET_KEY")
+    RAVE_ENCRYPTION_KEY = os.getenv("RAVE_ENCRYPTION_KEY")
+    RAVE_TEST_NUMBER = "256781902516"
+    RAVE_USING_ENV = False
 
     # send grid
     # MAIL_SERVER = 'smtp.sendgrid.net'
@@ -43,6 +48,7 @@ class ProductionConfig(BaseConfig):
     HOST_ADDRESS = "https://traveler-ug.herokuapp.com"
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://samuelitwaru:password@localhost/traveler'  # TODO => MYSQL
     SQLALCHEMY_DATABASE_URI = 'sqlite:///models/database.db'
+    RAVE_PRODUCTION = True
 
 
 class DevelopmentConfig(BaseConfig):
@@ -52,4 +58,6 @@ class DevelopmentConfig(BaseConfig):
     HOST_ADDRESS = "http://127.0.0.1:5000"
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:bratz123@localhost/traveler'  # TODO => MYSQL
     SQLALCHEMY_DATABASE_URI = 'sqlite:///models/database.db'
+    RAVE_PRODUCTION = False
+
 

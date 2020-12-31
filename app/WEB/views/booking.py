@@ -3,7 +3,7 @@ from weasyprint import HTML, CSS
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session, make_response
 from flask_login import current_user
 import flask_sqlalchemy
-from app.models import Grid, Pricing, Passenger, Booking, Bus, db
+from app.models import Grid, Pricing, Booking, Bus, db
 from app.utils import  get_current_branch
 from ..forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm, FilterBookingsForm, SearchBusesForm, CreatePassengerBookingForm
 from ..data import CreatePassengerBookingFormData

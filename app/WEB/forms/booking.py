@@ -39,21 +39,21 @@ class CreateBookingForm(FlaskForm):
 
 
 class CreatePassengerBookingForm(FlaskForm):
-    grid_id = IntegerField(validators=[DataRequired()], widget=HiddenInput())
-    passenger_id = IntegerField(validators=[], widget=HiddenInput())
+    grid_id = SelectField("Your Seat", validators=[DataRequired()], coerce=int)
     passenger_name = StringField("Your Name", validators=[DataRequired()])
-    pricing_id = SelectField("Select Fare", validators=[DataRequired()], coerce=int)
+    pricing_id = SelectField("Select Destination", validators=[DataRequired()], coerce=int)
     telephone_code = SelectField(choices=telephone_code_choices)
     passenger_telephone = StringField("Your Telephone Number", validators=[DataRequired(), validate_telephone])
     pickup = SelectField("Pickup Station")
 
-    def __init__(self, grid=None, *args, **kwargs):
+    def __init__(self, bus=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if grid:
-            bus = grid.bus
+        if bus:
             journey = bus.journey
             pricings = journey.pricings
             pickups = journey.pickups
+            grids = bus.grids.filter_by(grid_type=1, booking_id=None)
+            self.grid_id.choices = [(0, "Select Your Seat")]+[(grid.id, f"Seat {grid}") for grid in grids]
             self.pricing_id.choices = [(pricing.id, pricing) for pricing in pricings]
             self.pickup.choices = [(pickup.name, pickup.name) for pickup in pickups]
 

@@ -7,6 +7,7 @@ from flask_sqlalchemy import Model
 from sqlalchemy import Column, DateTime
 from app import db
 from app.helpers import timezone, now
+from app.WEB.template_filters import currency
 
 
 class TimestampedModel(Model):
@@ -23,6 +24,8 @@ class Company(db.Model):
     branches = db.relationship("Branch", backref="company")
     buses = db.relationship("Bus", backref="company")
     statuses = db.relationship("Status", backref="company")
+    payments = db.relationship("Payment", backref="company")
+
 
     def __str__(self):
         return self.name
@@ -60,6 +63,7 @@ class Journey(db.Model):
     buses = db.relationship("Bus", backref="journey")
     pickups = db.relationship("Pickup", backref="journey")
     pricings = db.relationship("Pricing", backref="journey")
+    payments = db.relationship("Payment", backref="journey")
 
     def __str__(self):
         return f"{self.from_} to {self.to}"
@@ -72,8 +76,11 @@ class Pricing(db.Model):
     status_id = db.Column(db.Integer, db.ForeignKey("status.id"))
     journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))
 
+    payments = db.relationship("Payment", backref="pricing")
+
+
     def __str__(self):
-        return f"{self.stop} ({self.price})"
+        return f"{self.stop} ({currency(self.price)})"
 
 
 class Status(db.Model):
@@ -114,8 +121,9 @@ class Bus(db.Model):
     status_id = db.Column(db.Integer, db.ForeignKey("status.id"))
     journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))
 
-    grids = db.relationship("Grid", backref="bus", cascade="delete")
+    grids = db.relationship("Grid", backref="bus", cascade="delete", lazy="dynamic")
     bookings = db.relationship("Booking", backref="bus")
+    payments = db.relationship("Payment", backref="bus")    
 
     def __str__(self):
         return self.number
@@ -144,9 +152,10 @@ class Grid(db.Model):
 
     bookings = db.relationship("Booking", backref="grid", foreign_keys=booking_id, uselist=True, lazy='dynamic')
     booking = db.relationship("Booking", backref=db.backref("booked_grid", uselist=False), foreign_keys=booking_id)
+    payments = db.relationship("Payment", backref="grid")
 
     def __str__(self):
-        return self.number
+        return str(self.number)
 
     def grid_dict(self):
         return {"id":self.id, "index":self.index, "grid_type":self.grid_type, "number":self.number, "label":self.label, "booking_id":self.booking_id,"booked":bool(self.booking)}
@@ -188,19 +197,23 @@ class Payment(db.Model):
     passenger_name = db.Column(db.String(64))
     passenger_telephone = db.Column(db.String(16))
 
+    company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
+    bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"))
     grid_id = db.Column(db.Integer, db.ForeignKey("grid.id"))
-    passenger_id = db.Column(db.Integer, db.ForeignKey("passenger.id"))
+    profile_id = db.Column(db.Integer, db.ForeignKey("profile.id"))
+    journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))
+    pricing_id = db.Column(db.Integer, db.ForeignKey("pricing.id"))
 
 
-class Passenger(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(32))
-    last_name = db.Column(db.String(32))
-    email = db.Column(db.String(64))
-    telephone = db.Column(db.String(16))
-    password = db.Column(db.String(128))
+# class Passenger(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     first_name = db.Column(db.String(32))
+#     last_name = db.Column(db.String(32))
+#     email = db.Column(db.String(64))
+#     telephone = db.Column(db.String(16))
+#     password = db.Column(db.String(128))
 
-    payments = db.relationship("Payment", backref="passenger")
+#     payments = db.relationship("Payment", backref="passenger")
 
 
 class User(db.Model, UserMixin):
@@ -243,6 +256,8 @@ class Profile(db.Model):
     is_passenger = db.Column(db.Boolean())
     branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
+
+    payments = db.relationship("Payment", backref="profile")
 
     def display_name(self):
         return f"{self.first_name} {self.last_name}"

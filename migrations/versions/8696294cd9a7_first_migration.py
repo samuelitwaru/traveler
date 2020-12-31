@@ -1,8 +1,8 @@
 """First migration
 
-Revision ID: 7424a957e5b7
+Revision ID: 8696294cd9a7
 Revises: 
-Create Date: 2020-12-18 04:45:22.234438
+Create Date: 2020-12-31 18:13:59.652502
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7424a957e5b7'
+revision = '8696294cd9a7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -107,15 +107,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['branch_id'], ['branch.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('passenger',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('first_name', sa.String(length=32), nullable=True),
-    sa.Column('last_name', sa.String(length=32), nullable=True),
-    sa.Column('email', sa.String(length=64), nullable=True),
-    sa.Column('telephone', sa.String(length=16), nullable=True),
-    sa.Column('password', sa.String(length=128), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('payment',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('reference', sa.String(length=64), nullable=True),
@@ -129,10 +120,18 @@ def upgrade():
     sa.Column('grid_number', sa.String(length=3), nullable=True),
     sa.Column('passenger_name', sa.String(length=64), nullable=True),
     sa.Column('passenger_telephone', sa.String(length=16), nullable=True),
+    sa.Column('company_id', sa.Integer(), nullable=True),
+    sa.Column('bus_id', sa.Integer(), nullable=True),
     sa.Column('grid_id', sa.Integer(), nullable=True),
-    sa.Column('passenger_id', sa.Integer(), nullable=True),
+    sa.Column('profile_id', sa.Integer(), nullable=True),
+    sa.Column('journey_id', sa.Integer(), nullable=True),
+    sa.Column('pricing_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['bus_id'], ['bus.id'], ),
+    sa.ForeignKeyConstraint(['company_id'], ['company.id'], ),
     sa.ForeignKeyConstraint(['grid_id'], ['grid.id'], ),
-    sa.ForeignKeyConstraint(['passenger_id'], ['passenger.id'], ),
+    sa.ForeignKeyConstraint(['journey_id'], ['journey.id'], ),
+    sa.ForeignKeyConstraint(['pricing_id'], ['pricing.id'], ),
+    sa.ForeignKeyConstraint(['profile_id'], ['profile.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('pickup',
@@ -209,7 +208,6 @@ def downgrade():
     op.drop_table('pricing')
     op.drop_table('pickup')
     op.drop_table('payment')
-    op.drop_table('passenger')
     op.drop_table('journey')
     op.drop_table('grid')
     op.drop_table('connection')
