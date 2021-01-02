@@ -47,11 +47,9 @@ def get_buses():
 
 @bus_bp.route("/<int:bus_id>", methods=["GET"])
 def get_bus(bus_id):
-	company = get_current_branch().company
 	bus = Bus.query.get(bus_id)
-	update_bus_schedule_form = UpdateBusScheduleForm(obj=BusSchedule(bus))
-	update_bus_layout_form = UpdateBusLayoutForm()
-	return render_template("bus/bus.html", bus=bus, update_bus_schedule_form=update_bus_schedule_form, update_bus_layout_form=update_bus_layout_form)
+	create_passenger_booking_form = CreatePassengerBookingForm(bus=bus)
+	return render_template("bus/bus.html", bus=bus, create_passenger_booking_form=create_passenger_booking_form)
 
 
 @bus_bp.route("/<int:bus_id>/passenger", methods=["GET"])

@@ -32,9 +32,12 @@
 			</div>
 
 			<div class="col-md-6">
-				<div id="createPassengerBookingPatch">
-					{% include 'booking/create-passenger-booking-form.html' %}
-				</div>
+				<form action="{{ url_for('payment.create_payment_checkout', bus_id=bus.id) }}" method="POST">
+					{% include 'booking/create-passenger-booking.html' %}
+					<div>
+			        	<button class="btn btn-block btn-primary">Checkout</button>
+			        </div>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -106,51 +109,21 @@
 		}
 
 		fillGrid()
-		let socket;
 
 		$(document).ready(function() {
 			setTimeLeft("#bookingCountDown")
-
 			$("#getBusBookingsForm").submit()
 
-			socket = io.connect('{{HOST}}');
-			socket.emit('join', "{{bus}}")
+			inbox.onmessage = function(msgEvent) {
+				var msg = JSON.parse(msgEvent.data);
+				var handle = msg.handle
+				var msgData = msg.data
+				if (handle === 'create_booking_passed') {
+					data.grids[msgData.index] = msgData
+					fillGrid()
+				}
+			};
 
-
-			socket.on('disconnect', (data) => {
-				socket = io.connect('{{HOST}}');
-				socket.emit('join', "{{bus}}")
-			})
-
-			
-			socket.on('create_booking_passed', function(grid){
-				data.grids[grid.index] = grid
-				fillGrid()
-				$(".ajaxForm").on('submit', ajaxSubmit)
-				$("#createBookingModal").modal('hide')
-				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
-
-			})
-
-			socket.on('create_booking_failed', function(errors){
-				alert(JSON.stringify(errors))
-			})
-
-			socket.on('update_booking_passed', function(grid){
-				data.grids[grid.index] = grid
-				fillGrid()
-				$(".ajaxForm").on('submit', ajaxSubmit)
-				$("#updateBookingModal").modal('hide')
-				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
-			})
-
-			socket.on('delete_booking_passed', function(grid){
-				data.grids[grid.index] = grid
-				fillGrid()
-				$(".ajaxForm").on('submit', ajaxSubmit)
-				$("#deleteBookingModal").modal('hide')
-				loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
-			})
 		});
 	</script>
 {% endblock %}

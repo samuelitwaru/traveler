@@ -31,6 +31,8 @@ class BaseConfig(object):
     RAVE_TEST_NUMBER = "256781902516"
     RAVE_USING_ENV = False
 
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
+
     # send grid
     # MAIL_SERVER = 'smtp.sendgrid.net'
     # MAIL_PORT = 587

@@ -1,123 +1,118 @@
 {% extends 'index/manager-base.html' %}
 
 {% block content %}
-<div class="row p-2 m-0">
-	<div class="col-md-3">
+<script src="/static/js/muuri.min.js"></script>
+<div class="container pt-2">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="row" align="center">
+				<div class="col">
+					<h3 class="form-control bg-light">{{ bus.number }}</h3>
+					<div>
+						<img class="img-fluid rounded" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=bus.company.logo)}}" />
+					</div>
+					<label>{{bus.company}}</label>
+					<p>{{bus.journey}}</p>
+					<p>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</p>
+					<p id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></p>
+				</div>
+				<div class="col">
+					<p>Select a Seat</p>
+					<div id="grid" class="grid border"></div>
+				</div>
+			</div>
+		</div>
 
-		<table class="table table-sm table-striped">
-			<thead>
-				<th colspan="2" class="p-2 border-top-0">
-					Schedule
-					{% if profile.is_manager %}
-						{% if bus.departure_time %}
-						<button data-toggle="modal" data-target="#deleteBusScheduleModal" data-patch-containers='["#deleteBusSchedulePatch"]' data-progress-container="#deleteBusSchedulePatch" data-url="{{ url_for('bus.delete_bus_schedule', bus_id=bus.id) }}" class="getRequestTrigger fa fa-times float-right btn bg-white text-danger"></button>
-						{% endif %}
-						<button data-toggle="modal" data-target="#updateBusScheduleModal" class="float-right fa fa-clock-o btn bg-white text-primary"></button>
-					{% endif %}
-				</th>
-			</thead>
-
-			<tbody>
-				{% if bus.departure_time %}
-				<tr>
-					<td colspan="2">
-						<small>Departure</small>
-						<p>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}<p>
-					</td>
-				</tr>
-
-				<tr>
-					<td colspan="2">
-						<small>Journey</small>
-						<p>{{bus.journey}}<p>
-					</td>
-				</tr>
-
-				<tr>
-					<td colspan="2">
-						<small>Broadcasting</small>
-						<p>{% if bus.broadcast %}YES{% else %}NO{% endif %}<p>
-					</td>
-				</tr>				
-
-				<tr>
-					<td colspan="2">
-						<small>Booking Countdown</small>
-						<p id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></p>
-					</td>
-				</tr>
-
-				<tr class="p-2" align="center">
-					<td colspan="2"><a href="{{ url_for('bus.free_bus', bus_id=bus.id) }}" class="btn btn-warning">Free Bus</a></td>
-				</tr>
-				{% else %}
-				
-				{% if profile.is_manager %}
-				<tr>
-					<td colspan="2" class="text-muted" align="center">Bus not scheduled</td>
-				</tr>
-				{% endif %}
-
-				{% endif %}
-			</tbody>
-		</table>
-
-
-		{% include 'bus/update-bus-schedule-modal.html' %}
-		{% include 'bus/delete-bus-schedule-modal.html' %}
-	</div>
-	<div class="col-md-9">
-		{% include 'bus/bus-booking.html' %}
+		<div class="col-md-6">
+			<form id="createPassengerBookingForm" class="socketForm" data-handle="create_booking" method="POST">
+				{% include 'booking/create-passenger-booking.html' %}
+				<div>
+		        	<button class="btn btn-block btn-primary">Save</button>
+		        </div>
+			</form>
+		</div>
 	</div>
 </div>
 
 <script>
-	$().ready((event)=>{
+	let grid;
+	let gridItemClasses = ['space', 'passenger', 'reserved'];
+	let data = {
+		cols: Number("{{bus.columns}}"),
+		rows: Number("{{bus.rows}}"),
+		grids: {{ bus.grids_dict() }},
+		selected: null,
+	}
+
+	// data: Initialize Muuri grid
+	initGrid = function(){
+		grid = new Muuri('.grid', {
+			dragEnabled: false,
+			layoutOnResize: false
+		});
+	}
+
+	// select a seat
+	selectGrid = function(gridId) {
+		data.selected = gridId
+		// aler(gridId)
+		fillGrid()
+		// seat = data.grids[seatIndex]
+		$('#grid_id').val(gridId);
+	}
+
+	$('#grid_id').on("change", (event) => {
+		selectGrid(event.target.value)
+	})
+
+	// interface: arrange grid items in the grid box
+	fillGrid = function(){
+		// remove all child elements from the grid box
+		$('#grid').html('');
+
+		// calculate and set the width of the grid box
+		gridWidth = (data.cols*40) + (data.cols*2)
+		$('#grid').width(gridWidth)
+
+		// append grid items into grid box
+		for (var i=0; i < data.grids.length; i++) {
+			grid = data.grids[i];
+			widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><div data-index="${grid.index}" id="${grid.index}" class="item-content">${Boolean(grid.number) ? grid.number : ''}</div></div>`
+
+			if (grid.grid_type == 1) {
+				if(grid.booked){
+					widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content bg-dark" onclick="alert('Aleady booked!')">${Boolean(grid.number) ? grid.number : ''}</button</div>`
+				}
+				else {
+					widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content" onclick="selectGrid(${grid.id})">${Boolean(grid.number) ? grid.number : ''}</button</div>`
+					if (grid.id == data.selected) {
+						widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content bg-success">${Boolean(grid.number) ? grid.number : ''}</button</div>`
+					}
+				}
+			}
+			
+			$('#grid').append(widget)	
+		}
+
+		// initialize Muuri grid
+		initGrid();	
+
+	}
+
+	fillGrid()
+
+	$(document).ready(function() {
 		setTimeLeft("#bookingCountDown")
-	})
 
-	let socket;
-	$(document).ready(function(){
-		
-		socket = io.connect('{{HOST}}');
-		socket.emit('join', "{{bus}}")
-
-
-		socket.on('disconnect', (data) => {
-			socket = io.connect('{{HOST}}');
-			socket.emit('join', "{{bus}}")
-		})
-
-		
-		socket.on('create_booking_passed', function(grid){
-			data.grids[grid.index] = grid
-			// console.log(grid)
-			fillGrid()
-			$(".ajaxForm").on('submit', ajaxSubmit)
-			$("#createBookingModal").modal('hide')
-			loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
-
-		})
-
-		socket.on('create_booking_failed', function(errors){
-			alert(JSON.stringify(errors))
-		})
-
-		socket.on('update_booking_passed', function(grid){
-			data.grids[grid.index] = grid
-			fillGrid()
-			$(".ajaxForm").on('submit', ajaxSubmit)
-			$("#updateBookingModal").modal('hide')
-			loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
-		})
-
-		socket.on('delete_booking_passed', function(grid){
-			data.grids[grid.index] = grid
-			fillGrid()
-			$(".ajaxForm").on('submit', ajaxSubmit)
-			$("#deleteBookingModal").modal('hide')
-			loadUrl("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", "#busBookingsPatch", ["#busBookingsPatch"])
-		})
-	})
+		inbox.onmessage = function(msgEvent) {
+			var msg = JSON.parse(msgEvent.data);
+			var handle = msg.handle
+			var msgData = msg.data
+			if (handle === 'create_booking_passed') {
+				data.grids[msgData.index] = msgData
+				fillGrid()
+			}
+		};
+	});
 </script>
 {% endblock %}
