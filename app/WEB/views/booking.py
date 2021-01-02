@@ -138,7 +138,7 @@ def create_passenger_booking(grid_id):
 		create_passenger_booking_form_data = CreatePassengerBookingFormData(passenger)
 	
 	create_passenger_booking_form = CreatePassengerBookingForm(obj=create_passenger_booking_form_data, grid=grid)
-	create_passenger_booking_patch_template = render_template('booking/create-passenger-booking.html', grid=grid, create_passenger_booking_form=create_passenger_booking_form, bus=bus)
+	create_passenger_booking_patch_template = render_template('booking/create-passenger-booking-form.html', grid=grid, create_passenger_booking_form=create_passenger_booking_form, bus=bus)
 	
 	data = {
         "form_templates": {

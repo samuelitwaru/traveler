@@ -1,6 +1,7 @@
 from flask import request
 from flask_restful import Resource, marshal_with, reqparse
 from app.models.models import Booking, Grid, Bus, db
+from app import DefaultNamespace
 from ..fields import Fields
 
 booking_fields = Fields().booking_fields()
