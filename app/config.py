@@ -31,8 +31,6 @@ class BaseConfig(object):
     RAVE_TEST_NUMBER = "256781902516"
     RAVE_USING_ENV = False
 
-    REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
-
     # send grid
     # MAIL_SERVER = 'smtp.sendgrid.net'
     # MAIL_PORT = 587
@@ -51,6 +49,7 @@ class ProductionConfig(BaseConfig):
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://samuelitwaru:password@localhost/traveler'  # TODO => MYSQL
     SQLALCHEMY_DATABASE_URI = 'sqlite:///models/database.db'
     RAVE_PRODUCTION = True
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://traveler-ug.herokuapp.com')
 
 
 class DevelopmentConfig(BaseConfig):
@@ -61,5 +60,7 @@ class DevelopmentConfig(BaseConfig):
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:bratz123@localhost/traveler'  # TODO => MYSQL
     SQLALCHEMY_DATABASE_URI = 'sqlite:///models/database.db'
     RAVE_PRODUCTION = False
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
+
 
 
