@@ -10,8 +10,10 @@ from rave_python import Rave
 
 app = Flask(__name__)
 
-app.config.from_object(config.DevelopmentConfig)
 app.config.from_object(config.ProductionConfig)
+app.config.from_object(config.DevelopmentConfig)
+
+print(">>>>>>>>>>>>>>>>>>>>>>>>")
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
