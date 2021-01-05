@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
+from flask_login import login_required
 from app.models import Company, Status, Journey, db
 from ..forms import CreateStatusForm, UpdateStatusForm, DeleteStatusForm, CreatePricingForm
 
@@ -6,12 +7,14 @@ status_bp = Blueprint('status', __name__, url_prefix='/status')
 
 
 @status_bp.route("/", methods=["GET"])
+@login_required
 def get_statuses():
     statuses = Status.query.all()
     return render_template("status/statuses.html", statuses=statuses)
 
 
 @status_bp.route("/<int:status_id>", methods=["GET"])
+@login_required
 def get_status(status_id):
 	journey_id = request.referrer.split('/')[-1]
 	journey = Journey.query.get(journey_id)
@@ -27,6 +30,7 @@ def get_status(status_id):
 
 
 @status_bp.route("/create/<int:company_id>", methods=["POST"])
+@login_required
 def create_status(company_id):
 	company = Company.query.get(company_id)
 	create_status_form = CreateStatusForm(company=company)
@@ -42,6 +46,7 @@ def create_status(company_id):
 
 
 @status_bp.route("/<int:status_id>/update", methods=["GET", "POST"])
+@login_required
 def update_status(status_id):
 	status = Status.query.get(status_id)
 	company = status.company
@@ -67,6 +72,7 @@ def update_status(status_id):
 
 
 @status_bp.route("/<int:status_id>/delete", methods=["GET", "POST"])
+@login_required
 def delete_status(status_id):
 	status = Status.query.get(status_id)
 	company = status.company

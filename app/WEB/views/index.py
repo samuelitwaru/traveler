@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 from app.utils import authenticate_user
 from app.models import User
 from ..forms import LoginForm, SearchBusesForm, CreateProfileForm, SignupForm
@@ -30,8 +30,6 @@ def index():
 
 
 
-
-
 @index_bp.route('login', methods=["POST", "GET"])
 def login():
 	user = current_user
@@ -56,6 +54,7 @@ def login():
 
 
 @index_bp.route('logout', methods=["GET"])
+@login_required
 def logout():
 	logout_user()
 	return redirect(url_for('index.index'))

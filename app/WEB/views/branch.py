@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
+from flask_login import login_required
 from app.models import Company, Branch, Profile, User, db
 from app.helpers import send_auth_mail
 from app.utils import create_user_token, join_telephone
@@ -8,6 +9,7 @@ branch_bp = Blueprint('branch', __name__, url_prefix='/branch')
 
 
 @branch_bp.route("/", methods=["GET"])
+@login_required
 def get_branches():
     branches = Branch.query.all()
     return render_template("branch/branches.html", branches=branches)
@@ -15,6 +17,7 @@ def get_branches():
 
 
 @branch_bp.route("/create/<int:company_id>", methods=["POST"])
+@login_required
 def create_branch(company_id):
 	company = Company.query.get(company_id)
 	create_branch_form = CreateBranchForm()
@@ -32,6 +35,7 @@ def create_branch(company_id):
 
 
 @branch_bp.route("/<int:branch_id>/manager/create", methods=["POST"])
+@login_required
 def create_branch_manager(branch_id): 
 	create_profile_form = CreateProfileForm()
 	branch = Branch.query.get(branch_id)
@@ -60,6 +64,7 @@ def create_branch_manager(branch_id):
 
 
 @branch_bp.route("/<int:branch_id>/manager/delete", methods=["POST"])
+@login_required
 def delete_branch_manager(branch_id): 
 	delete_profile_form = DeleteProfileForm()
 	branch = Branch.query.get(branch_id)

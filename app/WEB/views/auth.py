@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 from app.utils import authenticate_user, create_user_token
 from werkzeug.security import gen_salt
 from app.helpers import send_auth_mail
@@ -51,6 +51,7 @@ def reset_password():
 
 
 @auth_bp.route('token/<int:user_id>/set')
+@login_required
 def set_token(user_id):
     user = User.query.get(user_id)
     token = user.token

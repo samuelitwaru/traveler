@@ -1,6 +1,6 @@
 import uuid
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session, make_response
-from flask_login import current_user
+from flask_login import current_user, login_required
 from app import app
 from rave_python import RaveExceptions
 from app import rave

@@ -1,0 +1,113 @@
+{% from 'helpers.html' import render_string_field, render_radio_field, render_boolean_field, render_datetime_field, render_UTC_field %}
+
+{% extends 'index/manager-base.html' %}
+
+{% block content %}
+<script src="/static/js/muuri.min.js"></script>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 pt-2">
+            <div class="row" align="center">
+                <div class="col">
+                    <h3 class="form-control bg-light">{{ bus.number }}</h3>
+                    <div>
+                        <img class="img-fluid rounded" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=bus.company.logo)}}" />
+                    </div>
+                    <label>{{bus.company}}</label>
+                    <p>NOT SCHEDULED</p>
+                    <p></p>
+                    <p id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></p>
+                    <div id="onLineStatus">
+                    </div>
+                </div>
+                <div class="col">
+                    <div id="grid" class="grid border"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <form method="POST" action="{{ url_for('bus.update_bus_schedule', bus_id=bus.id) }}">
+                <div class="modal-body">
+                        {{ update_bus_schedule_form.hidden_tag() }}
+
+                        {{ render_string_field(update_bus_schedule_form.journey_id) }}
+                        {{ render_datetime_field(update_bus_schedule_form.departure_time, "bus-schedule-datetimepicker") }}
+
+                        {{ render_radio_field(update_bus_schedule_form.booking_deadline) }}
+                        {{ render_radio_field(update_bus_schedule_form.free_bus_time) }}
+                        {{ render_boolean_field(update_bus_schedule_form.broadcast) }}
+                        {{ render_UTC_field(update_bus_schedule_form.UTC_offset) }}
+                        
+                </div>
+                <div class="modal-footer">
+                    {{update_bus_schedule_form.submit(class="btn btn-info")}}
+                </div>
+            </form>      
+        </div>
+    </div>
+</div>
+
+<script>
+    let grid;
+    let gridItemClasses = ['space', 'passenger', 'reserved'];
+    let data = {
+        cols: Number("{{bus.columns}}"),
+        rows: Number("{{bus.rows}}"),
+        grids: {{ bus.grids_dict() }},
+    }
+
+    // data: Initialize Muuri grid
+    initGrid = function(){
+        grid = new Muuri('.grid', {
+            dragEnabled: false,
+            layoutOnResize: false
+        });
+    }
+
+
+
+    // interface: arrange grid items in the grid box
+    fillGrid = function(){
+        // remove all child elements from the grid box
+        $('#grid').html('');
+
+        // calculate and set the width of the grid box
+        gridWidth = (data.cols*40) + (data.cols*2)
+        $('#grid').width(gridWidth)
+
+        // append grid items into grid box
+        for (var i=0; i < data.grids.length; i++) {
+            grid = data.grids[i];
+            widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><div data-index="${grid.index}" id="${grid.index}" class="item-content">${Boolean(grid.number) ? grid.number : ''}</div></div>`
+
+            if (grid.grid_type == 1) {
+                if(grid.booked){
+                    widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content bg-dark" onclick="alert('Aleady booked!')">${Boolean(grid.number) ? grid.number : ''}</button</div>`
+                }
+                else {
+                    widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content">${Boolean(grid.number) ? grid.number : ''}</button</div>`
+                    if (grid.id == data.selected) {
+                        widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content bg-success">${Boolean(grid.number) ? grid.number : ''}</button</div>`
+                    }
+                }
+            }
+            
+            $('#grid').append(widget)   
+        }
+        // initialize Muuri grid
+        initGrid(); 
+    },
+
+    updateOnlineStatus = function () {
+        if (data.outboxConnected && data.inboxConnected) {
+            $("#onLineStatus").html("ONLINE")
+            return
+        }
+        $("#onLineStatus").html("OFFLINE")
+    }
+
+    fillGrid()
+</script>
+
+{% endblock %}

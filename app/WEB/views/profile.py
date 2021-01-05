@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
-from flask_login import current_user
+from flask_login import current_user, login_required
 from app.models import Profile, User, db
 from app.helpers import send_auth_mail
 from app.utils import get_current_branch, create_user_token, join_telephone, split_telephone, update_profile_email_and_telephone, process_momo_pay
@@ -10,6 +10,7 @@ profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
 
 
 @profile_bp.route("/cashier")
+@login_required
 def get_cashier_profiles():
 	branch = get_current_branch()
 	cashiers = Profile.query.filter_by(branch_id=branch.id, is_cashier=True).all()
@@ -18,6 +19,7 @@ def get_cashier_profiles():
 
 
 @profile_bp.route("/cashier/create", methods=["POST"])
+@login_required
 def create_cashier_profile(): 
 	create_profile_form = CreateProfileForm()
 	branch = get_current_branch()
@@ -45,6 +47,7 @@ def create_cashier_profile():
 
 
 @profile_bp.route("/cashier/<int:profile_id>")
+@login_required
 def get_cashier_profile(profile_id): 
 	cashier = Profile.query.get(profile_id)
 	if cashier:
@@ -58,6 +61,7 @@ def get_cashier_profile(profile_id):
 
 
 @profile_bp.route("/cashier/<int:profile_id>/update", methods=["POST"])
+@login_required
 def update_cashier_profile(profile_id): 
 	update_profile_form = UpdateProfileForm()
 	branch = get_current_branch()
@@ -88,6 +92,7 @@ def update_cashier_profile(profile_id):
 	
 
 @profile_bp.route("/manager/<int:profile_id>/update", methods=["POST"])
+@login_required
 def update_manager_profile(profile_id): 
 	update_profile_form = UpdateProfileForm()
 	branch = get_current_branch()
@@ -120,6 +125,7 @@ def update_manager_profile(profile_id):
 
 
 @profile_bp.route("/cashier/<int:profile_id>/delete", methods=["POST"])
+@login_required
 def delete_cashier_profile(profile_id): 
 	delete_profile_form = DeleteProfileForm()
 	branch = get_current_branch()
@@ -142,6 +148,7 @@ def delete_cashier_profile(profile_id):
 
 
 @profile_bp.route("/passenger/create", methods=["POST"])
+@login_required
 def create_passenger_profile(): 
 	signup_form = SignupForm()
 	if signup_form.validate_on_submit():
@@ -171,6 +178,7 @@ def create_passenger_profile():
 
 
 @profile_bp.route("/passenger", methods=["GET", "POST"])
+@login_required
 def update_profile():
 	user = current_user
 	profile = user.profile
@@ -201,6 +209,7 @@ def update_profile():
 
 
 @profile_bp.route("/credit", methods=["POST", "GET"])
+@login_required
 def get_profile_credit():
 	user = current_user
 	profile = user.profile

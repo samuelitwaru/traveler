@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
+from flask_login import login_required
 from app.models import Journey, Pickup, db
 from ..forms import CreatePickupForm, DeletePickupForm
 
@@ -6,12 +7,14 @@ pickup_bp = Blueprint('pickup', __name__, url_prefix='/pickup')
 
 
 @pickup_bp.route("/", methods=["GET"])
+@login_required
 def get_pickups():
     pickups = Pickup.query.all()
     return render_template("pickup/pickups.html", pickups=pickups)
 
 
 @pickup_bp.route("/create/<int:journey_id>", methods=["POST"])
+@login_required
 def create_pickup(journey_id):
 	journey = Journey.query.get(journey_id)
 	create_pickup_form = CreatePickupForm()
@@ -27,6 +30,7 @@ def create_pickup(journey_id):
 
 
 @pickup_bp.route("/<int:pickup_id>/delete", methods=["GET", "POST"])
+@login_required
 def delete_pickup(pickup_id):
 	pickup = Pickup.query.get(pickup_id)
 	journey = pickup.journey

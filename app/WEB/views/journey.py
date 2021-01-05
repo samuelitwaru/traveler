@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
+from flask_login import login_required
 from app.models import Journey, Status, Pricing, db
 from app.utils import get_current_branch
 from ..forms import CreateJourneyForm, CreatePickupForm, CreatePricingForm, UpdateJourneyForm
@@ -8,6 +9,7 @@ journey_bp = Blueprint('journey', __name__, url_prefix='/journey')
 
 
 @journey_bp.route("")
+@login_required
 def get_journeys():
 	branch = get_current_branch()
 	journeys = Journey.query.filter_by(branch_id=branch.id).all()
@@ -16,6 +18,7 @@ def get_journeys():
 
 
 @journey_bp.route("/<int:journey_id>")
+@login_required
 def get_journey(journey_id):
 	branch = get_current_branch()
 	journey = Journey.query.get(journey_id)
@@ -27,6 +30,7 @@ def get_journey(journey_id):
 
 
 @journey_bp.route("/<int:journey_id>/<int:status_id>/pricings", methods=["GET"])
+@login_required
 def get_journey_pricings(journey_id, status_id):
 	journey = Journey.query.get(journey_id)
 	status = Status.query.get(status_id)
@@ -42,6 +46,7 @@ def get_journey_pricings(journey_id, status_id):
 	};return data
 
 @journey_bp.route("/create", methods=["POST"])
+@login_required
 def create_journey():
 	branch = get_current_branch()
 	create_journey_form = CreateJourneyForm()
@@ -61,6 +66,7 @@ def create_journey():
 
 
 @journey_bp.route("/<int:journey_id>/update", methods=["POST"])
+@login_required
 def update_journey(journey_id): 
 	update_journey_form = UpdateJourneyForm()
 	branch = get_current_branch()

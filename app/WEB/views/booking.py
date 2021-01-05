@@ -1,7 +1,7 @@
 import json
 from weasyprint import HTML, CSS
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session, make_response
-from flask_login import current_user
+from flask_login import current_user, login_required
 import flask_sqlalchemy
 from app.models import Grid, Pricing, Booking, Bus, db
 from app.utils import  get_current_branch
@@ -14,6 +14,7 @@ booking_bp = Blueprint('booking', __name__, url_prefix='/booking')
 
 
 @booking_bp.route("/", methods=["GET"])
+@login_required
 def get_company_bookings():
 	company = get_current_branch().company
 	
@@ -52,6 +53,7 @@ def get_company_bookings():
 
 
 @booking_bp.route("/<int:bus_id>", methods=["GET"])
+@login_required
 def get_bus_bookings(bus_id):
 	bus = Bus.query.get(bus_id)
 	grids = [grid for grid in Grid.query.filter_by(bus_id=bus_id).filter(Grid.booking_id!=None).all()]
@@ -67,6 +69,7 @@ def get_bus_bookings(bus_id):
 
 
 @booking_bp.route("/passenger", methods=["GET"])
+@login_required
 def get_passenger_bookings():
 	passenger = current_user
 	bookings = Booking.query.filter_by(created_by=passenger.id).all()
@@ -76,6 +79,7 @@ def get_passenger_bookings():
 
 
 @booking_bp.route("/<int:booking_id>", methods=["GET"])
+@login_required
 def get_booking(booking_id):
 	company = get_current_branch().company
 	booking = Booking.query.get(booking_id)
@@ -86,6 +90,7 @@ def get_booking(booking_id):
 
 #@only_bookable_grid
 @booking_bp.route("/create/<int:grid_id>", methods=["GET", "POST"])
+@login_required
 def create_booking(grid_id):
 	grid = Grid.query.get(grid_id)
 	if request.method == "POST":
@@ -129,6 +134,7 @@ def create_booking(grid_id):
 
 
 @booking_bp.route("/create/<int:grid_id>/passenger", methods=["GET", "POST"])
+@login_required
 def create_passenger_booking(grid_id):
 	grid = Grid.query.get(grid_id)
 	bus = grid.bus
@@ -148,6 +154,7 @@ def create_passenger_booking(grid_id):
 
 
 @booking_bp.route("/<int:booking_id>/update", methods=["GET", "POST"])
+@login_required
 def update_booking(booking_id):
 	booking = Booking.query.get(booking_id)
 	grid = booking.booked_grid
@@ -175,6 +182,7 @@ def update_booking(booking_id):
 
 
 @booking_bp.route("/<int:booking_id>/delete", methods=["GET", "POST"])
+@login_required
 def delete_booking(booking_id):
 	booking = Booking.query.get(booking_id)
 	grid = booking.booked_grid
@@ -199,6 +207,7 @@ def delete_booking(booking_id):
 
 
 @booking_bp.route('<int:bus_id>/print', methods=["GET"])
+@login_required
 def print_bookings(bus_id):
 	bus = Bus.query.get(bus_id)
 	grids = [grid.id for grid in Grid.query.filter_by(bus_id=bus_id).all()]

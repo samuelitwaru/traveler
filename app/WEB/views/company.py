@@ -1,5 +1,6 @@
 import os
 from flask import Blueprint, render_template, url_for, request, redirect, flash, send_from_directory
+from flask_login import login_required
 from app import app
 from app.models import Company, Bus, Status, Branch, db
 from app.utils import save_logo, logos, create_default_status, split_telephone, get_current_branch
@@ -11,11 +12,13 @@ company_bp = Blueprint('company', __name__, url_prefix='/company')
 
 
 @company_bp.route("/", methods=["GET"])
+@login_required
 def get_companies():
     companies = Company.query.all()
     return render_template("company/companies.html", companies=companies)
 
 @company_bp.route("/<int:company_id>", methods=["GET", "POST"])
+@login_required
 def get_company(company_id):
     update_company_form = UpdateCompanyForm()
     company = Company.query.get(company_id)
@@ -23,6 +26,7 @@ def get_company(company_id):
     
 
 @company_bp.route("/create", methods=["GET", "POST"])
+@login_required
 def create_company():
     create_company_form = CreateCompanyForm()
     if create_company_form.validate_on_submit():
@@ -41,6 +45,7 @@ def create_company():
 
 
 @company_bp.route("/<int:company_id>create", methods=["POST"])
+@login_required
 def update_company():
     company = Company.query.get(company_id)
     update_company_form = UpdateCompanyForm(request.POST)
@@ -60,6 +65,7 @@ def update_company():
 
 
 @company_bp.route('/logo/<logoname>')
+@login_required
 def get_company_logo(logoname):
     return send_from_directory(
         os.path.join(app.config['BASE_DIR'], app.config['UPLOADED_LOGOS_DEST']),
@@ -67,6 +73,7 @@ def get_company_logo(logoname):
         )
 
 @company_bp.route("/<int:company_id>/buses", methods=["GET"])
+@login_required
 def get_company_buses(company_id):
     company = Company.query.get(company_id)
     buses = Bus.query.filter_by(company_id=company_id).all()
@@ -74,6 +81,7 @@ def get_company_buses(company_id):
     return render_template("bus/company-buses.html", buses=buses, company=company, create_bus_form=create_bus_form)
 
 @company_bp.route("/<int:company_id>/buses/<int:bus_id>", methods=["GET"])
+@login_required
 def get_company_bus(company_id, bus_id):
     company = Company.query.get(company_id)
     bus = Bus.query.get(bus_id)
@@ -83,6 +91,7 @@ def get_company_bus(company_id, bus_id):
 
 
 @company_bp.route("/<int:company_id>/statuses", methods=["GET"])
+@login_required
 def get_company_statuses(company_id):
     company = Company.query.get(company_id)
     statuses = Status.query.filter_by(company_id=company_id).all()
@@ -91,6 +100,7 @@ def get_company_statuses(company_id):
 
 
 @company_bp.route("/<int:company_id>/branches", methods=["GET"])
+@login_required
 def get_company_branches(company_id):
     company = Company.query.get(company_id)
     branches = Branch.query.filter_by(company_id=company_id).all()
