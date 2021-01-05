@@ -1,34 +1,13 @@
 // Support TLS-specific URLs, when appropriate.
-var scheme = window.location.protocol == "https:" ? 'wss://' : 'ws://';
-var webSocketUri =  scheme
-                    + window.location.hostname
-                    + (location.port ? ':'+location.port: '')
-                    + '/submit';
-
-
-function log(text){
-  alert(text)
-}
-
-var websocket = new WebSocket(webSocketUri);
-
-websocket.onopen = function() {
-  log('Connected');
+if (window.location.protocol == "https:") {
+  var ws_scheme = "wss://";
+} else {
+  var ws_scheme = "ws://"
 };
 
-websocket.onclose = function() {
-  log('Closed');
-};
 
-// websocket.onmessage = function(e) {
-//   log('Message received');
-//   output.append($('<li>').text(e.data));
-// };
-
-websocket.onerror = function(e) {
-  log('Error (see console)');
-  console.log(e);
-};
+var inbox = new ReconnectingWebSocket(ws_scheme + location.host + "/receive");
+var outbox = new ReconnectingWebSocket(ws_scheme + location.host + "/submit");
 
 // inbox.onmessage = function(message) {
 //   console.log(">>>>>", message)
@@ -39,16 +18,15 @@ websocket.onerror = function(e) {
 //   }, 800);
 // };
 
-// inbox.onopen = function(){
-//     console.log('inbox closed');
-//     this.inbox = new WebSocket(inbox.url);
+inbox.onclose = function(){
+    console.log('inbox closed');
+    this.inbox = new WebSocket(inbox.url);
+};
 
-// };
-
-// outbox.onopen = function(){
-//     console.log('outbox closed');
-//     this.outbox = new WebSocket(outbox.url);
-// };
+outbox.onclose = function(){
+    console.log('outbox closed');
+    this.outbox = new WebSocket(outbox.url);
+};
 
 // $("#input-form").on("submit", function(event) {
 //   event.preventDefault();
@@ -67,7 +45,7 @@ var socketSubmit = function(event){
   var form_data =  form.serialize(); //Encode form elements for submission
   console.log(">>>>>>>>>>>>", { handle: handle, data: form_data })
   // socket.emit(event, form_data);
-  websocket.send(JSON.stringify({ handle: handle, data: form_data }));
+  outbox.send(JSON.stringify({ handle: handle, data: form_data }));
 }
 
 $(".socketForm").on('submit', socketSubmit)

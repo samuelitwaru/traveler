@@ -1,4 +1,4 @@
-# import redis
+import redis
 from flask import Flask, request
 from app import config
 from flask_sqlalchemy import SQLAlchemy
@@ -22,7 +22,7 @@ socketio = SocketIO(app)
 mail = Mail(app)
 
 sockets = Sockets(app)
-# redis = redis.from_url(app.config.get("REDIS_URL"))
+redis = redis.from_url(app.config.get("REDIS_URL"))
 
 # initialize rave
 rave = Rave(app.config.get("RAVE_PUBLIC_KEY"), 
@@ -53,8 +53,8 @@ from app.WEB import template_filters
 # socketio.on_namespace(DesktopNamespace('/desktop'))
 
 # load and initialize socket backend
-from app.WS.backend import *
-# socket_backend.start()
+from app.WS.backend import socket_backend
+socket_backend.start()
 
 # load api resources
 from app.API.resources.bus import BusAPI, BusListAPI
@@ -121,7 +121,3 @@ app.register_blueprint(pickup_bp)
 app.register_blueprint(pricing_bp)
 app.register_blueprint(booking_bp)
 app.register_blueprint(payment_bp)
-
-
-def send(client, message):
-    client.ws.send(message)

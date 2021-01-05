@@ -114,7 +114,7 @@
 			setTimeLeft("#bookingCountDown")
 			$("#getBusBookingsForm").submit()
 
-			websocket.onmessage = function(msgEvent) {
+			inbox.onmessage = function(msgEvent) {
 				var msg = JSON.parse(msgEvent.data);
 				var handle = msg.handle
 				var msgData = msg.data
