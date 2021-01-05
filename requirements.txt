@@ -16,6 +16,9 @@ SQLAlchemy==1.1.11
 Pillow==7.2.0
 weasyprint==51
 eventlet==0.27.0
+gevent==1.4.0
 rave_python
+flask_sockets
+redis
 gunicorn
 

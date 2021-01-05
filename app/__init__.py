@@ -1,8 +1,10 @@
+import redis
 from flask import Flask, request
 from app import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_restful import Api
+from flask_sockets import Sockets
 from flask_socketio import SocketIO
 from flask_mail import Mail
 from rave_python import Rave
@@ -13,13 +15,14 @@ app = Flask(__name__)
 app.config.from_object(config.DevelopmentConfig)
 app.config.from_object(config.ProductionConfig)
 
-print(">>>>>>>>>>>>>>>>>>>>>>>>")
-
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 api = Api(app)
 socketio = SocketIO(app)
 mail = Mail(app)
+
+sockets = Sockets(app)
+redis = redis.from_url(app.config.get("REDIS_URL"))
 
 # initialize rave
 rave = Rave(app.config.get("RAVE_PUBLIC_KEY"), 
@@ -41,13 +44,17 @@ from app.WEB.context_processors import *
 from app.WEB import template_filters
 
 # load web socket namespaces
-from app.WEB_SOCKET.default import DefaultNamespace
-from app.WEB_SOCKET.mobile import MobileNamespace
-from app.WEB_SOCKET.desktop import DesktopNamespace
+# from app.WEB_SOCKET.default import DefaultNamespace
+# from app.WEB_SOCKET.mobile import MobileNamespace
+# from app.WEB_SOCKET.desktop import DesktopNamespace
 
-socketio.on_namespace(DefaultNamespace('/'))
-socketio.on_namespace(MobileNamespace('/mobile'))
-socketio.on_namespace(DesktopNamespace('/desktop'))
+# socketio.on_namespace(DefaultNamespace('/'))
+# socketio.on_namespace(MobileNamespace('/mobile'))
+# socketio.on_namespace(DesktopNamespace('/desktop'))
+
+# load and initialize socket backend
+from app.WS.backend import socket_backend
+socket_backend.start()
 
 # load api resources
 from app.API.resources.bus import BusAPI, BusListAPI

@@ -115,18 +115,8 @@ var loadUrl = function(url, progressContainer, patchContainers){
     })
 }
 
-var socketSubmit = function(event){
-    event.preventDefault(); //prevent default action
-    $(this).attr("action")
-    var form = $(this)
-    var event = form[0].dataset.event
-    var form_data =  form.serialize(); //Encode form elements for submission
-    socket.emit(event, form_data);
-}
-
 loadTriggers = function(){
     $(".ajaxForm").on('submit', ajaxSubmit)
-    $(".socketForm").on('submit', socketSubmit)
     $(".getRequestTrigger").on('click', ajaxGetSubmit)    
 }
 

@@ -49,6 +49,7 @@ class ProductionConfig(BaseConfig):
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://samuelitwaru:password@localhost/traveler'  # TODO => MYSQL
     SQLALCHEMY_DATABASE_URI = 'sqlite:///models/database.db'
     RAVE_PRODUCTION = True
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
 
 
 class DevelopmentConfig(BaseConfig):
@@ -59,5 +60,7 @@ class DevelopmentConfig(BaseConfig):
     # SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:bratz123@localhost/traveler'  # TODO => MYSQL
     SQLALCHEMY_DATABASE_URI = 'sqlite:///models/database.db'
     RAVE_PRODUCTION = False
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+
 
 

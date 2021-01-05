@@ -3,7 +3,6 @@ from flask_socketio import emit, send, join_room, leave_room, rooms, Namespace
 from flask_login import current_user
 from app import socketio
 from app.models import Booking, Grid, Pricing, Connection, db
-from app.helpers import now
 from app.utils import create_payment, update_payment, parse_query_string, get_current_branch
 from app.WEB.forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm
 
