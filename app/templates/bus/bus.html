@@ -104,7 +104,8 @@
 	$(document).ready(function() {
 		setTimeLeft("#bookingCountDown")
 
-		inbox.onmessage = function(msgEvent) {
+		// websocket.onmessage = function(e) {
+		websocket.onmessage = function(msgEvent) {
 			var msg = JSON.parse(msgEvent.data);
 			var handle = msg.handle
 			var msgData = msg.data
