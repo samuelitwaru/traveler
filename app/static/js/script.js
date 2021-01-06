@@ -1,32 +1,3 @@
-var calculateTimeLeft = function (stopTime){
-    stopTime = new Date(stopTime)
-    now = Date.now()
-    // full time left in days
-    var fullTimeLeft = (stopTime.getTime() - now) / 1000 / 3600 / 24
-    // days
-    days = Math.floor(fullTimeLeft)
-    // hours
-    hours = Math.floor((fullTimeLeft-days)*24)
-    // minutes
-    _mins = (fullTimeLeft-(days+(hours/24)))*24*60
-    var mins = Math.floor(_mins)
-        var secs = Math.floor((_mins-mins)*60)
-    if (fullTimeLeft > 0){
-        return `${days} days, ${hours} hours, ${mins} minutes, ${secs} seconds`
-    }
-    else {
-        return "Finished <span class='fa fa-check'></span>"
-    }
-}
-
-var setTimeLeft = function(widgetId){
-    widget = $(widgetId)[0]
-    stopTime = widget.dataset.stopTime
-    timeLeft = calculateTimeLeft(stopTime)
-    $(widgetId).html(timeLeft)
-    setTimeout(()=>setTimeLeft(widgetId), 1000)
-}
-
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -58,6 +29,27 @@ $.ajaxSetup({
         }
     }
 });
+
+
+// Support TLS-specific URLs, when appropriate.
+if (window.location.protocol == "https:") {
+  var ws_scheme = "wss://";
+} else {
+  var ws_scheme = "ws://"
+};
+
+
+var ws = new ReconnectingWebSocket(ws_scheme + location.host + "/ws");
+
+
+var socketSubmit = function(event){
+  event.preventDefault(); //prevent default action
+  $(this).attr("action")
+  var form = $(this)
+  var handle = form[0].dataset.handle
+  var form_data =  form.serialize(); //Encode form elements for submission
+  ws.send(JSON.stringify({ handle: handle, data: form_data }));
+}
 
 
 var ajaxSubmit = function(event){
@@ -98,29 +90,6 @@ var ajaxGetSubmit = function(event){
     loadUrl(url, progressContainer, patchContainers)
 }
 
-var loadUrl = function(url, progressContainer, patchContainers){
-    $(progressContainer).html(`
-        <div class="d-flex justify-content-center">
-            <div class="spinner-border text-info" role="status" align="center">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <p class="text-center">Please wait...</p>
-    `)
-    $.get(url, function(response) {
-        for (var i = 0; i < patchContainers.length; i++) {
-            patchContainer = patchContainers[i]
-            $(patchContainer).replaceWith(response.form_templates[patchContainer]);
-        }
-    })
-}
-
-loadTriggers = function(){
-    $(".ajaxForm").on('submit', ajaxSubmit)
-    $(".getRequestTrigger").on('click', ajaxGetSubmit)    
-}
-
-loadTriggers()
 
 var ajaxMultipartSubmitForm = function(event){
     event.preventDefault(); //prevent default action
@@ -155,9 +124,35 @@ var ajaxMultipartSubmitForm = function(event){
     });
 }
 
-$(".ajaxMultipartForm").on('submit', ajaxMultipartSubmitForm);
 
-printTicket = function(event) {
+var loadUrl = function(url, progressContainer, patchContainers){
+    $(progressContainer).html(`
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-info" role="status" align="center">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <p class="text-center">Please wait...</p>
+    `)
+    $.get(url, function(response) {
+        for (var i = 0; i < patchContainers.length; i++) {
+            patchContainer = patchContainers[i]
+            $(patchContainer).replaceWith(response.form_templates[patchContainer]);
+        }
+    })
+}
+
+
+var loadTriggers = function(){
+    $(".ajaxForm").on('submit', ajaxSubmit);
+    $(".getRequestTrigger").on('click', ajaxGetSubmit); 
+    $(".socketForm").on('submit', socketSubmit);
+    $(".ajaxMultipartForm").on('submit', ajaxMultipartSubmitForm);
+}
+
+loadTriggers()
+
+var printTicket = function(event) {
     data = event.dataset
     bus = data.bus
     seat = data.seat
@@ -196,4 +191,34 @@ printTicket = function(event) {
     window.print()
     document.body.innerHTML = originalContents;
     loadTriggers()
+}
+
+
+var calculateTimeLeft = function (stopTime){
+    stopTime = new Date(stopTime)
+    now = Date.now()
+    // full time left in days
+    var fullTimeLeft = (stopTime.getTime() - now) / 1000 / 3600 / 24
+    // days
+    days = Math.floor(fullTimeLeft)
+    // hours
+    hours = Math.floor((fullTimeLeft-days)*24)
+    // minutes
+    _mins = (fullTimeLeft-(days+(hours/24)))*24*60
+    var mins = Math.floor(_mins)
+        var secs = Math.floor((_mins-mins)*60)
+    if (fullTimeLeft > 0){
+        return `${days} days, ${hours} hours, ${mins} minutes, ${secs} seconds`
+    }
+    else {
+        return "Finished <span class='fa fa-check'></span>"
+    }
+}
+
+var setTimeLeft = function(widgetId){
+    widget = $(widgetId)[0]
+    stopTime = widget.dataset.stopTime
+    timeLeft = calculateTimeLeft(stopTime)
+    $(widgetId).html(timeLeft)
+    setTimeout(()=>setTimeLeft(widgetId), 1000)
 }

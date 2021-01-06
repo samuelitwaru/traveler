@@ -29,7 +29,7 @@
 			<form id="createPassengerBookingForm" class="socketForm" data-handle="create_booking" method="POST">
 				{% include 'booking/create-passenger-booking.html' %}
 				<div>
-		        	<button class="btn btn-block btn-primary">Save</button>
+		        	<button class="btn btn-block btn-primary">BOOK</button>
 		        </div>
 			</form>
 		</div>
@@ -44,8 +44,7 @@
 		rows: Number("{{bus.rows}}"),
 		grids: {{ bus.grids_dict() }},
 		selected: null,
-		inboxConnected: false,
-		outboxConnected: false,
+		wsConnected: false,
 	}
 
 	// data: Initialize Muuri grid
@@ -102,7 +101,7 @@
 	},
 
 	updateOnlineStatus = function () {
-		if (data.outboxConnected && data.inboxConnected) {
+		if (data.wsConnected) {
 			$("#onLineStatus").html("ONLINE")
 			return
 		}
@@ -114,7 +113,7 @@
 	$(document).ready(function() {
 		setTimeLeft("#bookingCountDown")
 
-		inbox.onmessage = function(msgEvent) {
+		ws.onmessage = function(msgEvent) {
 			var msg = JSON.parse(msgEvent.data);
 			var handle = msg.handle
 			var msgData = msg.data
@@ -124,26 +123,17 @@
 			}
 		};
 
-		inbox.onopen = function(){
-			data.inboxConnected = true
+		ws.onopen = function(){
+			data.wsConnected = true
+			console.log("open")
 			updateOnlineStatus()
 		}
 
-		outbox.onopen = function(){
-			data.outboxConnected = true
+		ws.onclose = function(){
+			data.wsConnected = false
+			console.log("closed")
 			updateOnlineStatus()
-		}
-
-		inbox.onclose = function(){
-			data.inboxConnected = false
-			updateOnlineStatus()
-			this.inbox = new WebSocket(inbox.url);
-		};
-
-		outbox.onclose = function(){
-			data.outboxConnected = false
-			updateOnlineStatus()
-			this.outbox = new WebSocket(outbox.url);
+			// this.ws = new WebSocket(ws.url);
 		};
 	});
 </script>

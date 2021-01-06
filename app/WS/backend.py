@@ -15,11 +15,8 @@ from app import app, sockets, redis
 from app.utils import parse_json_string
 from .handles import *
 
-# REDIS_URL = os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')
 REDIS_CHAN = 'booking'
 
-# sockets = Sockets(app)
-# redis = redis.from_url(REDIS_URL)
 
 
 
@@ -30,13 +27,11 @@ class SocketBackend(object):
         self.clients = list()
         self.pubsub = redis.pubsub()
         self.pubsub.subscribe(REDIS_CHAN)
-        print(">>>>>>>>>>>")
 
     def __iter_data(self):
         for message in self.pubsub.listen():
             app.logger.info(type(message))
             data = message.get('data')
-            print(">>>>>>>>>>>>", message)
             if message['type'] == 'message':
                 app.logger.info(u'Sending message: {}'.format(data))
                 yield data.decode()
@@ -67,8 +62,9 @@ class SocketBackend(object):
 socket_backend = SocketBackend()
 
 
-@sockets.route('/submit')
-def inbox(ws):
+@sockets.route('/ws')
+def web_socket(ws):
+    socket_backend.register(ws)
     """Receives incoming messages, inserts them into Redis."""
     while not ws.closed:
         # Sleep to prevent *constant* context-switches.
@@ -83,15 +79,6 @@ def inbox(ws):
             res = HANDLES[handle](data)
             app.logger.info(u'Inserting message: {}'.format(message))
             redis.publish(REDIS_CHAN, res)
-
-@sockets.route('/receive')
-def outbox(ws):
-    """Sends outgoing messages, via `ChatBackend`."""
-    socket_backend.register(ws)
-
-    while not ws.closed:
-        # Context switch while `ChatBackend.start` is running in the background.
-        gevent.sleep(0.1)
 
 
 

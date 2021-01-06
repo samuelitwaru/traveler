@@ -35,8 +35,8 @@ def search_buses():
 	return render_template(template, buses=buses, search_buses_form=search_buses_form)
 
 
-@login_required
 @bus_bp.route("/", methods=["GET"])
+@login_required
 @check_branch_journeys
 def get_buses():
 	branch = get_current_branch()
