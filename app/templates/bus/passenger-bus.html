@@ -23,6 +23,9 @@
 						<p>{{bus.journey}}</p>
 						<p>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</p>
 						<p id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></p>
+						<div id="onLineStatus">
+							OFFLINE
+						</div>
 					</div>
 					<div class="col">
 						<p>Select a Seat</p>
@@ -105,16 +108,22 @@
 
 			// initialize Muuri grid
 			initGrid();	
+		}
 
+		updateOnlineStatus = function () {
+			if (data.wsConnected) {
+				$("#onLineStatus").html("ONLINE")
+				return
+			}
+			$("#onLineStatus").html("OFFLINE")
 		}
 
 		fillGrid()
 
 		$(document).ready(function() {
 			setTimeLeft("#bookingCountDown")
-			$("#getBusBookingsForm").submit()
 
-			inbox.onmessage = function(msgEvent) {
+			ws.onmessage = function(msgEvent) {
 				var msg = JSON.parse(msgEvent.data);
 				var handle = msg.handle
 				var msgData = msg.data
@@ -124,6 +133,17 @@
 				}
 			};
 
+			ws.onopen = function(){
+				data.wsConnected = true
+				updateOnlineStatus()
+			}
+
+			ws.onclose = function(){
+				data.wsConnected = false
+				updateOnlineStatus()
+				// this.ws = new WebSocket(ws.url);
+			};
 		});
+
 	</script>
 {% endblock %}

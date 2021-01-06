@@ -16,6 +16,7 @@
 					<p>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</p>
 					<p id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></p>
 					<div id="onLineStatus">
+						OFFLINE
 					</div>
 				</div>
 				<div class="col">
@@ -125,13 +126,11 @@
 
 		ws.onopen = function(){
 			data.wsConnected = true
-			console.log("open")
 			updateOnlineStatus()
 		}
 
 		ws.onclose = function(){
 			data.wsConnected = false
-			console.log("closed")
 			updateOnlineStatus()
 			// this.ws = new WebSocket(ws.url);
 		};
