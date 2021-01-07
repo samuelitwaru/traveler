@@ -59,8 +59,9 @@ var ajaxSubmit = function(event){
     var request_method = $(this).attr("method"); //get form GET/POST method
     var form_data = $(this).serialize(); //Encode form elements for submission
     var progressContainer = $(this)[0].dataset.progressContainer
+    // var displayOverlay = $(this)[0].dataset.displayOverlay
     var patchContainers = JSON.parse($(this)[0].dataset.patchContainers)
-
+    // if (displayOverlay){$('body').append(compontents["loadingOverlay"]}
     $(progressContainer).html(`
         <div class="d-flex justify-content-center">
             <div class="spinner-border text-info text-center" role="status" align="center">
@@ -69,6 +70,8 @@ var ajaxSubmit = function(event){
         </div>
         <p class="text-center">Please wait...</p>
     `)
+
+
 
     $.ajax({
         url : post_url,
@@ -221,4 +224,24 @@ var setTimeLeft = function(widgetId){
     timeLeft = calculateTimeLeft(stopTime)
     $(widgetId).html(timeLeft)
     setTimeout(()=>setTimeLeft(widgetId), 1000)
+}
+
+
+// front end compontent rendering
+var compontents = {
+    loadingOverlay: () => {
+        template = `<div class="loader"></div>`
+        return template
+    },
+    onlineStatusBox: (data) => {
+        var isOnline = data["isOnline"]
+        var part1 = isOnline ? "'text-success'>ONLINE" : "'text-danger'>OFFLINE"
+        template = `<strong class=${part1}<strong>`
+        return template
+    },
+}
+
+var renderComponent = function(componentClass, data){
+    template = compontents[componentClass](data)
+    $(`.${componentClass}`).html(template)
 }

@@ -30,6 +30,7 @@ class BaseConfig(object):
     RAVE_ENCRYPTION_KEY = os.getenv("RAVE_ENCRYPTION_KEY")
     RAVE_TEST_NUMBER = "256781902516"
     RAVE_USING_ENV = False
+    REDIS_CHAN = "booking"
 
     # send grid
     # MAIL_SERVER = 'smtp.sendgrid.net'

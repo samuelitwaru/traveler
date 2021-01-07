@@ -148,7 +148,6 @@ def delete_cashier_profile(profile_id):
 
 
 @profile_bp.route("/passenger/create", methods=["POST"])
-@login_required
 def create_passenger_profile(): 
 	signup_form = SignupForm()
 	if signup_form.validate_on_submit():

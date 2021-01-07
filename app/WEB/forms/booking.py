@@ -39,7 +39,7 @@ class CreateBookingForm(FlaskForm):
 
 
 class CreatePassengerBookingForm(FlaskForm):
-    grid_id = SelectField("Seat", validators=[DataRequired()], coerce=int)
+    grid_id = SelectField("Seat", validators=[DataRequired(message='Select a seat')], coerce=int)
     passenger_name = StringField("Name", validators=[DataRequired()])
     pricing_id = SelectField("Select Destination", validators=[DataRequired()], coerce=int)
     telephone_code = SelectField(choices=telephone_code_choices)

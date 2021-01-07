@@ -15,10 +15,6 @@ from app import app, sockets, redis
 from app.utils import parse_json_string
 from .handles import *
 
-REDIS_CHAN = 'booking'
-
-
-
 
 class SocketBackend(object):
     """Interface for registering and updating WebSocket clients."""
@@ -26,7 +22,7 @@ class SocketBackend(object):
     def __init__(self):
         self.clients = list()
         self.pubsub = redis.pubsub()
-        self.pubsub.subscribe(REDIS_CHAN)
+        self.pubsub.subscribe(app.config.get("REDIS_CHAN"))
 
     def __iter_data(self):
         for message in self.pubsub.listen():
@@ -78,7 +74,7 @@ def web_socket(ws):
             data = message["data"]
             res = HANDLES[handle](data)
             app.logger.info(u'Inserting message: {}'.format(message))
-            redis.publish(REDIS_CHAN, res)
+            redis.publish(app.config.get("REDIS_CHAN"), res)
 
 
 

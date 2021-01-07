@@ -23,8 +23,8 @@
 						<p>{{bus.journey}}</p>
 						<p>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</p>
 						<p id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></p>
-						<div id="onLineStatus">
-							OFFLINE
+						<div class="onlineStatusBox">
+							<!-- <strong class='text-danger'>OFFLINE</strong> -->
 						</div>
 					</div>
 					<div class="col">
@@ -44,7 +44,6 @@
 			</div>
 		</div>
 	</div>
-
 
 	<script>
 		let grid;
@@ -135,13 +134,12 @@
 
 			ws.onopen = function(){
 				data.wsConnected = true
-				updateOnlineStatus()
+				renderComponent("onlineStatusBox", {isOnline:data.wsConnected})
 			}
 
 			ws.onclose = function(){
 				data.wsConnected = false
-				updateOnlineStatus()
-				// this.ws = new WebSocket(ws.url);
+				renderComponent("onlineStatusBox", {isOnline:data.wsConnected})
 			};
 		});
 

@@ -65,7 +65,6 @@ def update_company():
 
 
 @company_bp.route('/logo/<logoname>')
-@login_required
 def get_company_logo(logoname):
     return send_from_directory(
         os.path.join(app.config['BASE_DIR'], app.config['UPLOADED_LOGOS_DEST']),

@@ -15,8 +15,7 @@
 					<p>{{bus.journey}}</p>
 					<p>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</p>
 					<p id="bookingCountDown" data-stop-time="{{bus.booking_deadline|datetimeformat('%Y-%m-%d %H:%M')}}"></p>
-					<div id="onLineStatus">
-						OFFLINE
+					<div class="onlineStatusBox" id="onLineStatus">
 					</div>
 				</div>
 				<div class="col">
@@ -27,7 +26,7 @@
 		</div>
 
 		<div class="col-md-6">
-			<form id="createPassengerBookingForm" class="socketForm" data-handle="create_booking" method="POST">
+			<form id="createPassengerBookingForm" method="POST" action="{{url_for('booking.create_booking', bus_id=bus.id)}}">
 				{% include 'booking/create-passenger-booking.html' %}
 				<div>
 		        	<button class="btn btn-block btn-primary">BOOK</button>
@@ -126,13 +125,12 @@
 
 		ws.onopen = function(){
 			data.wsConnected = true
-			updateOnlineStatus()
+			renderComponent("onlineStatusBox", {isOnline:data.wsConnected})
 		}
 
 		ws.onclose = function(){
 			data.wsConnected = false
-			updateOnlineStatus()
-			// this.ws = new WebSocket(ws.url);
+			renderComponent("onlineStatusBox", {isOnline:data.wsConnected})
 		};
 	});
 </script>
