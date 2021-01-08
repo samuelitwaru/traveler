@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import json
+import re
 from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import DataRequired
@@ -14,6 +15,9 @@ telephone_code_choices = [("256", "+256")]
 def validate_telephone(form, field):
     telephone_code = form.data.get("telephone_code")
     telephone = field.data
+    pattern = "^0(7(?:(?:[129][0-9])|(?:0[0-8])|(4[0-1]))[0-9]{6})$"
+    matched = bool(re.match(pattern, telephone))
+    print(">>>>>>>>>>>>>>>>>", matched)
     if not (telephone_code and telephone):
         raise ValidationError(f"Invalid Telephone.")
 
@@ -53,7 +57,7 @@ class CreatePassengerBookingForm(FlaskForm):
             pricings = journey.pricings
             pickups = journey.pickups
             grids = bus.grids.filter_by(grid_type=1, booking_id=None)
-            self.grid_id.choices = [(0, "Select Your Seat")]+[(grid.id, f"Seat {grid}") for grid in grids]
+            self.grid_id.choices = [(0, "No Seat Selected")]+[(grid.id, f"Seat {grid}") for grid in grids]
             self.pricing_id.choices = [(pricing.id, pricing) for pricing in pricings]
             self.pickup.choices = [(pickup.name, pickup.name) for pickup in pickups]
 

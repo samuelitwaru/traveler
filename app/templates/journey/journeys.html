@@ -10,7 +10,6 @@
 	        <thead>
 	        	<th colspan="3">
 	                <button class="btn btn-primary" data-toggle="modal" data-target="#createJourneyModal"><span class="fa fa-plus"></span> New Journey</button>
-	                
 	        	</th>
 	        </thead>
 	        {% endif %}
@@ -26,7 +25,7 @@
 	                        <small>{{journey.distance}} Kilometers, {{journey.duration}} Hours</small>
 	                    </td>
 	                    
-	                    <td><a href="{{ url_for('journey.get_journey', journey_id=journey.id) }}" class='btn btn-info'>Details</a></td>
+	                    <td><a href="{{ url_for('journey.get_journey', journey_id=journey.id) }}" class='btn btn-outline-info'>Manage</a></td>
 	                </tr>
 	            {% else %}
 	                <div class="container" align="center">

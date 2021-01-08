@@ -17,7 +17,7 @@
 					<div class="col">
 						<h3 class="form-control bg-light">{{ bus.number }}</h3>
 						<div>
-							<img class="img-fluid rounded" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=bus.company.logo)}}" />
+							<img class="img-fluid rounded-circle img-thumbnail" style="width: 4rem;" src="{{url_for('company.get_company_logo', logoname=bus.company.logo)}}" />
 						</div>
 						<label>{{bus.company}}</label>
 						<p>{{bus.journey}}</p>

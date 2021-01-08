@@ -2,13 +2,11 @@
 
 {% block body %}
 	<body>
-		<div class="bg-light shadow d-flex p-2">
+		<div class="bg-light d-flex p-2">
 			<div class="flex-fill">
-				<a href="{{url_for('index.index')}}" class="navbar-brand fa fa-home">
-					Home
-	            </a>
+				<h2 class="m-1 text-center"><strong>Trav<span class="text-info">eler</span></strong></h2>
             </div>
-            <button type="button" class="btn btn-dark" data-toggle="dropdown">
+            <button type="button" class="btn btn-link nav-link" data-toggle="dropdown">
 				<span class="fa fa-user"></span> {{current_user}}</span>
 				<span class="sr-only">unread messages</span>
 			</button>
@@ -20,9 +18,11 @@
 			</div>
         </div>
 
+        <hr class="m-1">
+
 		<div>
 			{% for category, message in get_flashed_messages(with_categories=true) %}
-				<div class="alert alert-{{category}} alert-dismissable">
+				<div class="alert alert-{{category}} alert-dismissable m-0">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 					{{ message }}
 				</div>

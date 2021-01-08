@@ -9,9 +9,9 @@ json_string = bus_layouts_file.read()
 bus_layouts = json.loads(json_string)
 
 companies = [
-	{"name": "ITWA Travelers", "logo": "ITWA.png"},
+	{"name": "ITWA Travelers", "logo": "ITWA.jpeg"},
 	{"name": "BYENK Travelers", "logo": "BYENK.png"},
-	{"name": "TAYEB Travelers", "logo": "TAYEB.png"}
+	{"name": "TAYEB Travelers", "logo": "TAYEB.jpeg"}
 ]
 
 branches = [

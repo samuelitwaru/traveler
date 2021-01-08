@@ -9,7 +9,7 @@
 				<div class="col">
 					<h3 class="form-control bg-light">{{ bus.number }}</h3>
 					<div>
-						<img class="img-fluid rounded" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=bus.company.logo)}}" />
+						<img class="img-fluid rounded-circle img-thumbnail" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=bus.company.logo)}}" />
 					</div>
 					<label>{{bus.company}}</label>
 					<p>{{bus.journey}}</p>
@@ -26,7 +26,7 @@
 		</div>
 
 		<div class="col-md-6">
-			<form id="createPassengerBookingForm" method="POST" action="{{url_for('booking.create_booking', bus_id=bus.id)}}">
+			<form id="createPassengerBookingForm" method="POST" action="{{url_for('booking.create_booking', bus_id=bus.id)}}" autocomplete="off">
 				{% include 'booking/create-passenger-booking.html' %}
 				<div>
 		        	<button class="btn btn-block btn-primary">BOOK</button>

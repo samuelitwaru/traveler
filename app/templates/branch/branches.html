@@ -1,9 +1,9 @@
 {% extends 'company/company.html' %}
 
 {% block company_content %}
-	<div class="container-fluid p-0">
+	<div class="container pt-2">
 
-	    <table class="table table-responsive-sm border">
+	    <table class="table border">
 	    	{% if branches|length %}
 	        <thead>
 	        	<th colspan="3">
@@ -23,7 +23,7 @@
 	                        <small>Location: {{branch.location}}</small>
 	                    </td>
 	                    
-	                    <td><a href="{{ url_for('company.get_company_branch', company_id=company.id, branch_id=branch.id) }}" class='btn btn-info'>Details</a></td>
+	                    <td><a href="{{ url_for('company.get_company_branch', company_id=company.id, branch_id=branch.id) }}" class='btn btn-outline-info'>Manage</a></td>
 	                </tr>
 	            {% else %}
 	                <div class="container" align="center">

@@ -92,42 +92,42 @@ def get_booking(booking_id):
 @booking_bp.route("/create/<int:bus_id>", methods=["POST"])
 @login_required
 def create_booking(bus_id):
-    bus = Bus.query.get(bus_id)
-    if not bus.booking_time_expired():
-        create_passenger_booking_form = CreatePassengerBookingForm(data=request.form, bus=bus)
-        if create_passenger_booking_form.validate():
-            # create booking
-            grid_id = create_passenger_booking_form.grid_id.data;
-            pricing_id = create_passenger_booking_form.pricing_id.data
-            passenger_name = create_passenger_booking_form.passenger_name.data
-            passenger_telephone = create_passenger_booking_form.passenger_telephone.data
-            pickup = create_passenger_booking_form.pickup.data
-            pricing = Pricing.query.get(pricing_id)
-            grid = Grid.query.get(grid_id)
-            branch = bus.branch
-            user = current_user
-            if not user.is_authenticated:
-                user = None
+	bus = Bus.query.get(bus_id)
+	if not bus.booking_time_expired():
+	    create_passenger_booking_form = CreatePassengerBookingForm(data=request.form, bus=bus)
+	    if create_passenger_booking_form.validate_on_submit():
+	        # create booking
+	        grid_id = create_passenger_booking_form.grid_id.data;
+	        pricing_id = create_passenger_booking_form.pricing_id.data
+	        passenger_name = create_passenger_booking_form.passenger_name.data
+	        passenger_telephone = create_passenger_booking_form.passenger_telephone.data
+	        pickup = create_passenger_booking_form.pickup.data
+	        pricing = Pricing.query.get(pricing_id)
+	        grid = Grid.query.get(grid_id)
+	        branch = bus.branch
+	        user = current_user
+	        if not user.is_authenticated:
+	            user = None
 
-            fare = pricing.price;
-            stop = pricing.stop;
-            booking = Booking(
-                passenger_name=passenger_name, passenger_telephone=passenger_telephone, seat_number=grid.number, pickup=pickup, 
-                fare=fare, stop=stop, grid_id=grid_id, pricing_id=pricing_id, paid=True, branch=branch, 
-                bus=bus, created_by=user.id
-            )
+	        fare = pricing.price;
+	        stop = pricing.stop;
+	        booking = Booking(
+	            passenger_name=passenger_name, passenger_telephone=passenger_telephone, seat_number=grid.number, pickup=pickup, 
+	            fare=fare, stop=stop, grid_id=grid_id, pricing_id=pricing_id, paid=True, branch=branch, 
+	            bus=bus, created_by=user.id
+	        )
 
-            db.session.add(booking)
-            grid.booking = booking
-        	
-            create_payment(booking)
-            db.session.commit()
-            res = json.dumps({"handle": "create_booking_passed", "data": grid.grid_dict()})
-            redis.publish(app.config.get("REDIS_CHAN"), res)
-            flash(f'Booked Seat {grid.number}', 'success')
-            return redirect(request.referrer)
-        else:
-            return render_template("bus/bus.html", bus=bus, create_passenger_booking_form=create_passenger_booking_form)
+	        db.session.add(booking)
+	        grid.booking = booking
+
+	        create_payment(booking)
+	        db.session.commit()
+	        res = json.dumps({"handle": "create_booking_passed", "data": grid.grid_dict()})
+	        redis.publish(app.config.get("REDIS_CHAN"), res)
+	        flash(f'Booked Seat {grid.number}', 'success')
+	        return redirect(url_for('bus.get_bus', bus_id=bus.id))
+	    else:
+	    	return render_template("bus/bus.html", bus=bus, create_passenger_booking_form=create_passenger_booking_form)
 
 
 

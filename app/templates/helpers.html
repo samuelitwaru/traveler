@@ -31,7 +31,7 @@
           	{{ code_field }}
         </div>
         {% endif %}
-		{{ field(class="form-control", **kwargs)|safe }}
+		{{ field(class="form-control", type="number", min="1", max="999999999", **kwargs)|safe }}
 		{% endif %} 
 	</div>
 </div>
