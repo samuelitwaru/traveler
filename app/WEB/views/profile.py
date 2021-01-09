@@ -170,9 +170,8 @@ def create_passenger_profile():
 		return redirect(url_for('index.login'))
 
 	else:
-		flash(f"{signup_form.errors}", "danger")
 		search_buses_form = SearchBusesForm()
-		return render_template('index/index.html', search_buses_form=search_buses_form, signup_form=signup_form)
+		return render_template('index/signup.html', signup_form=signup_form)
 
 
 

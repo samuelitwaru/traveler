@@ -53,6 +53,12 @@ def login():
 	return render_template("index/login.html", login_form=login_form)
 
 
+@index_bp.route('signup', methods=["GET"])
+def signup():
+	signup_form = SignupForm()
+	return render_template("index/signup.html", signup_form=signup_form)
+
+
 @index_bp.route('logout', methods=["GET"])
 @login_required
 def logout():

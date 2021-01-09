@@ -1,11 +1,10 @@
 {% from 'helpers.html' import render_string_field %}
-<div class="login-content shadow">
-	<div class="">
-		<div class="card-header bg-dark">
-			<h3 class="text-info text-center"><span class="text-light">Trav</span><span>eler</span></h3>
-			<p class="text-light text-center">Login</p>
+<div class="login-content">
+	<div class="m-4 border shadow">
+		<div class="card-header bg-white">
+			<h2 class="text-center">Login</h2>
 		</div>
-		<div class="border">
+		<div>
 			<div class="text-center">
 				{% for category, message in get_flashed_messages(with_categories=true) %}
 					<div class="alert alert-{{category}} alert-dismissable">
@@ -14,6 +13,7 @@
 					</div>
 				{% endfor %}
 			</div>
+
 			<form method="POST" action="{{ url_for('index.login') }}">
 				<div class="card-body bg-white">
 					{{ login_form.csrf_token }}
@@ -21,7 +21,10 @@
 					{{ render_string_field(login_form.password) }}
 				    <div align="center" class="border-0">
 						<button class="btn btn-info">Login <span class="fa fa-sign-in"></span></button>
+						<!-- <hr> -->
 						<a href="{{ url_for('auth.reset_password') }}" class="nav-link">Forgot Password</a>
+						<hr> Don't have an account?
+						<a href="{{ url_for('index.signup') }}" class="nav-link">Signup</a>
 					</div>
 				</div>
 			</form>

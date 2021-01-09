@@ -3,11 +3,17 @@
 
 {% block nav_options %}
 	<a href="{{ url_for('index.index') }}" class="nav-link">Home</a>	
-	<a href="{{ url_for('index.signup') }}" class="nav-link">Signup</a>
+	<a href="{{ url_for('index.login') }}" class="nav-link">Login</a>
 {% endblock %}
 
 {% block content %}
 	<div class="container pt-3">
-		{% include 'index/login-form.html' %}
+		<div class="login-content">
+			<div class="border shadow rounded p-3">
+				<h2 class="text-center">Signup</h2>
+				<hr>
+				{% include 'index/signup-form.html' %}				
+			</div>
+		</div>
 	</div>
 {% endblock %}
