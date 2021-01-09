@@ -30,6 +30,10 @@ $.ajaxSetup({
     }
 });
 
+$('.backTrigger').on('click', (event)=>{
+    window.history.back()
+})
+
 
 // Support TLS-specific URLs, when appropriate.
 if (window.location.protocol == "https:") {

@@ -82,7 +82,7 @@ def create_branches():
 def create_managers():
 	for each in managers:
 		user = User(username=each["email"], password="123")
-		profile = Profile(first_name=each["first_name"], last_name=each["last_name"], user=user, email=each["email"], is_manager=True, branch_id=each["branch_id"])
+		profile = Profile(first_name=each["first_name"], last_name=each["last_name"], telephone=each["telephone"], user=user, email=each["email"], is_manager=True, branch_id=each["branch_id"])
 		db.session.add(user)
 		db.session.add(profile)
 	db.session.commit()

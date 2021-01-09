@@ -1,5 +1,9 @@
 {% extends 'index/admin-base.html' %}
 
+{% block back_and_home %}
+	<img style="width: 2.5rem; transform: rotate(-40deg);" src="{{url_for('static', filename='img/logo.png')}}" class="p-0 img-thumbnail rounded-circle" />
+{% endblock %}
+
 {% block content %}
 	<div class="container-fluid p-0">
 	    <div class="bg-light p-2 fixed d-flex">

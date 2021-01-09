@@ -243,10 +243,10 @@ class User(db.Model, UserMixin):
 
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)     
-    first_name = db.Column(db.String(64))
-    last_name = db.Column(db.String(64))
-    email = db.Column(db.String(64), unique=True)
-    telephone = db.Column(db.String(16))
+    first_name = db.Column(db.String(64), nullable=False)
+    last_name = db.Column(db.String(64), nullable=False)
+    email = db.Column(db.String(64), unique=True, nullable=False)
+    telephone = db.Column(db.String(16), nullable=False)
     email_valid = db.Column(db.Boolean, default=False)
     telephone_valid = db.Column(db.Boolean, default=False)
     credit = db.Column(db.Float, default=0.0)
@@ -255,7 +255,7 @@ class Profile(db.Model):
     is_cashier = db.Column(db.Boolean())
     is_passenger = db.Column(db.Boolean())
     branch_id = db.Column(db.Integer, db.ForeignKey("branch.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
 
     payments = db.relationship("Payment", backref="profile")
 

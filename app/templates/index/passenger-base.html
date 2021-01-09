@@ -10,24 +10,24 @@
 			</button>
 				
 			<div class="collapse navbar-collapse" id="navbarText">
-					<ul class="nav nav-pills mr-auto">
-						<li class="nav-item active">
-							<a class="nav-link {% block buses_active %}{% endblock %}" href="{{ url_for('bus.search_buses') }}">Buses</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link {% block bookings_active %}{% endblock %}" href="{{ url_for('booking.get_passenger_bookings') }}">My Bookings</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link {% block credit_active %}{% endblock %}" href="{{url_for('profile.get_profile_credit')}}">My Credit <span class="p-1 border rounded badge-white">{{profile.credit}}</span></a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link {% block profile_active %}{% endblock %}" href="{{ url_for('profile.update_profile') }}">My Profile</a>
-						</li>
-					</ul>
+				<ul class="nav nav-pills mr-auto">
+					<li class="nav-item">
+						<a class="nav-link {% block buses_active %}{% endblock %}" href="{{ url_for('bus.search_buses') }}">Buses</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {% block bookings_active %}{% endblock %}" href="{{ url_for('booking.get_passenger_bookings') }}">My Bookings</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {% block credit_active %}{% endblock %}" href="{{url_for('profile.get_profile_credit')}}">My Credit <span class="p-1 border rounded badge-white">{{profile.credit}}</span></a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link {% block profile_active %}{% endblock %}" href="{{ url_for('profile.update_profile') }}">My Profile</a>
+					</li>
+				</ul>
 
-					<span class="navbar-text">
-						<a class="nav-link text-danger" href="{{ url_for('index.logout') }}">Logout</a>
-				    </span>
+				<span class="navbar-text">
+					<a class="nav-link text-danger" href="{{ url_for('index.logout') }}">Logout</a>
+			    </span>
 			</div>
 		</nav>
 

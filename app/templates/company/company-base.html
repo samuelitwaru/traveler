@@ -2,21 +2,21 @@
 
 {% block content %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light p-2 border-bottom fixed d-flex">
-	<a class="navbar-brand" href="{{url_for('company.get_company', company_id=company.id)}}"><img class="img-fluid rounded rounded-circle bg-white img-thumbnail" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=company.logo)}}" /> {{company.name}}</a>
+	<a class="navbar-brand" href="{{url_for('company.get_company', company_id=company.id)}}"><img class="img-fluid rounded rounded-circle bg-white img-thumbnail p-0" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=company.logo)}}" /> {{company.name}}</a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 	<span class="navbar-toggler-icon"></span>
 	</button>
 
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		<ul class="navbar-nav mr-auto">
-			<li class="nav-item {% block active_statuses %}{% endblock %}">
-				<a class="nav-link" href="{{ url_for('company.get_company_statuses', company_id=company.id) }}">Statuses</a>
+		<ul class="nav nav-pills mr-auto">
+			<li class="nav-item">
+				<a class="nav-link {% block active_statuses %}{% endblock %}" href="{{ url_for('company.get_company_statuses', company_id=company.id) }}">Statuses</a>
 			</li>
-			<li class="nav-item {% block active_buses %}{% endblock %}">
-				<a class="nav-link" href="{{ url_for('company.get_company_buses', company_id=company.id) }}">Buses</a>
+			<li class="nav-item">
+				<a class="nav-link {% block active_buses %}{% endblock %}" href="{{ url_for('company.get_company_buses', company_id=company.id) }}">Buses</a>
 			</li>
-			<li class="nav-item {% block active_branches %}{% endblock %}">
-				<a class="nav-link" href="{{ url_for('company.get_company_branches', company_id=company.id) }}">Branches (Parks)</a>
+			<li class="nav-item">
+				<a class="nav-link {% block active_branches %}{% endblock %}" href="{{ url_for('company.get_company_branches', company_id=company.id) }}">Branches (Parks)</a>
 			</li>
 		</ul>
 	</div>

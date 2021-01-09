@@ -1,8 +1,8 @@
 """First migration
 
-Revision ID: b37c26715d78
+Revision ID: 3322249a0897
 Revises: 
-Create Date: 2021-01-08 06:44:48.988122
+Create Date: 2021-01-09 06:53:31.192528
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b37c26715d78'
+revision = '3322249a0897'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -153,10 +153,10 @@ def upgrade():
     )
     op.create_table('profile',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('first_name', sa.String(length=64), nullable=True),
-    sa.Column('last_name', sa.String(length=64), nullable=True),
-    sa.Column('email', sa.String(length=64), nullable=True),
-    sa.Column('telephone', sa.String(length=16), nullable=True),
+    sa.Column('first_name', sa.String(length=64), nullable=False),
+    sa.Column('last_name', sa.String(length=64), nullable=False),
+    sa.Column('email', sa.String(length=64), nullable=False),
+    sa.Column('telephone', sa.String(length=16), nullable=False),
     sa.Column('email_valid', sa.Boolean(), nullable=True),
     sa.Column('telephone_valid', sa.Boolean(), nullable=True),
     sa.Column('credit', sa.Float(), nullable=True),
@@ -165,7 +165,7 @@ def upgrade():
     sa.Column('is_cashier', sa.Boolean(), nullable=True),
     sa.Column('is_passenger', sa.Boolean(), nullable=True),
     sa.Column('branch_id', sa.Integer(), nullable=True),
-    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['branch_id'], ['branch.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),

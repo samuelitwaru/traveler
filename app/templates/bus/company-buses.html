@@ -1,8 +1,10 @@
 {% extends 'company/company.html' %}
 
+{% block active_buses %}active{% endblock %}
+
 {% block company_content %}
 	<div class="">
-		<table class="table table-responsive-sm border">
+		<table class="table border">
 	    	{% if buses|length %}
 	        <thead>
 	        	<th colspan="3">

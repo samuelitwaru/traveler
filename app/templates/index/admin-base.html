@@ -3,8 +3,13 @@
 {% block body %}
 	<body>
 		<div class="bg-light d-flex p-2">
-			<div class="flex-fill">
-				<h2 class="m-1 text-center"><strong>Trav<span class="text-info">eler</span></strong></h2>
+			<div class="d-flex flex-fill">
+				<div>
+					{% block back_and_home %}
+						<button class="fa btn btn-link fa-arrow-left fa-2x pt-1 nav-link backTrigger"></button>
+					{% endblock %}
+				</div>
+				<h2 class="m-1 text-center flex-fill"><strong>Trav<span class="text-info">eler</span></strong></h2>
             </div>
             <button type="button" class="btn btn-link nav-link" data-toggle="dropdown">
 				<span class="fa fa-user"></span> {{current_user}}</span>
