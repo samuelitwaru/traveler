@@ -107,10 +107,10 @@ def create_journeys():
 
 
 def create_buses():
-	choices = range(30, 50)
+	choices = range(1, 5)
 	now = datetime.now()
-	then = now + timedelta(random.choice(choices))
 	for each in buses:
+		then = now + timedelta(random.choice(choices))
 		bus = Bus(number=each["number"], columns=each["columns"], rows=each["rows"], broadcast=True, 
 			departure_time=then, booking_deadline=(then-timedelta(minutes=30)), free_bus_time=(then+timedelta(minutes=30)), 
 			company_id=each["company_id"], status_id=each["status_id"], journey_id=each["journey_id"], branch_id=each["branch_id"])

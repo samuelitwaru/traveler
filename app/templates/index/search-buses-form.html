@@ -1,14 +1,37 @@
 {% from 'helpers.html' import render_string_field, render_UTC_field, render_datetime_field %}
-<p class="display-4 text-center">Search for a bus and book now.</p>
-<div class="login-content">
-<form method="GET" action="{{ url_for('bus.search_buses') }}" >
-	{{ search_buses_form.csrf_token }}
-	{{ render_string_field(search_buses_form.from_) }}
-	{{ render_string_field(search_buses_form.to) }}
-	{{ render_datetime_field(search_buses_form.departure_time, "departure-time-datetimepicker") }}
-	{{ render_UTC_field(search_buses_form.UTC_offset) }}
-	<div align="center" class="border-0">
-		<button class="btn btn-info"><span class="fa fa-search"></span> Find Buses</button>
-	</div>
-</form>
+<div>
+	<form method="GET" action="{{ url_for('bus.search_buses') }}" >
+		{{ search_buses_form.csrf_token }}
+		{{ render_string_field(search_buses_form.from_) }}
+		{{ render_string_field(search_buses_form.to) }}
+		{{ render_datetime_field(search_buses_form.departure_time, "departure-time-datetimepicker", datetime_format="MMMM DD YYYY") }}
+
+		{{ render_UTC_field(search_buses_form.UTC_offset) }}
+		<br>
+		<div align="center" class="border-0">
+			<button class="btn btn-info btn-block"><span class="fa fa-search"></span> Find Bus</button>
+		</div>
+	</form>
 </div>
+
+<script>
+	getJourneyTos = function(from){
+	    return journeys.filter(journey=>{
+	        return journey.from == from
+	    })
+	}
+
+	getJourneyFroms = function(to){
+	    return journeys.filter(journey=>{
+	        return journey.to == to
+	    })
+	}
+
+	$("#from_").on("change", (event)=>{
+		console.log(event)
+	})
+
+	$("#to").on("change", (event)=>{
+		console.log(event)
+	})
+</script>

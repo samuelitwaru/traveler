@@ -10,6 +10,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-7">
+			<p class="display-4 text-center">Search for a bus and book now.</p>
 			{% include 'index/search-buses-form.html' %}
 		</div>
 		
@@ -19,7 +20,7 @@
 					<div class="offcanvas-header">  
 						<button class="btn text-danger  p-0 btn-close float-right">&times</button>
 					</div>
-					<h5 class="m-0">Signup</h5>
+					<h5 class="m-0 text-center">Signup</h5>
 					<hr>
 					{% include 'index/signup-form.html' %}
 				</div>
@@ -27,32 +28,4 @@
 		</div>
 	</div>
 </div>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-	    $("[data-trigger]").on("click", function(e){
-	        e.preventDefault();
-	        e.stopPropagation();
-	        var offcanvas_id =  $(this).attr('data-trigger');
-	        $(offcanvas_id).toggleClass("show");
-	        $('body').toggleClass("offcanvas-active");
-	        $(".screen-overlay").toggleClass("show");
-	    }); 
-
-	    // Close menu when pressing ESC
-	    $(document).on('keydown', function(event) {
-	        if(event.keyCode === 27) {
-	            $(".screen-overlay").removeClass("show");
-	            $(".mobile-offcanvas").removeClass("show");
-	            $("body").removeClass("offcanvas-active");
-	        }
-	    });
-
-	    $(".btn-close, .screen-overlay").click(function(e){
-	        $(".screen-overlay").removeClass("show");
-	        $(".mobile-offcanvas").removeClass("show");
-	        $("body").removeClass("offcanvas-active");
-	    }); 
-	});
-</script>
 {% endblock %}

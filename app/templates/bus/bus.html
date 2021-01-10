@@ -27,7 +27,7 @@
 
 		<div class="col-md-6">
 			<form id="createPassengerBookingForm" method="POST" action="{{url_for('booking.create_booking', bus_id=bus.id)}}" autocomplete="off">
-				{% include 'booking/create-passenger-booking.html' %}
+				{% include 'booking/create-booking.html' %}
 				<div>
 		        	<button class="btn btn-block btn-primary">BOOK</button>
 		        </div>

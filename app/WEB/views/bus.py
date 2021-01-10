@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from app.models import Bus, Company, Grid, Booking, db
 from app.utils import  get_current_branch, set_bus_layout, change_bus_layout, find_buses, set_bus_free
 from app import app
-from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm, SearchBusesForm, DeleteBusForm, CreatePassengerBookingForm
+from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm, SearchBusesForm, DeleteBusForm, CreateBookingForm, CreatePassengerBookingForm
 from .. guards import check_branch_journeys
 from ..data import BusSchedule, CreatePassengerBookingFormData
 
@@ -19,7 +19,7 @@ def search_buses():
 	from_ = None
 	to = None
 	departure_time = None
-	if search_buses_form.validate():
+	if request.args and search_buses_form.validate():
 		data = search_buses_form.data
 		from_ = data.get("from_")
 		to = data.get("to")
@@ -28,7 +28,7 @@ def search_buses():
 	buses = find_buses(from_=from_, to=to, departure_time=departure_time)
 	# change departure time format to that compatible with form widget
 	if departure_time:
-		search_buses_form.departure_time.data = departure_time.strftime(app.config.get("TIME_FORMAT"))
+		search_buses_form.departure_time.data = departure_time.strftime(app.config.get("DATETIME_FORMAT"))
 	template = "index/search-buses-results.html"
 	if current_user.is_authenticated:
 		template = "bus/passenger-buses.html"
@@ -50,8 +50,8 @@ def get_buses():
 @login_required
 def get_bus(bus_id):
 	bus = Bus.query.get(bus_id)
-	create_passenger_booking_form = CreatePassengerBookingForm(bus=bus)
-	return render_template("bus/bus.html", bus=bus, create_passenger_booking_form=create_passenger_booking_form)
+	create_booking_form = CreateBookingForm(bus=bus)
+	return render_template("bus/bus.html", bus=bus, create_booking_form=create_booking_form)
 
 
 @bus_bp.route("/<int:bus_id>/passenger", methods=["GET"])
@@ -145,7 +145,7 @@ def update_bus_schedule(bus_id):
 			flash("Bus scheduled.", "success")
 		else:
 			flash(str(update_bus_schedule_form.errors), "danger")
-		return redirect(url_for('get_buses'))
+		return redirect(url_for('bus.get_buses'))
 	else:
 		return render_template('bus/update-bus-schedule.html', bus=bus, update_bus_schedule_form=update_bus_schedule_form)
 	

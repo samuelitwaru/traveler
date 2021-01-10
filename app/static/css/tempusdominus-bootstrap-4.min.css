@@ -15,7 +15,9 @@
   border: 0; }
 
 .bootstrap-datetimepicker-widget {
-  list-style: none; }
+  list-style: none; 
+  border: 1px solid #dee2e6;
+  width: 100%;}
   .bootstrap-datetimepicker-widget.dropdown-menu {
     display: block;
     margin: 2px 0;
@@ -200,7 +202,7 @@
           cursor: not-allowed; }
   .bootstrap-datetimepicker-widget.usetwentyfour td.hour {
     height: 27px;
-    line-height: 27px; }
+    line-height: 27px;}
 
 .input-group [data-toggle="datetimepicker"] {
   cursor: pointer; }

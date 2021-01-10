@@ -70,16 +70,22 @@
 {% endmacro %}
 
 
-{% macro render_datetime_field(field, datetimepicker_id, datetime_format="MMMM DD YYYY, hh:mm A") %}
+{% macro render_datetime_field(field, datetimepicker_id, datetime_format="MMMM DD YYYY, hh:mm A", inline=True) %}
 	<div class="form-group">
 		<small>{{field.label.text}}</small>
 		{% if field.errors %}
 			<div class="input-group date" id="{{datetimepicker_id}}" data-target-input="nearest"> 
-				{{ field(type="text", class="form-control is-invalid datetimepicker-input", data_target="#{{datetimepicker_id}}", **kwargs)|safe }}
+				{% if inline %}
+					{{ field(type="text", hidden="true", class="form-control is-invalid datetimepicker-input", data_target="#{{datetimepicker_id}}", **kwargs)|safe }}
+				{% else %}
+					{{ field(type="text", class="form-control is-invalid datetimepicker-input", data_target="#{{datetimepicker_id}}", **kwargs)|safe }}
+				{% endif %}
 				<div class="input-group-append" data-target="#{{datetimepicker_id}}" data-toggle="datetimepicker"> 
+					{% if not inline %}
 					<div class="input-group-text">
 						<i class="fa fa-calendar"></i>
 					</div> 
+					{% endif %}
 				</div>
 				<div class="invalid-feedback">
 					{% for error in field.errors %}
@@ -89,18 +95,24 @@
 			</div>
 		{% else %}
 		<div class="input-group date" id="{{datetimepicker_id}}" data-target-input="nearest"> 
-			{{ field(type="text", class="form-control datetimepicker-input", data_target='#'+datetimepicker_id, **kwargs)|safe }}
-			<div class="input-group-append" data-target="#{{datetimepicker_id}}" data-toggle="datetimepicker"> 
+			{% if inline %}
+				{{ field(type="text", hidden="true", class="form-control datetimepicker-input", data_target='#'+datetimepicker_id, **kwargs)|safe }}
+			{% else %}
+				{{ field(type="text", class="form-control datetimepicker-input", data_target='#'+datetimepicker_id, **kwargs)|safe }}
+			{% endif %}
+			<div class="input-group-append" data-target="#{{datetimepicker_id}}" data-toggle="datetimepicker">
+				{% if not inline %}
 				<div class="input-group-text">
 					<i class="fa fa-calendar"></i>
 				</div> 
+				{% endif %}
 			</div> 
 		</div> 
 		{% endif %}
 	</div> 
 	<script type="text/javascript"> 
 		$(function () {
-			$('#{{datetimepicker_id}}').datetimepicker({"format":"{{datetime_format}}"}); 
+			$('#{{datetimepicker_id}}').datetimepicker({"format":"{{datetime_format}}", "inline":{%if inline %}true{%else%}false{%endif%}}); 
 		}); 
 	</script> 
 {% endmacro %}

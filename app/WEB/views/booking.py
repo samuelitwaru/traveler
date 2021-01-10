@@ -94,14 +94,14 @@ def get_booking(booking_id):
 def create_booking(bus_id):
 	bus = Bus.query.get(bus_id)
 	if not bus.booking_time_expired():
-	    create_passenger_booking_form = CreatePassengerBookingForm(data=request.form, bus=bus)
-	    if create_passenger_booking_form.validate_on_submit():
+	    create_booking_form = CreateBookingForm(data=request.form, bus=bus)
+	    if create_booking_form.validate_on_submit():
 	        # create booking
-	        grid_id = create_passenger_booking_form.grid_id.data;
-	        pricing_id = create_passenger_booking_form.pricing_id.data
-	        passenger_name = create_passenger_booking_form.passenger_name.data
-	        passenger_telephone = create_passenger_booking_form.passenger_telephone.data
-	        pickup = create_passenger_booking_form.pickup.data
+	        grid_id = create_booking_form.grid_id.data;
+	        pricing_id = create_booking_form.pricing_id.data
+	        passenger_name = create_booking_form.passenger_name.data
+	        passenger_telephone = create_booking_form.passenger_telephone.data
+	        pickup = create_booking_form.pickup.data
 	        pricing = Pricing.query.get(pricing_id)
 	        grid = Grid.query.get(grid_id)
 	        branch = bus.branch
@@ -127,7 +127,7 @@ def create_booking(bus_id):
 	        flash(f'Booked Seat {grid.number}', 'success')
 	        return redirect(url_for('bus.get_bus', bus_id=bus.id))
 	    else:
-	    	return render_template("bus/bus.html", bus=bus, create_passenger_booking_form=create_passenger_booking_form)
+	    	return render_template("bus/bus.html", bus=bus, create_booking_form=create_booking_form)
 
 
 

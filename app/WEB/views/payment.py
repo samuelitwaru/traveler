@@ -60,18 +60,20 @@ def pay_with_mobile_money(payment_id):
 		email = profile.email
 
 	payload = {
-		"amount": payment.amount,
+		"amount": 500, #payment.amount,
 		"email": email,
 		"phonenumber": app.config.get("RAVE_TEST_NUMBER"),
 		"redirect_url": f"{app.config.get('HOST_ADDRESS')}/payment/chechout/rave",
-		"IP": "" 
+		"IP": ""
 	}
+
+	print("*******", payload)
 
 	try:
 		res = rave.UGMobile.charge(payload)
 		print(">>>>>>>>>>>>", res)
-		res = rave.UGMobile.verify(res["txRef"])
-		print(">>>>>>>>>>>>", res)
+		# res = rave.UGMobile.verify(res["link"])
+		# print(">>>>>>>>>>>>", res)
 		return res
 	except RaveExceptions.TransactionChargeError as e:
 		print(e.err)

@@ -185,7 +185,31 @@ var printTicket = function(event) {
                 <td>From</td><td>${from}</td>
             </tr>
             <tr>
-                <td>Stop</td><td>${stop}</td>
+                <td>Sto$(document).ready(function() {
+        $("[data-trigger]").on("click", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            var offcanvas_id =  $(this).attr('data-trigger');
+            $(offcanvas_id).toggleClass("show");
+            $('body').toggleClass("offcanvas-active");
+            $(".screen-overlay").toggleClass("show");
+        }); 
+
+        // Close menu when pressing ESC
+        $(document).on('keydown', function(event) {
+            if(event.keyCode === 27) {
+                $(".screen-overlay").removeClass("show");
+                $(".mobile-offcanvas").removeClass("show");
+                $("body").removeClass("offcanvas-active");
+            }
+        });
+
+        $(".btn-close, .screen-overlay").click(function(e){
+            $(".screen-overlay").removeClass("show");
+            $(".mobile-offcanvas").removeClass("show");
+            $("body").removeClass("offcanvas-active");
+        }); 
+    });p</td><td>${stop}</td>
             </tr>
             <tr>
                 <td>Fare</td><td>${fare}</td>
@@ -251,28 +275,28 @@ var renderComponent = function(componentClass, data){
 }
 
 
-// $(document).ready(function() {
-//     $("[data-trigger]").on("click", function(e){
-//         e.preventDefault();
-//         e.stopPropagation();
-//         var offcanvas_id =  $(this).attr('data-trigger');
-//         $(offcanvas_id).toggleClass("show");
-//         $('body').toggleClass("offcanvas-active");
-//         $(".screen-overlay").toggleClass("show");
-//     }); 
+$(document).ready(function() {
+    $("[data-trigger]").on("click", function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var offcanvas_id =  $(this).attr('data-trigger');
+        $(offcanvas_id).toggleClass("show");
+        $('body').toggleClass("offcanvas-active");
+        $(".screen-overlay").toggleClass("show");
+    }); 
 
-//     // Close menu when pressing ESC
-//     $(document).on('keydown', function(event) {
-//         if(event.keyCode === 27) {
-//             $(".screen-overlay").removeClass("show");
-//             $(".mobile-offcanvas").removeClass("show");
-//             $("body").removeClass("offcanvas-active");
-//         }
-//     });
+    // Close menu when pressing ESC
+    $(document).on('keydown', function(event) {
+        if(event.keyCode === 27) {
+            $(".screen-overlay").removeClass("show");
+            $(".mobile-offcanvas").removeClass("show");
+            $("body").removeClass("offcanvas-active");
+        }
+    });
 
-//     $(".btn-close, .screen-overlay").click(function(e){
-//         $(".screen-overlay").removeClass("show");
-//         $(".mobile-offcanvas").removeClass("show");
-//         $("body").removeClass("offcanvas-active");
-//     }); 
-// });
+    $(".btn-close, .screen-overlay").click(function(e){
+        $(".screen-overlay").removeClass("show");
+        $(".mobile-offcanvas").removeClass("show");
+        $("body").removeClass("offcanvas-active");
+    }); 
+});

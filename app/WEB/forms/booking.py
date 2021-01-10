@@ -17,17 +17,16 @@ def validate_telephone(form, field):
     telephone = field.data
     pattern = "^0(7(?:(?:[129][0-9])|(?:0[0-8])|(4[0-1]))[0-9]{6})$"
     matched = bool(re.match(pattern, telephone))
-    print(">>>>>>>>>>>>>>>>>", matched)
     if not (telephone_code and telephone):
         raise ValidationError(f"Invalid Telephone.")
 
 
 class CreateBookingForm(FlaskForm):
-    grid_id = SelectField("Passenger Seat", validators=[DataRequired()], coerce=int)
-    passenger_name = StringField("Passenger Name", validators=[DataRequired()])
+    grid_id = SelectField("Seat", validators=[DataRequired(message='Select a seat')], coerce=int)
+    passenger_name = StringField("Name", validators=[DataRequired()])
     pricing_id = SelectField("Select Destination", validators=[DataRequired()], coerce=int)
     telephone_code = SelectField(choices=telephone_code_choices)
-    passenger_telephone = StringField("Your Telephone Number", validators=[DataRequired(), validate_telephone])
+    passenger_telephone = StringField("Telephone Number", validators=[DataRequired(), validate_telephone])
     pickup = SelectField("Pickup Station")
 
     def __init__(self, bus=None, *args, **kwargs):
@@ -37,7 +36,7 @@ class CreateBookingForm(FlaskForm):
             pricings = journey.pricings
             pickups = journey.pickups
             grids = bus.grids.filter_by(grid_type=1, booking_id=None)
-            self.grid_id.choices = [(0, "Select Your Seat")]+[(grid.id, f"Seat {grid}") for grid in grids]
+            self.grid_id.choices = [(0, "No Seat Selected")]+[(grid.id, f"Seat {grid}") for grid in grids]
             self.pricing_id.choices = [(pricing.id, pricing) for pricing in pricings]
             self.pickup.choices = [(pickup.name, pickup.name) for pickup in pickups]
 
@@ -45,6 +44,7 @@ class CreateBookingForm(FlaskForm):
 class CreatePassengerBookingForm(FlaskForm):
     grid_id = SelectField("Seat", validators=[DataRequired(message='Select a seat')], coerce=int)
     passenger_name = StringField("Name", validators=[DataRequired()])
+    passenger_email = StringField("Email", validators=[DataRequired()])
     pricing_id = SelectField("Select Destination", validators=[DataRequired()], coerce=int)
     telephone_code = SelectField(choices=telephone_code_choices)
     passenger_telephone = StringField("Telephone Number", validators=[DataRequired(), validate_telephone])

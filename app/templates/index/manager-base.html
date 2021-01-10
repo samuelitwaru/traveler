@@ -2,9 +2,8 @@
 
 {% block body %}
 	<body>
-
-		<div class="bg-light d-flex p-2">
-			<div class="flex-fill d-flex">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light p-2 border-bottom d-flex fixed">
+			<div class="d-flex flex-fill">
 				<img class="bg-white img-thumbnail rounded-circle p-0" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=company.logo)}}" />
 				<div class="text-dark px-1">
 					<h4 class="m-0">{{company}}</h4>
@@ -12,17 +11,41 @@
 				</div>
             </div>
 
-            <button type="button" class="btn btn-link nav-link" data-toggle="dropdown">
-				<span class="fa fa-user"></span> {{current_user}}</span>
-				<span class="sr-only">unread messages</span>
-			</button>
-
-			<div class="dropdown-menu dropdown-menu-right rounded-0 shadow" align="right">
-				<a href="{{ url_for('user.update_user_password') }}" class="dropdown-item"><span></span><span class="fa fa-user"></span> Account</a>
-				<div class="dropdown-divider"></div>
-				<a href="{{ url_for('index.logout') }}" class="dropdown-item"><span class="fa fa-power-off"></span> Logout</a>
+			<div>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#managerNavigation" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="fa fa-navicon"></span>
+				</button>
 			</div>
-		</div>
+
+
+			{% block manager_navigation %}
+				<nav id="managerNavigation" class="collapse navbar-collapse navbar-expand-lg navbar-light bg-light p-1 fixed">
+					<ul class="nav nav-pills">
+						<li class="nav-item">
+							<a class="nav-link {% block buses_active %}{% endblock %}" href="{{url_for('bus.get_buses')}}">Buses</a>
+						</li>
+						{% if profile.is_manager %}
+						<li class="nav-item">
+							<a class="nav-link {% block journeys_active %}{% endblock %}" href="{{url_for('journey.get_journeys')}}">Journeys</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% block cashiers_active %}{% endblock %}" href="{{url_for('profile.get_cashier_profiles')}}">Cashiers</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link {% block bookings_history_active %}{% endblock %}" href="{{url_for('booking.get_company_bookings')}}">Booking History</a>
+						</li>
+						{% endif %}
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('user.update_user_password') }}"><span class="fa fa-user"></span> {{current_user}}</span></a>
+						</li>
+
+						<li class="nav-item">
+							<a href="{{ url_for('index.logout') }}" class="nav-link text-danger"><span class="fa fa-power-off"></span> Logout</a>
+						</li>
+					</ul>
+				</nav>
+			{% endblock %}
+		</nav>
 
 		<div>
 			{% for category, message in get_flashed_messages(with_categories=true) %}
@@ -33,28 +56,7 @@
 			{% endfor %}
 		</div>
 
-		<hr class="m-1">
-
-		{% block manager_navigation %}
-		<nav class="navbar navbar-expand-lg navbar-light bg-light p-1 border-bottom fixed">
-			<ul class="nav nav-pills">
-				<li class="nav-item">
-					<a class="nav-link {% block buses_active %}{% endblock %}" href="{{url_for('bus.get_buses')}}">Buses</a>
-				</li>
-				{% if profile.is_manager %}
-				<li class="nav-item">
-					<a class="nav-link {% block journeys_active %}{% endblock %}" href="{{url_for('journey.get_journeys')}}">Journeys</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link {% block cashiers_active %}{% endblock %}" href="{{url_for('profile.get_cashier_profiles')}}">Cashiers</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link {% block bookings_history_active %}{% endblock %}" href="{{url_for('booking.get_company_bookings')}}">Booking History</a>
-				</li>
-				{% endif %}
-			</ul>
-		</nav>
-		{% endblock %}
+		<!-- <hr class="m-1"> -->
 
 		{% block content %}
 		{% endblock %}

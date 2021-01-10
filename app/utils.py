@@ -110,7 +110,7 @@ def find_buses(from_=None, to=None, departure_time=None, company_id=None):
 	journeys = journeys_query.all()
 	buses_query = Bus.query.filter(Bus.journey_id.in_([journey.id for journey in journeys]), Bus.booking_deadline > now())
 	if departure_time:
-	    departure_time_range = datetime.timedelta(hours=2)
+	    departure_time_range = datetime.timedelta(days=1)
 	    departure_time_upper_limit = departure_time + departure_time_range
 	    departure_time_lower_limit = departure_time - departure_time_range
 	    buses_query = buses_query.filter(

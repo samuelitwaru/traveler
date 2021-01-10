@@ -1,9 +1,9 @@
 {% from 'helpers.html' import render_string_field, render_telephone_field %}
 <div>
     {{ create_passenger_booking_form.csrf_token }}
-
     {{ render_string_field(create_passenger_booking_form.grid_id) }}
     {{ render_string_field(create_passenger_booking_form.passenger_name) }}
+    {{ render_string_field(create_passenger_booking_form.passenger_email) }}
     {{ render_telephone_field(create_passenger_booking_form.passenger_telephone, code_field=create_passenger_booking_form.telephone_code) }}
     {{ render_string_field(create_passenger_booking_form.pricing_id) }}
     {{ render_string_field(create_passenger_booking_form.pickup) }}

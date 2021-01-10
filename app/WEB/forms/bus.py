@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from flask_wtf import FlaskForm
 from wtforms import *
@@ -34,14 +34,18 @@ def unique_update_number(form, field):
 
 class SearchBusesForm(FlaskForm):
 	UTC_offset = StringField(widget=HiddenInput())
-	from_ = StringField("Departing From?", validators=[])
-	to = StringField("Going To?", validators=[])
+	from_ = SelectField("Departing From?", validators=[])
+	to = SelectField("Going To?", validators=[])
+	# from_ = StringField("Departing From?", validators=[])
+	# to = StringField("Going To?", validators=[])
 	departure_time = StringField("When?", validators=[])
 	submit = SubmitField('Find Bus')
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.datetime_format = app.config.get("TIME_FORMAT")
+		self.datetime_format = app.config.get("DATE_FORMAT")
+		self.from_.choices = [("", "Any")]
+		self.to.choices = [("", "Any")]
 
 	def validate_departure_time(form, field):
 		departure_time = field.data
@@ -49,7 +53,9 @@ class SearchBusesForm(FlaskForm):
 			UTC_offset = form.UTC_offset.data
 			departure_time = datetime.strptime(f"{departure_time} {UTC_offset}", form.datetime_format)
 			departure_time_as_tz = departure_time.astimezone(timezone)
-			if departure_time_as_tz < now():
+			yesterday = now() - timedelta(days=1, hours=23, minutes=59)
+
+			if departure_time_as_tz < yesterday:
 				raise ValidationError(f"The departure time {field.data} has already passed.")
 			form.departure_time.data = departure_time_as_tz
 
@@ -111,7 +117,7 @@ class UpdateBusScheduleForm(FlaskForm):
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.datetime_format = app.config.get("TIME_FORMAT")
+		self.datetime_format = app.config.get("DATETIME_FORMAT")
 		self.booking_deadline.choices = booking_deadline_choices
 		self.free_bus_time.choices = free_bus_time_choices
 		branch = get_current_branch()

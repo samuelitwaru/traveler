@@ -2,7 +2,6 @@
 
 <div>
 	<form method="POST" action="{{ url_for('profile.create_passenger_profile') }}">
-		<!-- <div class="card-body bg-white"> -->
 			{{ signup_form.csrf_token }}
 			{{ render_string_field(signup_form.first_name) }}
 			{{ render_string_field(signup_form.last_name) }}
@@ -16,6 +15,5 @@
 				<hr> Already have an account?
 				<a href="{{ url_for('index.login') }}" class="nav-link">Login</a>
 			</div>
-		<!-- </div> -->
 	</form>
 </div>

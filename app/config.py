@@ -12,7 +12,8 @@ class BaseConfig(object):
     # HOST_ADDRESS = "http://192.168.1.117:8000"
     # HOST_ADDRESS = "http://127.0.0.1:8000"
     # HOST_ADDRESS = "https://traveler-ug.herokuapp.com"
-    TIME_FORMAT = "%B %d %Y, %I:%M %p %z"
+    DATETIME_FORMAT = "%B %d %Y, %I:%M %p %z"
+    DATE_FORMAT = "%B %d %Y %z"
     DEFAULT_CURRENCY = "UGX"
 
     # local email

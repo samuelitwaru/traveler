@@ -5,7 +5,7 @@ class BusSchedule:
 	
 	def __init__(self, bus):
 		if bus.departure_time:
-			self.departure_time = bus.departure_time.strftime(app.config.get("TIME_FORMAT"))
+			self.departure_time = bus.departure_time.strftime(app.config.get("DATETIME_FORMAT"))
 			self.broadcast = bus.broadcast
 			self.journey = bus.journey
 			if bus.booking_deadline:
