@@ -3,7 +3,7 @@ import json
 import re
 from flask_wtf import FlaskForm
 from wtforms import *
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email
 from wtforms.widgets import HiddenInput, Select
 from app.utils import get_current_branch
 from app.models import Pricing
@@ -43,11 +43,11 @@ class CreateBookingForm(FlaskForm):
 
 class CreatePassengerBookingForm(FlaskForm):
     grid_id = SelectField("Seat", validators=[DataRequired(message='Select a seat')], coerce=int)
-    passenger_name = StringField("Name", validators=[DataRequired()])
-    passenger_email = StringField("Email", validators=[DataRequired()])
+    passenger_name = StringField("Your Name", validators=[DataRequired()])
+    passenger_email = StringField("Your Email (For Reporting Purposes)", validators=[DataRequired(), Email()])
     pricing_id = SelectField("Select Destination", validators=[DataRequired()], coerce=int)
     telephone_code = SelectField(choices=telephone_code_choices)
-    passenger_telephone = StringField("Telephone Number", validators=[DataRequired(), validate_telephone])
+    passenger_telephone = StringField("Telephone Number (For Payment Purposes)", validators=[DataRequired(), validate_telephone])
     pickup = SelectField("Pickup Station")
 
     def __init__(self, bus=None, *args, **kwargs):

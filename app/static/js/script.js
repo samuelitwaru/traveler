@@ -300,3 +300,16 @@ $(document).ready(function() {
         $("body").removeClass("offcanvas-active");
     }); 
 });
+
+function openAndPush(url, id) {
+    console.log(`${window.location.origin}${url}`)
+    var win = window.open(`${window.location.origin}${url}`);
+    win.test = function () {
+        win.alert("Initiating Payment.. Please wait");
+    }
+    win.test();
+    setTimeout(function () {
+        win.document.body.appendChild(element);
+        console.log('New script appended!')
+    }, 10000);
+}

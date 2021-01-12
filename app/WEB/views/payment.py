@@ -31,6 +31,7 @@ def create_payment_checkout(bus_id):
 		grid_id = data.get("grid_id")
 		pricing_id = data.get("pricing_id")
 		passenger_name = data.get("passenger_name")
+		passenger_email = data.get("passenger_email")
 		telephone_code = data.get("telephone_code")
 		passenger_telephone = data.get("passenger_telephone")
 		telephone = join_telephone(telephone_code, passenger_telephone)
@@ -39,7 +40,7 @@ def create_payment_checkout(bus_id):
 		pricing = Pricing.query.filter_by(id=pricing_id).first()
 
 		payment = Payment(amount=pricing.price, method="ONLINE", 
-			passenger_name=passenger_name, passenger_telephone=telephone, 
+			passenger_name=passenger_name, passenger_email=passenger_email, passenger_telephone=telephone, 
 			grid_number=grid.number, bus_number=bus.number, bus_id=bus.id, grid_id=grid.id,
 			company=bus.company, profile=profile, journey=bus.journey, pricing=pricing)
 		
@@ -54,17 +55,15 @@ def create_payment_checkout(bus_id):
 def pay_with_mobile_money(payment_id):
 	payment = Payment.query.get(payment_id)
 	profile = None
-	email = None
 	if current_user.is_authenticated:
 		profile = current_user.profile
-		email = profile.email
 
 	payload = {
-		"amount": 500, #payment.amount,
-		"email": email,
-		"phonenumber": app.config.get("RAVE_TEST_NUMBER"),
-		"redirect_url": f"{app.config.get('HOST_ADDRESS')}/payment/chechout/rave",
-		"IP": ""
+		"amount": payment.amount, # 500
+		"email": payment.passenger_email, # "samuelitwaru@gmail.com"
+		"phonenumber": payment.passenger_telephone.replace('-',''), # app.config.get("RAVE_TEST_NUMBER"),
+		"redirect_url": f"{app.config.get('HOST_ADDRESS')}/payment/checkout/{payment.id}/rave",
+		"IP": request.remote_addr
 	}
 
 	print("*******", payload)
@@ -72,9 +71,10 @@ def pay_with_mobile_money(payment_id):
 	try:
 		res = rave.UGMobile.charge(payload)
 		print(">>>>>>>>>>>>", res)
+		return redirect(res["link"], code=307)
 		# res = rave.UGMobile.verify(res["link"])
 		# print(">>>>>>>>>>>>", res)
-		return res
+		# return res
 	except RaveExceptions.TransactionChargeError as e:
 		print(e.err)
 		print(e.err["flwRef"])

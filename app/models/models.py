@@ -195,6 +195,7 @@ class Payment(db.Model):
     bus_number = db.Column(db.String(16))
     grid_number = db.Column(db.String(3))
     passenger_name = db.Column(db.String(64))
+    passenger_email = db.Column(db.String(64))
     passenger_telephone = db.Column(db.String(16))
 
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"))
@@ -203,17 +204,6 @@ class Payment(db.Model):
     profile_id = db.Column(db.Integer, db.ForeignKey("profile.id"))
     journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))
     pricing_id = db.Column(db.Integer, db.ForeignKey("pricing.id"))
-
-
-# class Passenger(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     first_name = db.Column(db.String(32))
-#     last_name = db.Column(db.String(32))
-#     email = db.Column(db.String(64))
-#     telephone = db.Column(db.String(16))
-#     password = db.Column(db.String(128))
-
-#     payments = db.relationship("Payment", backref="passenger")
 
 
 class User(db.Model, UserMixin):

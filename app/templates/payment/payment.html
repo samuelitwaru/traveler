@@ -8,26 +8,32 @@
 
 {% block content %}
 	<div class="container pt-2">
-		<div class="login-content">
-			<h2>Payment Summary</h2>
+		<div class="login-content border shadow p-2">
+			<h2 class="text-center">Payment Summary</h2>
 
 			<table class="table">
 				<tbody>
-					<tr><td>Passenger</td><td>{{payment.passenger_name}}</td></tr>
-					<tr><td>Telephone</td><td>{{payment.passenger_telephone}}</td></tr>
-					<tr><td>Seat</td><td>Seat {{payment.grid}}</td></tr>
-					<tr><td>Fare</td><td>{{payment.amount|currency}}</td></tr>
-					<tr><td>Journey</td><td>{{payment.journey}}</td></tr>
-					<tr><td>Stop</td><td>{{payment.pricing}}</td></tr>
-					<tr><td>Departure Time</td><td>{{payment.bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</td></tr>
+					<tr><td>Passenger</td><td class="overflow-auto"><strong>{{payment.passenger_name}}</strong></td></tr>
+					<tr><td>Telephone</td><td><strong>{{payment.passenger_telephone}}</strong></td></tr>
+					<tr><td>Email</td><td class="text-break"><strong>{{payment.passenger_email}}</strong></td></tr>
+					<tr><td>Seat</td><td><strong>Seat {{payment.grid}}</strong></td></tr>
+					<tr><td>Fare</td><td><strong>{{payment.amount|currency}}</strong></td></tr>
+					<tr><td>Journey</td><td><strong>{{payment.journey}}</strong></td></tr>
+					<tr><td>Destination</td><td><strong>{{payment.pricing}}</strong></td></tr>
+					<tr><td>Departure Time</td><td><strong>{{payment.bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</strong></td></tr>
 				</tbody>
 			</table>
 
+			<div class="alert alert-info">
+				Please confirm that the above information is <strong>correct</strong> before initiating payment.
+			</div>
+
 			<hr>
 
-			<div align="right">
-				<a href="{{url_for('payment.pay_with_mobile_money', payment_id=payment.id)}}" class="btn btn-warning p-3">Pay with Mobile Money</a>
-				<a href="{{url_for('payment.pay_with_card', payment_id=payment.id)}}" class="btn btn-primary p-3">Pay with Card</a>
+			<div align="center">
+				<!-- <a target="_blank" href="{{url_for('payment.pay_with_mobile_money', payment_id=payment.id)}}" class="btn btn-warning p-3">Initate payment with Mobile Money</a> -->
+
+				<button onclick="openAndPush('{{url_for('payment.pay_with_mobile_money', payment_id=payment.id)}}')" class="btn btn-warning p-3 btn-block">Initate payment with Mobile Money</button>
 			</div>
 		</div>
 	</div>

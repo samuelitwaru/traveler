@@ -29,7 +29,7 @@ class BaseConfig(object):
     RAVE_PUBLIC_KEY = os.getenv("RAVE_PUBLIC_KEY")
     RAVE_SECRET_KEY = os.getenv("RAVE_SECRET_KEY")
     RAVE_ENCRYPTION_KEY = os.getenv("RAVE_ENCRYPTION_KEY")
-    RAVE_TEST_NUMBER = "256781902516"
+    RAVE_TEST_NUMBER = "256752041475"
     RAVE_USING_ENV = False
     REDIS_CHAN = "booking"
 
