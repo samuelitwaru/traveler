@@ -1,9 +1,8 @@
 import uuid
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session, make_response
 from flask_login import current_user, login_required
-from app import app
+from app import app, rave
 from rave_python import RaveExceptions
-from app import rave
 from app.models import Payment, Bus, Grid, Pricing, db
 from app.utils import get_current_branch, join_telephone
 from ..forms import CreatePassengerBookingForm
@@ -39,7 +38,9 @@ def create_payment_checkout(bus_id):
 		grid = Grid.query.filter_by(id=grid_id).first()
 		pricing = Pricing.query.filter_by(id=pricing_id).first()
 
-		payment = Payment(amount=pricing.price, method="ONLINE", 
+		app_charge = round(pricing.price * app.config.get("APP_CHARGE"))
+
+		payment = Payment(amount=pricing.price, app_charge=app_charge, method="ONLINE", 
 			passenger_name=passenger_name, passenger_email=passenger_email, passenger_telephone=telephone, 
 			grid_number=grid.number, bus_number=bus.number, bus_id=bus.id, grid_id=grid.id,
 			company=bus.company, profile=profile, journey=bus.journey, pricing=pricing)
@@ -59,7 +60,7 @@ def pay_with_mobile_money(payment_id):
 		profile = current_user.profile
 
 	payload = {
-		"amount": payment.amount, # 500
+		"amount": payment.amount + payment.app_charge, # 500
 		"email": payment.passenger_email, # "samuelitwaru@gmail.com"
 		"phonenumber": payment.passenger_telephone.replace('-',''), # app.config.get("RAVE_TEST_NUMBER"),
 		"redirect_url": f"{app.config.get('HOST_ADDRESS')}/payment/checkout/{payment.id}/rave",

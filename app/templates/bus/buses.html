@@ -49,7 +49,7 @@
 			                    
 			                    <td class="border m-auto">
 			                        <p>{{bus.number}}</p>
-                    				<small>Seats: <strong>{{seats()|length}}</strong></small>
+                    				<small>Seats: <strong>{{bus.seats()|length}}</strong></small>
 			                    </td>
 			                    
 			                    <td><a href="{{ url_for('bus.update_bus_schedule', bus_id=bus.id) }}" class='btn btn-warning'><span class="fa fa-clock-o"></span> Schedule</a></td>

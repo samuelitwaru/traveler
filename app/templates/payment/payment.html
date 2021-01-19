@@ -17,7 +17,16 @@
 					<tr><td>Telephone</td><td><strong>{{payment.passenger_telephone}}</strong></td></tr>
 					<tr><td>Email</td><td class="text-break"><strong>{{payment.passenger_email}}</strong></td></tr>
 					<tr><td>Seat</td><td><strong>Seat {{payment.grid}}</strong></td></tr>
-					<tr><td>Fare</td><td><strong>{{payment.amount|currency}}</strong></td></tr>
+					<tr>
+						<td>Fare</td>
+						<td>
+							<ul class="list-unstyled">
+								<li><small>APP SERVICE: {{payment.app_charge|currency}}</small></li>
+								<li><small>FARE: {{payment.amount|currency}}</small></li>
+							</ul>
+							TOTAL: <strong>{{(payment.amount + payment.app_charge)|currency}}</strong>
+						</td>
+					</tr>
 					<tr><td>Journey</td><td><strong>{{payment.journey}}</strong></td></tr>
 					<tr><td>Destination</td><td><strong>{{payment.pricing}}</strong></td></tr>
 					<tr><td>Departure Time</td><td><strong>{{payment.bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</strong></td></tr>

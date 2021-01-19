@@ -198,6 +198,7 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reference = db.Column(db.String(64))
     amount = db.Column(db.Integer)
+    app_charge = db.Column(db.Integer)
     method = db.Column(db.String(64))
     time = db.Column(db.DateTime, default=now())
     app = db.Column(db.String(64))
