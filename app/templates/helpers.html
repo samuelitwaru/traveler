@@ -70,7 +70,7 @@
 {% endmacro %}
 
 
-{% macro render_datetime_field(field, datetimepicker_id, datetime_format="MMMM DD YYYY, hh:mm A", inline=True) %}
+{% macro render_datetime_field(field, datetimepicker_id, datetime_format="MMMM DD YYYY, hh:mm A", inline=True, min_date=None, max_date=None) %}
 	<div class="form-group">
 		<small>{{field.label.text}}</small>
 		{% if field.errors %}
@@ -109,10 +109,17 @@
 			</div> 
 		</div> 
 		{% endif %}
+		<!-- <button class="btn btn-block btn-primary">None</button> -->
 	</div> 
 	<script type="text/javascript"> 
 		$(function () {
-			$('#{{datetimepicker_id}}').datetimepicker({"format":"{{datetime_format}}", "inline":{%if inline %}true{%else%}false{%endif%}}); 
+			$('#{{datetimepicker_id}}').datetimepicker({
+				"format":"{{datetime_format}}", 
+				"useCurrent":true,
+				{%if inline %}"inline":true{%endif%},
+				{%if min_date %}"minDate":'{{min_date}}',{%endif%}
+				{%if max_date %}"maxDate":'{{max_date}}',{%endif%}
+			}); 
 		}); 
 	</script> 
 {% endmacro %}
@@ -164,7 +171,6 @@
 
 <div class="form-row p-2">
 	<div class="custom-file form-group">
-		<!-- <input id="hidden-img-input" type="hidden" name="logo" > -->
 		<input id="file-input" type="file" name="logo" class="custom-file-input" onchange="renderImage(this)" accept="image/*" title="Choose Logo" id="customFile" required>
 		<label id="file-input-label" class="custom-file-label shadow-sm text-nowrap" for="customFile">Company Logo</label>
 	</div>

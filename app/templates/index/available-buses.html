@@ -1,4 +1,3 @@
-<!-- <h5 class="p-2 m-0 text-center">Available Buses</h5> -->
 <table class="table table-responsive-sm border">
     <tbody>
         {% for bus in buses %} 
@@ -9,14 +8,24 @@
                 
                 <td class="border m-auto">
                     <p>{{bus.number}}</p>
-                    <small>{{bus.journey}}</small> 
+                    <strong>{{bus.journey}}</strong>
                     <hr>
                     <small>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</small>
                     <hr>
-                    <small>Passenger Seats: {{bus.seats()|length}} </small>
+                    <small>Seats left: <strong>{{bus.unbooked_seats()|length}}</strong></small>
                 </td>
                 
-                <td><a href="{{url_for('bus.get_passenger_bus', bus_id=bus.id)}}" class='btn btn-outline-info'><span class="fa fa-check-square"></span> Book</a></td>
+                <td>
+                    <a href="{{url_for('bus.get_passenger_bus', bus_id=bus.id)}}" class='btn btn-outline-info'><span class="fa fa-check-square"></span> Book</a>
+                    <hr>
+                    <div>
+                        <ul class="list-unstyled">
+                            {% for pricing in bus.journey.pricings %}
+                                <li><small>{{pricing.app_pricing_string()}}</small></li>
+                            {% endfor %}                            
+                        </ul>
+                    </div>
+                </td>
             </tr>
         {% else %}
             <div class="container" align="center">

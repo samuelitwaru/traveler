@@ -36,16 +36,17 @@ class SearchBusesForm(FlaskForm):
 	UTC_offset = StringField(widget=HiddenInput())
 	from_ = SelectField("Departing From?", validators=[])
 	to = SelectField("Going To?", validators=[])
-	# from_ = StringField("Departing From?", validators=[])
-	# to = StringField("Going To?", validators=[])
 	departure_time = StringField("When?", validators=[])
 	submit = SubmitField('Find Bus')
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.datetime_format = app.config.get("DATE_FORMAT")
-		self.from_.choices = [("", "Any")]
-		self.to.choices = [("", "Any")]
+		self.min_date = now()
+		self.max_date = self.min_date + timedelta(days=5)
+		self.journeys = Journey.query.all()
+		self.from_.choices = [("", "Any")] + list(set([(journey.from_, journey.from_) for journey in self.journeys]))
+		self.to.choices = [("", "Any")] + list(set([(journey.to, journey.to) for journey in self.journeys]))
 
 	def validate_departure_time(form, field):
 		departure_time = field.data
@@ -113,11 +114,13 @@ class UpdateBusScheduleForm(FlaskForm):
 	free_bus_time = RadioField("Free bus", validators=[DataRequired()], coerce=int)
 	journey_id = SelectField("Journey", validators=[DataRequired()], coerce=int)
 	broadcast = BooleanField("Broadcast")
-	submit = SubmitField('Save')
+	submit = SubmitField('Schedule')
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.datetime_format = app.config.get("DATETIME_FORMAT")
+		self.min_date = now()
+		self.max_date = self.min_date + timedelta(days=5)
 		self.booking_deadline.choices = booking_deadline_choices
 		self.free_bus_time.choices = free_bus_time_choices
 		branch = get_current_branch()

@@ -225,6 +225,18 @@ var printTicket = function(event) {
 }
 
 
+var removeArrayDuplicates = function(array){
+    let newArray = []
+    for(var i=0; i < array.length; i++){
+        var item = array[i]
+        if (item in newArray){
+            return
+        }
+        newArray.push(item)
+    }
+    return newArray
+}
+
 var calculateTimeLeft = function (stopTime){
     stopTime = new Date(stopTime)
     now = Date.now()
@@ -256,24 +268,75 @@ var setTimeLeft = function(widgetId){
 
 
 // front end compontent rendering
-var compontents = {
-    loadingOverlay: () => {
-        template = `<div class="loader"></div>`
+function Templater () {
+    
+    this.components = {
+        loadingOverlay: () => {
+            template = `<div class="loader"></div>`
+            return template
+        },
+        onlineStatusBox: (data) => {
+            var isOnline = data["isOnline"]
+            var part1 = isOnline ? "'text-success'>ONLINE" : "'text-danger'>OFFLINE"
+            template = `<strong class=${part1}<strong>`
+            return template
+        },
+        fromSelectorBox: (data) => {
+            var fromOptions = data["fromOptions"]
+            var part1 = this.makeArrayTemplate(fromOptions, this.components.selector0ption)
+            
+            template = `
+                <div class='form-group'>
+                    <small>Departing From?</small>
+                    <select class="form-control" id="from_" name="from_", onchange="changeTos(this)">
+                        <option selected value="">Any</option>
+                        ${part1}
+                    </select>         
+                </div>
+            `
+            return template
+        },
+        toSelectorBox: (data) => {
+            var toOptions = data["toOptions"]
+            var part1 = this.makeArrayTemplate(toOptions, this.components.selector0ption)
+            
+            template = `
+                <div class='form-group'>
+                    <small>Going To?</small>
+                    <select class="form-control" id="to" name="to" onchange="changeFroms(this)">
+                        <option selected value="">Any</option>
+                        ${part1}
+                    </select>         
+                </div>
+            `
+            return template
+        },
+        selector0ption: (data) => {
+            var text = data.text
+            var value = data.value
+            template = `<option selected value="${value}">${text}</option>`
+            return template
+        }
+    }
+
+    this.renderComponent = function(componentClass, data) {
+        template = this.components[componentClass](data)
+        $(`.${componentClass}`).html(template)
+    }
+
+    this.makeArrayTemplate = function(dataArray, componentFunc) {
+        var template = ''
+        for (var i=0; i < dataArray.length; i++) {
+            data = dataArray[i]
+            template += componentFunc(data)
+        }
         return template
-    },
-    onlineStatusBox: (data) => {
-        var isOnline = data["isOnline"]
-        var part1 = isOnline ? "'text-success'>ONLINE" : "'text-danger'>OFFLINE"
-        template = `<strong class=${part1}<strong>`
-        return template
-    },
+
+    }
+
 }
 
-var renderComponent = function(componentClass, data){
-    template = compontents[componentClass](data)
-    $(`.${componentClass}`).html(template)
-}
-
+// var templating = new Templating()
 
 $(document).ready(function() {
     $("[data-trigger]").on("click", function(e){

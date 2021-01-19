@@ -127,6 +127,7 @@ def create_booking(bus_id):
 	        flash(f'Booked Seat {grid.number}', 'success')
 	        return redirect(url_for('bus.get_bus', bus_id=bus.id))
 	    else:
+	    	flash(f'Failed', 'danger')
 	    	return render_template("bus/bus.html", bus=bus, create_booking_form=create_booking_form)
 
 

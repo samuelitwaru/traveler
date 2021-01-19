@@ -2,6 +2,10 @@
 	{% extends 'index/passenger-base.html' %}
 {% else %}
 	{% extends 'index/home-base.html' %}
+	{% block back_and_home %}
+		<button class="fa btn btn-link fa-arrow-left fa-2x pt-1 nav-link backTrigger"></button>
+	{% endblock %}
+
 {% endif %}
 
 {% block buses_active %}active{% endblock %}
@@ -122,6 +126,8 @@
 		$(document).ready(function() {
 			setTimeLeft("#bookingCountDown")
 
+			templater = new Templater()
+
 			ws.onmessage = function(msgEvent) {
 				var msg = JSON.parse(msgEvent.data);
 				var handle = msg.handle
@@ -134,12 +140,12 @@
 
 			ws.onopen = function(){
 				data.wsConnected = true
-				renderComponent("onlineStatusBox", {isOnline:data.wsConnected})
+				templater.renderComponent("onlineStatusBox", {isOnline:data.wsConnected})
 			}
 
 			ws.onclose = function(){
 				data.wsConnected = false
-				renderComponent("onlineStatusBox", {isOnline:data.wsConnected})
+				templater.renderComponent("onlineStatusBox", {isOnline:data.wsConnected})
 			};
 		});
 

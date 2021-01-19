@@ -4,6 +4,8 @@
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light p-2 border-bottom d-flex fixed">
 			<div class="d-flex flex-fill">
+				{% block back_and_home %}
+				{% endblock %}
 				<img class="bg-white img-thumbnail rounded-circle p-0" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=company.logo)}}" />
 				<div class="text-dark px-1">
 					<h4 class="m-0">{{company}}</h4>

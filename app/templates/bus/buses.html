@@ -17,14 +17,16 @@
 			                    
 			                    <td class="border m-auto">
 			                        <p>{{bus.number}}</p>
-			                        <small>{{bus.journey}}</small> 
+			                        <strong>{{bus.journey}}</strong> 
 			                        <hr>
 			                        <small>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</small>
 			                        <hr>
-			                        <small>Passenger Seats: {{bus.seats()|length}} </small>
+                    				<small>Seats left: <strong>{{bus.unbooked_seats()|length}}</strong></small>
 			                    </td>
 			                    
-			                    <td><a href="{{ url_for('bus.get_bus', bus_id=bus.id) }}" class='btn btn-info'><span class="fa fa-check-square"></span> Book</a></td>
+			                    <td>
+			                    	<a href="{{ url_for('bus.get_bus', bus_id=bus.id) }}" class='btn btn-info'><span class="fa fa-check-square"></span> Book</a>
+			                    </td>
 			                </tr>
 			            {% else %}
 			                <div class="container" align="center">
@@ -47,7 +49,7 @@
 			                    
 			                    <td class="border m-auto">
 			                        <p>{{bus.number}}</p>
-			                        <small>Passenger Seats: {{bus.seats()|length}} </small>
+                    				<small>Seats: <strong>{{seats()|length}}</strong></small>
 			                    </td>
 			                    
 			                    <td><a href="{{ url_for('bus.update_bus_schedule', bus_id=bus.id) }}" class='btn btn-warning'><span class="fa fa-clock-o"></span> Schedule</a></td>

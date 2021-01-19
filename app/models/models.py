@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, current_user
 from flask_sqlalchemy import Model
 from sqlalchemy import Column, DateTime
-from app import db
+from app import app, db
 from app.helpers import timezone, now
 from app.WEB.template_filters import currency
 
@@ -16,7 +16,7 @@ class TimestampedModel(Model):
 
 
 # admin - CRUD
-class Company(db.Model):
+class Company(db.Model, TimestampedModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
     logo = db.Column(db.String(64))
@@ -82,6 +82,11 @@ class Pricing(db.Model):
     def __str__(self):
         return f"{self.stop} ({currency(self.price)})"
 
+    def app_pricing_string(self):
+        charge = app.config.get("APP_CHARGE")
+        return f"{self.stop} | {currency(self.price + round(self.price*charge))}"
+
+
 
 class Status(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -134,6 +139,12 @@ class Bus(db.Model):
 
     def seats(self):
         return list(filter(lambda grid:grid.grid_type==1, self.grids))
+
+    def booked_seats(self):
+        return list(filter(lambda grid:(grid.grid_type==1 and grid.booking_id), self.grids))
+
+    def unbooked_seats(self):
+        return list(filter(lambda grid:(grid.grid_type==1 and grid.booking_id==None), self.grids))
 
     def booking_time_expired(self):
         if self.booking_deadline.astimezone(timezone) > now():

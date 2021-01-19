@@ -58,7 +58,7 @@ class CreatePassengerBookingForm(FlaskForm):
             pickups = journey.pickups
             grids = bus.grids.filter_by(grid_type=1, booking_id=None)
             self.grid_id.choices = [(0, "No Seat Selected")]+[(grid.id, f"Seat {grid}") for grid in grids]
-            self.pricing_id.choices = [(pricing.id, pricing) for pricing in pricings]
+            self.pricing_id.choices = [(pricing.id, pricing.app_pricing_string()) for pricing in pricings]
             self.pickup.choices = [(pickup.name, pickup.name) for pickup in pickups]
 
 

@@ -15,6 +15,7 @@ class BaseConfig(object):
     DATETIME_FORMAT = "%B %d %Y, %I:%M %p %z"
     DATE_FORMAT = "%B %d %Y %z"
     DEFAULT_CURRENCY = "UGX"
+    APP_CHARGE = 0.05
 
     # local email
     MAIL_SERVER='smtp.gmail.com'

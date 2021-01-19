@@ -32,7 +32,12 @@
                         {{ update_bus_schedule_form.hidden_tag() }}
 
                         {{ render_string_field(update_bus_schedule_form.journey_id) }}
-                        {{ render_datetime_field(update_bus_schedule_form.departure_time, "bus-schedule-datetimepicker") }}
+                        {{ render_datetime_field(
+                                update_bus_schedule_form.departure_time, "bus-schedule-datetimepicker",
+                                min_date=update_bus_schedule_form.min_date,
+                                max_date=update_bus_schedule_form.max_date,
+                            ) 
+                        }}
 
                         {{ render_radio_field(update_bus_schedule_form.booking_deadline) }}
                         {{ render_radio_field(update_bus_schedule_form.free_bus_time) }}

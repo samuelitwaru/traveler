@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
 from flask_login import login_user, logout_user, current_user, login_required
-from app.utils import authenticate_user
-from app.models import User
+from app.utils import authenticate_user, find_buses
+from app.models import User, Bus
 from ..forms import LoginForm, SearchBusesForm, CreateProfileForm, SignupForm
 from .. guards import check_branch_journeys
 
@@ -25,8 +25,9 @@ def index():
 
 	search_buses_form = SearchBusesForm()
 	signup_form = SignupForm()
+	buses = find_buses()
 
-	return render_template('index/index.html', search_buses_form=search_buses_form, signup_form=signup_form)
+	return render_template('index/index.html', search_buses_form=search_buses_form, signup_form=signup_form, buses=buses)
 
 
 
