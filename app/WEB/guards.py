@@ -29,7 +29,6 @@ def check_branch_journeys(func):
 	return wrapper
 
 
-
 def only_bus_with_no_bookings(func):
 	
 	@wraps(func)
@@ -84,4 +83,3 @@ def only_passenger(func):
 		flash("Action Not Allowed!", "danger")
 		return redirect(request.referrer)
 	return wrapper
-

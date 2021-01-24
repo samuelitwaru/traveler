@@ -25,6 +25,10 @@
 				<div class="col">
 					<p>Select a Seat</p>
 					<div id="grid" class="grid border"></div>
+					<hr>
+					<div class="text-center">
+						<a target="_blank" class="" href="{{ url_for('booking.print_bookings', bus_id=bus.id) }}"><span class="fa fa-download"></span> Download Book Sheet</a>
+					</div>
 				</div>
 			</div>
 		</div>

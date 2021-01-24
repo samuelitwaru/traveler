@@ -2,28 +2,45 @@
 
 {% block body %}
 	<body>
-		<div class="bg-light d-flex p-2">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light p-2 border-bottom d-flex fixed">
 			<div class="d-flex flex-fill">
+				
 				<div>
-					{% block back_and_home %}
-						<button class="fa btn btn-link fa-arrow-left fa-2x pt-1 nav-link backTrigger"></button>
-					{% endblock %}
+					<div>
+						<img style="width: 2rem; transform: rotate(-40deg);" src="{{url_for('static', filename='img/logo.png')}}" class="p-0 img-thumbnail rounded-circle" />
+					</div>
 				</div>
-				<h2 class="m-1 text-center flex-fill"><strong>Trav<span class="text-info">eler</span></strong></h2>
+				
+				<h3 class="m-1 text-center flex-fill"><strong>Trav<span class="text-info">eler</span></strong></h3>
+				
+				<!-- <div> -->
+					<button class="navbar-toggler btn btn-light border-0" type="button" data-toggle="collapse" data-target="#managerNavigation" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="fa fa-arrow-down"></span>
+					</button>
+				<!-- </div> -->
             </div>
-            <button type="button" class="btn btn-link nav-link" data-toggle="dropdown">
-				<span class="fa fa-user"></span> {{current_user}}</span>
-				<span class="sr-only">unread messages</span>
-			</button>
 
-			<div class="dropdown-menu dropdown-menu-right rounded-0 shadow" align="right">
-				<a href="{{ url_for('user.update_user_password') }}" class="dropdown-item"><span></span><span class="fa fa-user"></span> Account</a>
-				<div class="dropdown-divider"></div>
-				<a href="{{ url_for('index.logout') }}" class="dropdown-item"><span class="fa fa-power-off"></span> Logout</a>
-			</div>
-        </div>
 
-        <hr class="m-1">
+			{% block admin_navigation %}
+				<nav id="managerNavigation" class="collapse navbar-collapse navbar-expand-lg navbar-light bg-light p-1 fixed">
+					<ul class="nav nav-pills">
+						<li class="nav-item">
+							<a class="nav-link {% block companies_active %}{% endblock %}" href="{{url_for('company.get_companies')}}">Companies</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link {% block profile_active %}{% endblock %}" href="{{ url_for('user.update_user_password') }}">
+								<span class="fa fa-user"></span> {{current_user}}
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a href="{{ url_for('index.logout') }}" class="nav-link text-danger"><span class="fa fa-power-off"></span> Logout</a>
+						</li>
+					</ul>
+				</nav>
+			{% endblock %}
+		</nav>
 
 		<div>
 			{% for category, message in get_flashed_messages(with_categories=true) %}

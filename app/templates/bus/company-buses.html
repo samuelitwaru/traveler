@@ -4,7 +4,7 @@
 
 {% block company_content %}
 	<div class="">
-		<table class="table border">
+		<table class="table">
 	    	{% if buses|length %}
 	        <thead>
 	        	<th colspan="3">
@@ -19,7 +19,7 @@
 	                    	<span class="fa fa-bus fa-3x"></span>
 	                    </td>
 	                    
-	                    <td class="border m-auto">
+	                    <td class="m-auto">
 	                        <p>{{bus.number}}</p>
 	                        <small>Passenger Seats: {{bus.seats()|length}} </small>
 	                    </td>
