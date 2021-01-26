@@ -20,5 +20,6 @@ gevent==1.4.0
 rave_python
 flask_sockets
 redis
+celery==3.1.26
 gunicorn
 
