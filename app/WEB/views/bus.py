@@ -2,8 +2,10 @@ import json
 from datetime import timedelta
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session
 from flask_login import current_user, login_required
+from celery.execute import send_task
 from app.models import Bus, Company, Grid, Booking, db
 from app.utils import  get_current_branch, set_bus_layout, change_bus_layout, find_buses, set_bus_free
+# from app.tasks import free_bus
 from app import app
 from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm, SearchBusesForm, DeleteBusForm, CreateBookingForm, CreatePassengerBookingForm
 from .. guards import check_branch_journeys
@@ -143,11 +145,12 @@ def update_bus_schedule(bus_id):
 			bus.branch = get_current_branch()
 			db.session.commit()
 			flash("Bus scheduled.", "success")
-		else:
-			flash(str(update_bus_schedule_form.errors), "danger")
-		return redirect(url_for('bus.get_buses'))
-	else:
-		return render_template('bus/update-bus-schedule.html', bus=bus, update_bus_schedule_form=update_bus_schedule_form)
+			# set free bus task
+			# print(dir(free_bus))
+			# send_task("celery.free_bus", (bus,), eta=free_bus_time)
+			# free_bus.apply_async((bus), eta=free_bus_time)
+			return redirect(url_for('bus.get_buses'))
+	return render_template('bus/update-bus-schedule.html', bus=bus, update_bus_schedule_form=update_bus_schedule_form)
 	
 
 @bus_bp.route("/<int:bus_id>/schedule/delete", methods=["POST", "GET"])

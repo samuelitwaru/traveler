@@ -28,7 +28,7 @@ redis = redis.from_url(app.config.get("REDIS_URL"))
 rave = Rave(app.config.get("RAVE_PUBLIC_KEY"), 
 	app.config.get("RAVE_SECRET_KEY"),
 	production=True,
-	usingEnv=True) 
+	usingEnv=True)
 
 
 # load database models
@@ -51,6 +51,9 @@ from app.WEB import template_filters
 # socketio.on_namespace(DefaultNamespace('/'))
 # socketio.on_namespace(MobileNamespace('/mobile'))
 # socketio.on_namespace(DesktopNamespace('/desktop'))
+
+# setup celery
+celery = make_celery(app)
 
 # load and initialize socket backend
 from app.WS.backend import socket_backend

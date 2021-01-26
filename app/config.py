@@ -9,6 +9,10 @@ class BaseConfig(object):
     UPLOADED_LOGOS_DEST = "app/models/media/"
     UPLOADED_LOGOS_URL = "app/models/media/"
     HOST_ADDRESS = "http://127.0.0.1:5000"
+
+    CELERY_BROKER_URL='redis://localhost:6379'
+    CELERY_RESULT_BACKEND='redis://localhost:6379'
+
     # HOST_ADDRESS = "http://192.168.1.117:8000"
     # HOST_ADDRESS = "http://127.0.0.1:8000"
     # HOST_ADDRESS = "https://traveler-ug.herokuapp.com"

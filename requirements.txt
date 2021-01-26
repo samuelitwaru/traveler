@@ -19,6 +19,6 @@ eventlet==0.27.0
 gevent==1.4.0
 rave_python
 flask_sockets
-redis
+redis==2.10.6
 gunicorn
 
