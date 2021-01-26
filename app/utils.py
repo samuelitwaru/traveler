@@ -12,6 +12,7 @@ from werkzeug.security import check_password_hash
 import flask_sqlalchemy
 from flask_uploads import UploadSet, IMAGES, configure_uploads
 from flask_login import current_user
+from flask_restful import marshal_with
 from app import app
 from .models import Company, Status, Grid, User, Token, Payment, Bus, Journey, db
 from .helpers import now
@@ -41,6 +42,13 @@ def save_logo(logo, x, y, w, h):
 	os.remove(f"{app.config['UPLOADED_LOGOS_DEST']}tmp_{filename}")
 	# return logo name
 	return filename
+
+
+def marshal_data(data_object, data_fields):
+	@marshal_with(data_fields)
+	def marshaler():
+		return data_object
+	return marshaler()
 
 
 def authenticate_user(username, password):

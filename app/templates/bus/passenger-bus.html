@@ -57,6 +57,7 @@
 			rows: Number("{{bus.rows}}"),
 			grids: {{ bus.grids_dict() }},
 			selected: null,
+			bookings: [],
 		}
 
 		// data: Initialize Muuri grid
@@ -113,14 +114,6 @@
 			initGrid();	
 		}
 
-		updateOnlineStatus = function () {
-			if (data.wsConnected) {
-				$("#onLineStatus").html("ONLINE")
-				return
-			}
-			$("#onLineStatus").html("OFFLINE")
-		}
-
 		fillGrid()
 
 		$(document).ready(function() {
@@ -132,8 +125,10 @@
 				var msg = JSON.parse(msgEvent.data);
 				var handle = msg.handle
 				var msgData = msg.data
+				var grid = msg.data.grid
+				var bookings = msg.data.bookings
 				if (handle === 'create_booking_passed') {
-					data.grids[msgData.index] = msgData
+					data.grids[grid.index] = grid
 					fillGrid()
 				}
 			};

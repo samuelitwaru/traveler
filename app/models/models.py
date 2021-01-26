@@ -186,7 +186,6 @@ class Booking(db.Model, TimestampedModel):
     bus_id = db.Column(db.Integer, db.ForeignKey("bus.id"), nullable=False)
     created_by = db.Column(db.Integer, db.ForeignKey("user.id"))
 
-
     grid_id = db.Column(db.Integer, db.ForeignKey("grid.id"), nullable=False)
     pricing_id = db.Column(db.Integer, db.ForeignKey("pricing.id"), nullable=False)
     payment_id = db.Column(db.Integer, db.ForeignKey("payment.id"))

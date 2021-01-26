@@ -316,6 +316,20 @@ function Templater () {
             var value = data.value
             template = `<option selected value="${value}">${text}</option>`
             return template
+        },
+        ticketBox: (data) => {
+            template = `
+                <table class="table" style="width:100%">
+                    <tbody align="center">
+                        <tr><td>Passenger</td><td class="overflow-auto"><strong>${data.passenger_name}</strong></td></tr>
+                        <tr><td>Telephone</td><td><strong>${data.passenger_telephone}</strong></td></tr>
+                        <tr><td>Seat</td><td><strong>Seat ${data.booked_grid.number}</strong></td></tr>
+                        <tr><td>Fare</td><td><strong>${data.payment.amount}</strong></td></tr>
+                        <tr><td>Pickup</td><td><strong>${data.pickup}</strong></td></tr>
+                    </tbody>
+                </table>
+            `
+            return template
         }
     }
 
@@ -375,4 +389,19 @@ function openAndPush(url, id) {
         win.document.body.appendChild(element);
         console.log('New script appended!')
     }, 10000);
+}
+
+function openAndAppend(elementId) {
+    elementSet = $(elementId)
+    if (elementSet.length === 1){
+        element = elementSet[0]
+        html = element.innerHTML
+        
+        var win = window.open();
+        win.document.write(html)
+        win.print()
+        win.close()
+    }
+
+
 }

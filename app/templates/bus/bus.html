@@ -44,6 +44,41 @@
 	</div>
 </div>
 
+<div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Ticket</h5>
+				<div>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<button type="button" class="btn btn-light" onclick="openAndAppend('#ticketBox')">
+						<span class="fa fa-print"></span>
+					</button>
+				</div>
+			</div>
+
+			<div id="ticketBox" class="modal-body">
+				<div align="center">
+					<img class="bg-white img-thumbnail rounded-circle p-0" style="width: 3rem;" src="{{url_for('company.get_company_logo', logoname=company.logo)}}" /> 
+					<h3>{{company}}</h3>
+					<p>{{bus.journey}}</p>
+					<p>{{bus.departure_time|datetimeformat('%a, %d %b %Y %r')}}</p>
+				</div>
+				<div class="ticketBox">
+					<div class="d-flex justify-content-center">
+			            <div class="spinner-border text-info text-center" role="status" align="center">
+			                <span class="sr-only">Loading...</span>
+			            </div>
+			        </div>
+			        <p class="text-center">Please wait...</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script>
 	let grid;
 	let gridItemClasses = ['space', 'passenger', 'reserved'];
@@ -52,8 +87,11 @@
 		rows: Number("{{bus.rows}}"),
 		grids: {{ bus.grids_dict() }},
 		selected: null,
-		wsConnected: false,
+		bookings: [],
+		currentGird: null
 	}
+
+	let templater;
 
 	// data: Initialize Muuri grid
 	initGrid = function(){
@@ -92,7 +130,7 @@
 
 			if (grid.grid_type == 1) {
 				if(grid.booked){
-					widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content bg-dark" onclick="alert('Aleady booked!')">${Boolean(grid.number) ? grid.number : ''}</button</div>`
+					widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" data-toggle="modal" data-target="#ticketModal" class="item-content bg-dark" onclick="showTicket(${grid.id})">${Boolean(grid.number) ? grid.number : ''}</button</div>`
 				}
 				else {
 					widget = `<div class="item ${gridItemClasses[grid.grid_type]}"><button data-index="${grid.index}" id="${grid.index}" class="item-content" onclick="selectGrid(${grid.id})">${Boolean(grid.number) ? grid.number : ''}</button</div>`
@@ -108,12 +146,14 @@
 		initGrid();	
 	},
 
-	updateOnlineStatus = function () {
-		if (data.wsConnected) {
-			$("#onLineStatus").html("ONLINE")
-			return
+	showTicket = function(gridId){
+		data.currentGird = gridId
+		booking = data.bookings.filter(booking=>{return booking.booked_grid.id == gridId})
+		if (booking.length === 1){
+			booking = booking[0]
+			console.log(">>>>>>>>>>", booking)
+			templater.renderComponent("ticketBox", booking)
 		}
-		$("#onLineStatus").html("OFFLINE")
 	}
 
 	fillGrid()
@@ -121,14 +161,22 @@
 	$(document).ready(function() {
 		setTimeLeft("#bookingCountDown")
 
+		$.get("{{url_for('booking.get_bus_bookings', bus_id=bus.id)}}", function(response) {
+	        data.bookings = response.bookings
+	        showTicket(data.currentGird)
+	    })
+
 		templater = new Templater()
 
 		ws.onmessage = function(msgEvent) {
 			var msg = JSON.parse(msgEvent.data);
 			var handle = msg.handle
 			var msgData = msg.data
+			var grid = msg.data.grid
+			var bookings = msg.data.bookings
 			if (handle === 'create_booking_passed') {
-				data.grids[msgData.index] = msgData
+				data.grids[grid.index] = grid
+				data.bookings = bookings
 				fillGrid()
 			}
 		};

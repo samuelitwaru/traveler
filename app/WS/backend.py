@@ -8,7 +8,6 @@ This simple application uses WebSockets to run a primitive chat server.
 """
 
 import os
-import logging
 import gevent
 from flask import Flask, render_template
 from app import app, sockets, redis
@@ -26,10 +25,10 @@ class SocketBackend(object):
 
     def __iter_data(self):
         for message in self.pubsub.listen():
-            app.logger.info(type(message))
+            # app.logger.info(type(message))
             data = message.get('data')
             if message['type'] == 'message':
-                app.logger.info(u'Sending message: {}'.format(data))
+                # app.logger.info(u'Sending message: {}'.format(data))
                 yield data.decode()
 
     def register(self, client):
@@ -73,7 +72,7 @@ def web_socket(ws):
             handle = message["handle"]
             data = message["data"]
             res = HANDLES[handle](data)
-            app.logger.info(u'Inserting message: {}'.format(message))
+            # app.logger.info(u'Inserting message: {}'.format(message))
             redis.publish(app.config.get("REDIS_CHAN"), res)
 
 

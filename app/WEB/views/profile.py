@@ -235,8 +235,6 @@ def get_profile_credit():
 					"#updateProfileCreditFormPatch": update_profile_credit_patch_template
 				}
 			}
-
-		print(data)
 		return data
 		
 	

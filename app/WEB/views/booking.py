@@ -4,8 +4,9 @@ from flask import Blueprint, render_template, url_for, request, redirect, flash,
 from flask_login import current_user, login_required
 import flask_sqlalchemy
 from app import app, redis
+from app.API import Fields
 from app.models import Grid, Pricing, Booking, Bus, db
-from app.utils import  get_current_branch
+from app.utils import  get_current_branch, marshal_data
 from ..forms import CreateBookingForm, UpdateBookingForm, DeleteBookingForm, FilterBookingsForm, SearchBusesForm, CreatePassengerBookingForm
 from ..data import CreatePassengerBookingFormData
 from .payment import create_payment
@@ -57,16 +58,10 @@ def get_company_bookings():
 @login_required
 def get_bus_bookings(bus_id):
 	bus = Bus.query.get(bus_id)
-	grids = [grid for grid in Grid.query.filter_by(bus_id=bus_id).filter(Grid.booking_id!=None).all()]
-	bookings  = [grid.booking for grid in grids]
-	total_fare = sum([booking.fare for booking in bookings])
-	total_paid = sum([booking.fare for booking in list(filter(lambda booking: booking.paid, bookings))])
-	bus_bookings_patch_template = render_template('booking/bookings-patch.html', bookings=bookings, bus=bus, total_fare=total_fare, total_paid=total_paid)
-	data = {
-        "form_templates": {
-            "#busBookingsPatch": bus_bookings_patch_template
-        }
-    };return data
+	bookings = bus.bookings
+	booking_fields = Fields().booking_fields()
+	bookings_json = json.loads(json.dumps(marshal_data(bookings, booking_fields)))
+	return {"bookings": bookings_json}
 
 
 @booking_bp.route("/passenger", methods=["GET"])
@@ -122,7 +117,10 @@ def create_booking(bus_id):
 
 	        create_payment(booking)
 	        db.session.commit()
-	        res = json.dumps({"handle": "create_booking_passed", "data": grid.grid_dict()})
+	        bookings = bus.bookings
+	        booking_fields = Fields().booking_fields()
+	        bookings_json = json.loads(json.dumps(marshal_data(bookings, booking_fields)))
+	        res = json.dumps({"handle": "create_booking_passed", "data": {"grid":grid.grid_dict(), "bookings":bookings_json} })
 	        redis.publish(app.config.get("REDIS_CHAN"), res)
 	        flash(f'Booked Seat {grid.number}', 'success')
 	        return redirect(url_for('bus.get_bus', bus_id=bus.id))

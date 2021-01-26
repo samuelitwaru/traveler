@@ -67,7 +67,6 @@ def pay_with_mobile_money(payment_id):
 		"IP": request.remote_addr
 	}
 
-	print("*******", payload)
 
 	try:
 		res = rave.UGMobile.charge(payload)
