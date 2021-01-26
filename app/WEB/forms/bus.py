@@ -43,7 +43,7 @@ class SearchBusesForm(FlaskForm):
 		super().__init__(*args, **kwargs)
 		self.datetime_format = app.config.get("DATE_FORMAT")
 		self.min_date = now()
-		self.max_date = self.min_date + timedelta(days=5)
+		self.max_date = self.min_date + timedelta(days=15)
 		self.journeys = Journey.query.all()
 		self.from_.choices = [("", "Any")] + list(set([(journey.from_, journey.from_) for journey in self.journeys]))
 		self.to.choices = [("", "Any")] + list(set([(journey.to, journey.to) for journey in self.journeys]))

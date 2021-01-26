@@ -107,7 +107,7 @@ def create_journeys():
 
 
 def create_buses():
-	choices = range(1, 5)
+	choices = range(1, 15)
 	now = datetime.now()
 	for each in buses:
 		then = now + timedelta(random.choice(choices))
