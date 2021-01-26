@@ -14,7 +14,6 @@ Flask_WTF==0.14.2
 redis==2.10.6
 pytz==2018.3
 gevent==1.4.0
-alembic==0.9.3.dev0
 Werkzeug==0.16.1
 Flask_Uploads==0.2.1
 Flask==1.1.1
