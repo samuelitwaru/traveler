@@ -162,7 +162,9 @@ def create_payment(booking):
 		method="CASH", passenger_name=booking.passenger_name, 
 		passenger_telephone=booking.passenger_telephone, branch_name=branch.name,
 		company_name=company.name, grid_number=grid.number, bus_number=bus.number,
+		company=company, bus=bus, journey=bus.journey, pricing=booking.pricing,
 		grid_id=grid.id)
+
 	booking.payment = payment
 	db.session.add(payment)
 

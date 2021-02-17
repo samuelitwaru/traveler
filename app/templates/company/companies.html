@@ -31,7 +31,7 @@
 	                        <small>Created: {{company.created_at|datetimeformat}}</small>
 	                    </td>
 	                    
-	                    <td><a href="{{ url_for('company.get_company_buses', company_id=company.id) }}" class='btn btn-outline-info'>Manage</a></td>
+	                    <td><a href="{{ url_for('company.get_company_payments', company_id=company.id) }}" class='btn btn-outline-info'>Manage</a></td>
 	                </tr>
 	            {% else %}
 	                <div class="container" align="center">

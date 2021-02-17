@@ -8,7 +8,7 @@ from app.utils import  get_current_branch, set_bus_layout, change_bus_layout, fi
 # from app.tasks import free_bus
 from app import app
 from ..forms import CreateBusForm, UpdateBusLayoutForm, UpdateBusScheduleForm, DeleteBusScheduleForm, SearchBusesForm, DeleteBusForm, CreateBookingForm, CreatePassengerBookingForm
-from .. guards import check_branch_journeys
+from .. guards import check_branch_journeys, only_unschduled_bus
 from ..data import BusSchedule, CreatePassengerBookingFormData
 
 
@@ -89,6 +89,7 @@ def create_bus(company_id):
 
 @bus_bp.route("/<int:bus_id>/update/layout", methods=["POST"])
 @login_required
+@only_unschduled_bus
 def update_bus_layout(bus_id):
 	bus = Bus.query.get(bus_id)
 	update_bus_layout_form = UpdateBusLayoutForm()
@@ -108,8 +109,10 @@ def update_bus_layout(bus_id):
 
 @bus_bp.route("/<int:bus_id>/delete", methods=["POST"])
 @login_required
+@only_unschduled_bus
 def delete_bus(bus_id):
 	bus = Bus.query.get(bus_id)
+
 	company = bus.company
 	delete_bus_form = DeleteBusForm()
 	if delete_bus_form.validate():

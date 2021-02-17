@@ -3,7 +3,7 @@
 
 {% block content %}
 	<div class="container">
-		<form id="registerCompanyForm" method="POST" enctype="multipart/form-data" action="{{ url_for('company.create_company') }}">
+		<form id="registerCompanyForm" method="POST" enctype="multipart/form-data" action="{{ url_for('company.create_company') }}" autocomplete="off">
 			<h4>New Company</h4>
 			{{ create_company_form.hidden_tag() }}
 			<div class="row">

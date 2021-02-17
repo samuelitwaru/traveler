@@ -11,7 +11,7 @@ from app.WEB.template_filters import currency
 
 
 class TimestampedModel(Model):
-    created_at = Column(DateTime, default=now())
+    created_at = Column(DateTime, default=now)
     updated_at = Column(DateTime)
 
 
@@ -77,6 +77,7 @@ class Pricing(db.Model):
     journey_id = db.Column(db.Integer, db.ForeignKey("journey.id"))
 
     payments = db.relationship("Payment", backref="pricing")
+    bookings = db.relationship("Booking", backref="pricing")
 
 
     def __str__(self):
@@ -150,7 +151,7 @@ class Bus(db.Model):
         if self.booking_deadline.astimezone(timezone) > now():
             return False
         return True
-
+        
 
 class Grid(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -193,13 +194,13 @@ class Booking(db.Model, TimestampedModel):
     payment = db.relationship("Payment", backref=db.backref("booking", uselist=False), cascade="delete")
 
 
-class Payment(db.Model):
+class Payment(db.Model, TimestampedModel):
     id = db.Column(db.Integer, primary_key=True)
     reference = db.Column(db.String(64))
     amount = db.Column(db.Integer)
     app_charge = db.Column(db.Integer)
     method = db.Column(db.String(64))
-    time = db.Column(db.DateTime, default=now())
+    # time = db.Column(db.DateTime, default=now())
     app = db.Column(db.String(64))
     company_name = db.Column(db.String(64))
     branch_name = db.Column(db.String(64))

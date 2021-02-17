@@ -1,0 +1,39 @@
+{% extends 'company/company.html' %}
+
+{% block active_payments %}active{% endblock %}
+
+{% block company_content %}
+	<div class="container-fluid">
+		<table class="table">
+	        <tbody>
+	            {% for payment in payments %} 
+	                <tr>
+	                    <td>
+	                    	{{payment.created_at|datetimeformat}}
+	                    </td>
+
+	                    <td>
+	                    	{{payment.reference}}
+	                    </td>
+
+	                    <td class="text-right">
+	                    	{{payment.amount|currency}}
+	                    </td>
+	                </tr>
+	            {% else %}
+	                <div class="container" align="center">
+	                    <p class="display-5 text-muted p-2">No Payments!</p>
+	                </div>
+	            {% endfor %}
+	        </tbody>
+	        {% if total %}
+	        <tfoot class="font-weight-bold">
+	        	<tr>
+	        		<td colspan="2" class="text-cente">Total</td>
+	        		<td class="text-right">{{total|currency}}</td>
+	        	</tr>
+	        </tfoot>
+	        {% endif %}
+	    </table>
+	</div>
+{% endblock %}

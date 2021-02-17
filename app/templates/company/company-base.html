@@ -10,6 +10,9 @@
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="nav nav-pills mr-auto">
 			<li class="nav-item">
+				<a class="nav-link {% block active_payments %}{% endblock %}" href="{{ url_for('company.get_company_payments', company_id=company.id) }}">Payments</a>
+			</li>
+			<li class="nav-item">
 				<a class="nav-link {% block active_statuses %}{% endblock %}" href="{{ url_for('company.get_company_statuses', company_id=company.id) }}">Statuses</a>
 			</li>
 			<li class="nav-item">

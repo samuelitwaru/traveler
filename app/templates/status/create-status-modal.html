@@ -9,7 +9,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" action="{{ url_for('status.create_status', company_id=company.id) }}">
+            <form method="POST" action="{{ url_for('status.create_status', company_id=company.id) }}" autocomplete="off">
                 <div class="modal-body">
                         {{ create_status_form.hidden_tag() }}
 

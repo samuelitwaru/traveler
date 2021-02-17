@@ -2,6 +2,7 @@ from functools import wraps
 from flask import redirect, url_for, request, flash
 from flask_login import current_user
 from app.utils import get_current_branch
+from app.models import Bus
 
 
 def check_branch_journeys(func):
@@ -82,4 +83,16 @@ def only_passenger(func):
 				return func(*args, **kwargs)
 		flash("Action Not Allowed!", "danger")
 		return redirect(request.referrer)
+	return wrapper
+
+
+def only_unschduled_bus(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		bus_id = kwargs.get("bus_id")
+		bus = Bus.query.get(bus_id)
+		if bus.journey:
+			flash("Action Not Allowed!", "danger")
+			return redirect(request.referrer)
+		return func(*args, **kwargs)
 	return wrapper

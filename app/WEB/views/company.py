@@ -1,8 +1,9 @@
 import os
 from flask import Blueprint, render_template, url_for, request, redirect, flash, send_from_directory
 from flask_login import login_required
+from flask_sqlalchemy import sqlalchemy
 from app import app
-from app.models import Company, Bus, Status, Branch, db
+from app.models import Company, Bus, Status, Branch, Payment, db
 from app.utils import save_logo, logos, create_default_status, split_telephone, get_current_branch
 from ..forms import CreateCompanyForm, UpdateCompanyForm, CreateBusForm, UpdateBusLayoutForm, CreateStatusForm, CreateBranchForm, CreateProfileForm, DeleteProfileForm, UpdateProfileForm, DeleteBusForm
 
@@ -112,6 +113,13 @@ def get_company_bookings(bus_id):
     company = get_current_branch().company
     return render_template("company/company-dashboard.html", bookings=[])
 
+
+@company_bp.route("<int:company_id>/payments")
+def get_company_payments(company_id):
+    company = Company.query.get(company_id)
+    payments = Payment.query.filter_by(company_id=company_id).order_by(sqlalchemy.desc(Payment.created_at))
+    total = db.session.query(sqlalchemy.func.sum(Payment.amount)).filter_by(company_id=company_id).first()[0]
+    return render_template("payment/payments.html", payments=payments, total=total, company=company)
 
 
 @company_bp.route("/<int:company_id>/branches/<int:branch_id>", methods=["GET"])

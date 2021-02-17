@@ -3,7 +3,7 @@ from app import app
 from datetime import datetime
 
 
-def datetimeformat(value, format='%d-%m-%Y %H:%M'):
+def datetimeformat(value, format='%d/%m/%Y %H:%M'):
 	if isinstance(value, datetime):
 		return value.strftime(format)
 
